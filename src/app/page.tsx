@@ -155,7 +155,17 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
       locations.length > 1 ? "s" : ""
     }.
 
-@urtmof @capitalmarketsecurityauthority @ofisi_ya_msajili_wa_hazina @msemajimkuuwaserikali @ikulu_mawasiliano @wizarayakilimo @tumedamaendeleoyaushirika @ushirika_tcdc @wizarayaviwandanabiashara @bodiusimamiziwastakabadhi_ghala_wrrb
+@urtmof 
+@Capital Market & Security Authority 
+@ofisi_ya_msajili_wa_hazina 
+@boatanzania 
+@msemajimkuuwaserikali 
+@Ikulu Mawasiliano
+@Wizara ya Kilimo
+@Tume Ya Maendeleo Ya Ushirika
+@ushirika_tcdc
+@Wizara ya Viwanda na Biashara
+@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB
 
 #oilseeds #buyers #trading #${crop
       .toLowerCase()
@@ -164,11 +174,37 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
         ""
       )} #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #OnlineTradingPlatform #buyer #commoditiesmarket #commodities #buyersmarket #TradingCommodities #trader #SellersMarket #online #agriculturalcommodities #farmer`;
 
+    // Generate social media message for Instagram
+    const instagramMessage = `Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
+      crop
+    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, TCDC na COPRA.
+
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, TCDC and COPRA in ${formattedLocations} Region${
+      locations.length > 1 ? "s" : ""
+    }.
+
+@urtmof 
+@securities_capital_and_markets 
+@ofisi_ya_msajili_wa_hazina 
+@boatanzania
+@msemajimkuuwaserikali 
+@ikulu_mawasiliano 
+@wizara_ya_kilimo 
+@ushirika_tcdc 
+@biasharaviwanda 
+@wrrbwrs
+
+#oilseeds #buyers #trading #${crop
+      .toLowerCase()
+      .replace(
+        " ",
+        ""
+      )} #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #OnlineTradingPlatform #buyer #commoditiesmarket #commodities #buyersmarket #TradingCommodities #trader #SellersMarket #online #agriculturalcommodities #farmer`;
     // Update state with generated content
     setGeneratedContent({
       youtube: youtubeTitle,
       facebook: socialMessage,
-      instagram: socialMessage,
+      instagram: instagramMessage,
     });
   };
 
