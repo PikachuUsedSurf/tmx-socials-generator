@@ -133,7 +133,7 @@ export default function SocialMediaTitleGenerator() {
     // Format locations and date
     const formattedLocations = locations.join(", ");
     const swahiliLocations = locations
-      .map((loc) => loc.charAt(0) + loc.slice(1).toUpperCase())
+      .map((loc) => loc.charAt(0) + loc.slice(1).toLowerCase())
       .join(", ");
     const formattedDate = new Date(date)
       .toLocaleDateString("en-GB", {
@@ -147,11 +147,13 @@ export default function SocialMediaTitleGenerator() {
     const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`;
 
     // Generate social media message (for both Facebook and Instagram)
+    const organization = crop === "CASHEW" ? "CBT" : "COPRA";
+
     const socialMessage = `Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
       crop
-    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, TCDC na COPRA.
+    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, TCDC na ${organization}.
 
-We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, TCDC and COPRA in ${formattedLocations} Region${
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, TCDC and ${organization} in ${formattedLocations} Region${
       locations.length > 1 ? "s" : ""
     }.
 
@@ -174,12 +176,11 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
         ""
       )} #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #OnlineTradingPlatform #buyer #commoditiesmarket #commodities #buyersmarket #TradingCommodities #trader #SellersMarket #online #agriculturalcommodities #farmer`;
 
-    // Generate social media message for Instagram
     const instagramMessage = `Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
       crop
-    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, TCDC na COPRA.
+    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, TCDC na ${organization}.
 
-We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, TCDC and COPRA in ${formattedLocations} Region${
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, TCDC and ${organization} in ${formattedLocations} Region${
       locations.length > 1 ? "s" : ""
     }.
 
@@ -200,6 +201,7 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
         " ",
         ""
       )} #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #OnlineTradingPlatform #buyer #commoditiesmarket #commodities #buyersmarket #TradingCommodities #trader #SellersMarket #online #agriculturalcommodities #farmer`;
+
     // Update state with generated content
     setGeneratedContent({
       youtube: youtubeTitle,
