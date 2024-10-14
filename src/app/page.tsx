@@ -102,6 +102,8 @@ export default function SocialMediaTitleGenerator() {
     youtube: "",
     facebook: "",
     instagram: "",
+    instagramResult: "",
+    facebookResult: "",
   });
 
   // Function to handle adding or removing a location
@@ -142,6 +144,43 @@ export default function SocialMediaTitleGenerator() {
         year: "numeric",
       })
       .replace(/\//g, "/");
+
+    // generate Commodity price result for facebook
+    const commodityPriceTitleFacebook = `Taarifa za Bei za Bidhaa leo. Kwa taarifa zaidi tembelea tovuti kupitia kiunga kwenye bio.
+
+Commodity Price Information Today. For more information, visit our website through the links in bio.
+
+@urtmof 
+@Capital Market & Security Authority 
+@ofisi_ya_msajili_wa_hazina 
+@boatanzania 
+@msemajimkuuwaserikali 
+@Ikulu Mawasiliano
+@Wizara ya Kilimo
+@Tume Ya Maendeleo Ya Ushirika
+@ushirika_tcdc
+@Wizara ya Viwanda na Biashara
+@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB
+
+#sesame #chickpeas #coffee #soya #kahawa #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #sesameseeds #OnlineTradingPlatform`;
+
+    // generate Commodity price result for Instagram
+    const commodityPriceTitleInstagram = `Taarifa za Bei za Bidhaa leo. Kwa taarifa zaidi tembelea tovuti kupitia kiunga kwenye bio.
+
+Commodity Price Information Today. For more information, visit our website through the links in bio.
+
+@urtmof 
+@securities_capital_and_markets 
+@ofisi_ya_msajili_wa_hazina 
+@boatanzania
+@msemajimkuuwaserikali 
+@ikulu_mawasiliano 
+@wizara_ya_kilimo 
+@ushirika_tcdc 
+@biasharaviwanda 
+@wrrbwrs 
+
+#sesame #chickpeas #coffee #soya #kahawa #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #sesameseeds #OnlineTradingPlatform`;
 
     // Generate YouTube title
     const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`;
@@ -207,6 +246,8 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
       youtube: youtubeTitle,
       facebook: socialMessage,
       instagram: instagramMessage,
+      instagramResult: commodityPriceTitleInstagram,
+      facebookResult: commodityPriceTitleFacebook,
     });
   };
 
@@ -324,7 +365,7 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
                 </Button>
               </div>
             </TabsContent>
-            <TabsContent value="facebook">
+            <TabsContent value="facebook" className="space-y-8">
               <div className="relative">
                 <Label htmlFor="facebook-message">Facebook Message</Label>
                 <Textarea
@@ -342,8 +383,29 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
+              <div className="relative">
+                <label htmlFor="instagram-result-caption">
+                  Instagram Results Caption
+                </label>
+                <Textarea
+                  id="instagram-result-caption"
+                  value={generatedContent.facebookResult}
+                  readOnly
+                  className="h-64 pr-10"
+                />
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="absolute right-2 top-8"
+                  onClick={() =>
+                    copyToClipboard(generatedContent.facebookResult)
+                  }
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
             </TabsContent>
-            <TabsContent value="instagram">
+            <TabsContent value="instagram" className="space-y-8">
               <div className="relative">
                 <Label htmlFor="instagram-message">Instagram Message</Label>
                 <Textarea
@@ -357,6 +419,27 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
                   variant="ghost"
                   className="absolute right-2 top-8"
                   onClick={() => copyToClipboard(generatedContent.instagram)}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="relative">
+                <label htmlFor="instagram-result-caption">
+                  Instagram Results Caption
+                </label>
+                <Textarea
+                  id="instagram-result-caption"
+                  value={generatedContent.instagramResult}
+                  readOnly
+                  className="h-64 pr-10"
+                />
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="absolute right-2 top-8"
+                  onClick={() =>
+                    copyToClipboard(generatedContent.instagramResult)
+                  }
                 >
                   <Copy className="h-4 w-4" />
                 </Button>
