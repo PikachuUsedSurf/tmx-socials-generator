@@ -213,7 +213,8 @@ export default function SocialMediaTitleGenerator() {
     const organization = crop === "CASHEW" ? "CBT" : "COPRA";
     const cropHashtag = `#${crop.toLowerCase().replace(" ", "")}`;
 
-    const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`;
+    const youtubeTitle =
+      `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase();
 
     const socialMessage = `
 Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
