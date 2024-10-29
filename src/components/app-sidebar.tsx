@@ -42,14 +42,19 @@ const data = {
   ],
   navMain: [
     {
-      title: "Social Media Generator",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Home",
+      url: "/",
+      icon: Frame,
       isActive: true,
+    },
+    {
+      title: "Social Media Generator",
+      url: "/social-media-generator",
+      icon: SquareTerminal,
       items: [
         {
           title: "Copy Pasta",
-          url: "#",
+          url: "/social-media-generator",
         },
       ],
     },
@@ -99,23 +104,6 @@ const data = {
       ],
     },
   ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -126,7 +114,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
