@@ -1,7 +1,7 @@
 "use client";
 
 import "./globals.css";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Breadcrumb } from "@/components/breadcrumbs";
 import { usePathname } from "next/navigation";
@@ -31,10 +31,11 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <SidebarProvider>
-          <div className="flex h-screen">
+          <div className="flex w-screen h-screen">
             <AppSidebar />
             <div className="flex flex-col flex-1 overflow-hidden">
-              <header className="flex items-center justify-between p-4 border-b">
+              <header className="flex items-center space-x-2 p-4 border-b">
+                <SidebarTrigger />
                 <BreadcrumbWrapper />
               </header>
               <main className="flex-1 overflow-auto p-6">{children}</main>

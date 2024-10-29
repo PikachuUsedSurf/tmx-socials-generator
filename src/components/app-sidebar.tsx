@@ -12,6 +12,8 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  CircleFadingPlus,
+  LayoutGrid,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -41,31 +43,35 @@ const data = {
     },
   ],
   navMain: [
-    {
-      title: "Home",
-      url: "/",
-      icon: Frame,
-      isActive: true,
-    },
+    // {
+    //   title: "Home",
+    //   url: "/",
+    //   icon: LayoutGrid,
+    //   isActive: true,
+    // },
     {
       title: "Social Media Generator",
       url: "/social-media-generator",
-      icon: SquareTerminal,
+      icon: CircleFadingPlus,
       items: [
         {
           title: "Copy Pasta",
           url: "/social-media-generator",
         },
+        {
+          title: "Commodity Price Generator",
+          url: "/commodity-price-generator",
+        },
       ],
     },
     {
-      title: "Commodity Price Generator",
+      title: "Region Codes",
       url: "#",
       icon: Bot,
       items: [
         {
-          title: "coming soon",
-          url: "#",
+          title: "Region Codes",
+          url: "/region-code",
         },
       ],
     },
@@ -115,9 +121,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
+      {/* <SidebarFooter>
         <NavUser user={data.user} />
-      </SidebarFooter>
+      </SidebarFooter> */}
       <SidebarRail />
     </Sidebar>
   );
