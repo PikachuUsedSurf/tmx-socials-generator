@@ -19,6 +19,13 @@ function BreadcrumbWrapper() {
     });
   }
 
+  if (pathname === "/region-code") {
+    breadcrumbItems.push({
+      label: "Region code",
+      href: "/region-code",
+    });
+  }
+
   return <Breadcrumb items={breadcrumbItems} />;
 }
 
