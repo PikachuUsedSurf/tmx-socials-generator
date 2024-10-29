@@ -142,7 +142,7 @@ export default function SocialMediaTitleGenerator() {
     // Format locations and date
     const formattedLocations = locations.join(", ");
     const swahiliLocations = locations
-      .map((loc) => loc.charAt(0) + loc.slice(1).toLowerCase())
+      .map((loc) => loc.charAt(0) + loc.slice(1).toUpperCase())
       .join(", ");
     const formattedDate = new Date(date)
       .toLocaleDateString("en-GB", {
