@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { Breadcrumb } from "@/components/breadcrumbs";
 
 export const metadata: Metadata = {
   title: "TMX-CONTENT GENERATOR",
@@ -18,7 +19,17 @@ export default function RootLayout({
       <body>
         <SidebarProvider>
           <AppSidebar />
-          <main>{children}</main>
+          <div className="flex flex-col flex-1 overflow-hidden">
+            <header className="flex items-center justify-between p-4 border-b">
+              <Breadcrumb
+                items={[
+                  { label: "Home", href: "/" },
+                  { label: "Content Generator", href: "/content-generator" },
+                ]}
+              />
+            </header>
+            <main className="flex-1 overflow-auto p-6">{children}</main>
+          </div>
         </SidebarProvider>
       </body>
     </html>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,6 @@ import { CheckIcon, Copy, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 
-// Define the possible crop names as a union type for type safety
 type CropName =
   | "COFFEE"
   | "SESAME"
@@ -30,7 +29,6 @@ type CropName =
   | "SUNFLOWER"
   | "PEANUT";
 
-// Array of available locations
 const AVAILABLE_LOCATIONS = [
   "SINGIDA",
   "MBEYA",
@@ -63,7 +61,6 @@ const AVAILABLE_LOCATIONS = [
   "ZANZIBAR",
 ];
 
-// Array of available crops
 const CROPS: CropName[] = [
   "COFFEE",
   "SESAME",
@@ -78,7 +75,6 @@ const CROPS: CropName[] = [
   "PEANUT",
 ];
 
-// Object mapping crop names to their Swahili translations
 const CROP_TRANSLATIONS: Record<CropName, string> = {
   COFFEE: "KAHAWA",
   SESAME: "UFUTA",
@@ -93,8 +89,65 @@ const CROP_TRANSLATIONS: Record<CropName, string> = {
   PEANUT: "KARANGA",
 };
 
+const FACEBOOK_TAGS = [
+  "@urtmof",
+  "@Capital Market & Security Authority",
+  "@ofisi_ya_msajili_wa_hazina",
+  "@boatanzania",
+  "@msemajimkuuwaserikali",
+  "@Ikulu Mawasiliano",
+  "@Wizara ya Kilimo",
+  "@Tume Ya Maendeleo Ya Ushirika",
+  "@ushirika_tcdc",
+  "@Wizara ya Viwanda na Biashara",
+  "@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB",
+];
+
+const INSTAGRAM_TAGS = [
+  "@urtmof",
+  "@securities_capital_and_markets",
+  "@ofisi_ya_msajili_wa_hazina",
+  "@boatanzania",
+  "@msemajimkuuwaserikali",
+  "@ikulu_mawasiliano",
+  "@wizara_ya_kilimo",
+  "@ushirika_tcdc",
+  "@biasharaviwanda",
+  "@wrrbwrs",
+];
+
+const HASHTAGS = [
+  "#oilseeds",
+  "#buyers",
+  "#trading",
+  "#commodityexchangemarkets",
+  "#commoditiesexchange",
+  "#agriculture",
+  "#commoditiestrading",
+  "#seller",
+  "#commoditytraders",
+  "#agriculturalcommodityexhange",
+  "#farmersmarket",
+  "#onlinetradingsystem",
+  "#agriculturalcommodityexchange",
+  "#onlinetrading",
+  "#commoditytrader",
+  "#traders",
+  "#tradingcommodities",
+  "#OnlineTradingPlatform",
+  "#buyer",
+  "#commoditiesmarket",
+  "#commodities",
+  "#buyersmarket",
+  "#TradingCommodities",
+  "#trader",
+  "#SellersMarket",
+  "#online",
+  "#agriculturalcommodities",
+  "#farmer",
+];
+
 export default function SocialMediaTitleGenerator() {
-  // State variables
   const [locations, setLocations] = useState<string[]>([]);
   const [crop, setCrop] = useState<CropName | "">("");
   const [date, setDate] = useState("");
@@ -106,14 +159,11 @@ export default function SocialMediaTitleGenerator() {
     facebookResult: "",
   });
 
-  // Effect to set the current date when the component mounts
   useEffect(() => {
     const today = new Date();
-    const formattedDate = today.toISOString().split("T")[0];
-    setDate(formattedDate);
+    setDate(today.toISOString().split("T")[0]);
   }, []);
 
-  // Function to handle adding or removing a location
   const handleLocationChange = (selectedLocation: string) => {
     setLocations((prev) =>
       prev.includes(selectedLocation)
@@ -122,14 +172,27 @@ export default function SocialMediaTitleGenerator() {
     );
   };
 
-  // Function to remove a specific location
   const removeLocation = (locationToRemove: string) => {
     setLocations((prev) => prev.filter((loc) => loc !== locationToRemove));
   };
 
-  // Function to generate content for all platforms
+  const toCamelCase = (str: string) => {
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
+
+  const formattedLocations = useMemo(
+    () => locations.map(toCamelCase).join(", "),
+    [locations]
+  );
+  const swahiliLocations = useMemo(
+    () => locations.map((loc) => toCamelCase(loc)).join(", "),
+    [locations]
+  );
+
   const generateContent = () => {
-    // Check if all required fields are filled
     if (locations.length === 0 || !crop || !date) {
       toast({
         title: "Error",
@@ -139,11 +202,6 @@ export default function SocialMediaTitleGenerator() {
       return;
     }
 
-    // Format locations and date
-    const formattedLocations = locations.join(", ");
-    const swahiliLocations = locations
-      .map((loc) => loc.charAt(0) + loc.slice(1).toUpperCase())
-      .join(", ");
     const formattedDate = new Date(date)
       .toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -152,50 +210,13 @@ export default function SocialMediaTitleGenerator() {
       })
       .replace(/\//g, "/");
 
-    // generate Commodity price result for facebook
-    const commodityPriceTitleFacebook = `Taarifa za Bei za Bidhaa leo. Kwa taarifa zaidi tembelea tovuti kupitia kiunga kwenye bio.
+    const organization = crop === "CASHEW" ? "CBT" : "COPRA";
+    const cropHashtag = `#${crop.toLowerCase().replace(" ", "")}`;
 
-Commodity Price Information Today. For more information, visit our website through the links in bio.
-
-@urtmof 
-@Capital Market & Security Authority 
-@ofisi_ya_msajili_wa_hazina 
-@boatanzania 
-@msemajimkuuwaserikali 
-@Ikulu Mawasiliano
-@Wizara ya Kilimo
-@Tume Ya Maendeleo Ya Ushirika
-@ushirika_tcdc
-@Wizara ya Viwanda na Biashara
-@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB
-
-#sesame #chickpeas #coffee #soya #kahawa #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #sesameseeds #OnlineTradingPlatform`;
-
-    // generate Commodity price result for Instagram
-    const commodityPriceTitleInstagram = `Taarifa za Bei za Bidhaa leo. Kwa taarifa zaidi tembelea tovuti kupitia kiunga kwenye bio.
-
-Commodity Price Information Today. For more information, visit our website through the links in bio.
-
-@urtmof 
-@securities_capital_and_markets 
-@ofisi_ya_msajili_wa_hazina 
-@boatanzania
-@msemajimkuuwaserikali 
-@ikulu_mawasiliano 
-@wizara_ya_kilimo 
-@ushirika_tcdc 
-@biasharaviwanda 
-@wrrbwrs 
-
-#sesame #chickpeas #coffee #soya #kahawa #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #sesameseeds #OnlineTradingPlatform`;
-
-    // Generate YouTube title
     const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`;
 
-    // Generate social media message (for both Facebook and Instagram)
-    const organization = crop === "CASHEW" ? "CBT" : "COPRA";
-
-    const socialMessage = `Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
+    const socialMessage = `
+Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
       crop
     ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, TCDC na ${organization}.
 
@@ -203,26 +224,13 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
       locations.length > 1 ? "s" : ""
     }.
 
-@urtmof 
-@Capital Market & Security Authority 
-@ofisi_ya_msajili_wa_hazina 
-@boatanzania 
-@msemajimkuuwaserikali 
-@Ikulu Mawasiliano
-@Wizara ya Kilimo
-@Tume Ya Maendeleo Ya Ushirika
-@ushirika_tcdc
-@Wizara ya Viwanda na Biashara
-@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB
+${FACEBOOK_TAGS.join("\n")}
 
-#oilseeds #buyers #trading #${crop
-      .toLowerCase()
-      .replace(
-        " ",
-        ""
-      )} #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #OnlineTradingPlatform #buyer #commoditiesmarket #commodities #buyersmarket #TradingCommodities #trader #SellersMarket #online #agriculturalcommodities #farmer`;
+${HASHTAGS.join(" ")} ${cropHashtag}
+    `.trim();
 
-    const instagramMessage = `Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
+    const instagramMessage = `
+Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
       crop
     ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, TCDC na ${organization}.
 
@@ -230,35 +238,35 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
       locations.length > 1 ? "s" : ""
     }.
 
-@urtmof 
-@securities_capital_and_markets 
-@ofisi_ya_msajili_wa_hazina 
-@boatanzania
-@msemajimkuuwaserikali 
-@ikulu_mawasiliano 
-@wizara_ya_kilimo 
-@ushirika_tcdc 
-@biasharaviwanda 
-@wrrbwrs
+${INSTAGRAM_TAGS.join("\n")}
 
-#oilseeds #buyers #trading #${crop
-      .toLowerCase()
-      .replace(
-        " ",
-        ""
-      )} #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #OnlineTradingPlatform #buyer #commoditiesmarket #commodities #buyersmarket #TradingCommodities #trader #SellersMarket #online #agriculturalcommodities #farmer`;
+${HASHTAGS.join(" ")} ${cropHashtag}
+    `.trim();
 
-    // Update state with generated content
+    const commodityPriceTitle = `
+Taarifa za Bei za Bidhaa leo. Kwa taarifa zaidi tembelea tovuti kupitia kiunga kwenye bio.
+
+Commodity Price Information Today. For more information, visit our website through the links in bio.
+
+${FACEBOOK_TAGS.join("\n")}
+
+#sesame #chickpeas #coffee #soya #kahawa #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #sesameseeds #OnlineTradingPlatform
+    `.trim();
+
+    const commodityPriceTitleInstagram = commodityPriceTitle.replace(
+      FACEBOOK_TAGS.join("\n"),
+      INSTAGRAM_TAGS.join("\n")
+    );
+
     setGeneratedContent({
       youtube: youtubeTitle,
       facebook: socialMessage,
       instagram: instagramMessage,
       instagramResult: commodityPriceTitleInstagram,
-      facebookResult: commodityPriceTitleFacebook,
+      facebookResult: commodityPriceTitle,
     });
   };
 
-  // Function to copy content to clipboard
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({
@@ -268,13 +276,12 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <div className="w-auto mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <div className="space-y-4">
-        {/* Locations selection */}
         <div>
           <Label htmlFor="location">Locations</Label>
           <Select onValueChange={handleLocationChange}>
-            <SelectTrigger className="h-auto">
+            <SelectTrigger id="location" className="h-auto">
               <SelectValue placeholder="Select locations" />
             </SelectTrigger>
             <SelectContent>
@@ -288,7 +295,6 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
               ))}
             </SelectContent>
           </Select>
-          {/* Display selected locations with delete option */}
           {locations.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
               {locations.map((loc) => (
@@ -310,7 +316,6 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
             </div>
           )}
         </div>
-        {/* Crop selection */}
         <div>
           <Label htmlFor="crop">Crop</Label>
           <Select onValueChange={(value) => setCrop(value as CropName)}>
@@ -326,7 +331,6 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
             </SelectContent>
           </Select>
         </div>
-        {/* Date input */}
         <div>
           <Label htmlFor="date">Date</Label>
           <Input
@@ -336,11 +340,9 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
             onChange={(e) => setDate(e.target.value)}
           />
         </div>
-        {/* Generate content button */}
         <Button onClick={generateContent} className="w-full">
           Generate Content
         </Button>
-        {/* Display generated content in tabs */}
         {(generatedContent.youtube ||
           generatedContent.facebook ||
           generatedContent.instagram) && (
@@ -351,107 +353,69 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
               <TabsTrigger value="instagram">Instagram</TabsTrigger>
             </TabsList>
             <TabsContent value="youtube">
-              <div className="relative">
-                <Label htmlFor="youtube-title">YouTube Title</Label>
-                <Textarea
-                  id="youtube-title"
-                  value={generatedContent.youtube}
-                  readOnly
-                  className="h-24 pr-10"
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="absolute right-2 top-8"
-                  onClick={() => copyToClipboard(generatedContent.youtube)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
+              <ContentDisplay
+                label="YouTube Title"
+                content={generatedContent.youtube}
+                onCopy={() => copyToClipboard(generatedContent.youtube)}
+              />
             </TabsContent>
             <TabsContent value="facebook" className="space-y-8">
-              <div className="relative">
-                <Label htmlFor="facebook-message">Facebook Message</Label>
-                <Textarea
-                  id="facebook-message"
-                  value={generatedContent.facebook}
-                  readOnly
-                  className="h-64 pr-10"
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="absolute right-2 top-8"
-                  onClick={() => copyToClipboard(generatedContent.facebook)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="relative">
-                <Label htmlFor="facebook-result-caption">
-                  Facebook Results Caption
-                </Label>
-                <Textarea
-                  id="facebook-result-caption"
-                  value={generatedContent.facebookResult}
-                  readOnly
-                  className="h-64 pr-10"
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="absolute right-2 top-8"
-                  onClick={() =>
-                    copyToClipboard(generatedContent.facebookResult)
-                  }
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
+              <ContentDisplay
+                label="Facebook Message"
+                content={generatedContent.facebook}
+                onCopy={() => copyToClipboard(generatedContent.facebook)}
+              />
+              <ContentDisplay
+                label="Facebook Results Caption"
+                content={generatedContent.facebookResult}
+                onCopy={() => copyToClipboard(generatedContent.facebookResult)}
+              />
             </TabsContent>
             <TabsContent value="instagram" className="space-y-8">
-              <div className="relative">
-                <Label htmlFor="instagram-message">Instagram Message</Label>
-                <Textarea
-                  id="instagram-message"
-                  value={generatedContent.instagram}
-                  readOnly
-                  className="h-64 pr-10"
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="absolute right-2 top-8"
-                  onClick={() => copyToClipboard(generatedContent.instagram)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="relative">
-                <Label htmlFor="instagram-result-caption">
-                  Instagram Results Caption
-                </Label>
-                <Textarea
-                  id="instagram-result-caption"
-                  value={generatedContent.instagramResult}
-                  readOnly
-                  className="h-64 pr-10"
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="absolute right-2 top-8"
-                  onClick={() =>
-                    copyToClipboard(generatedContent.instagramResult)
-                  }
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
+              <ContentDisplay
+                label="Instagram Message"
+                content={generatedContent.instagram}
+                onCopy={() => copyToClipboard(generatedContent.instagram)}
+              />
+              <ContentDisplay
+                label="Instagram Results Caption"
+                content={generatedContent.instagramResult}
+                onCopy={() => copyToClipboard(generatedContent.instagramResult)}
+              />
             </TabsContent>
           </Tabs>
         )}
       </div>
+    </div>
+  );
+}
+
+function ContentDisplay({
+  label,
+  content,
+  onCopy,
+}: {
+  label: string;
+  content: string;
+  onCopy: () => void;
+}) {
+  return (
+    <div className="relative">
+      <Label htmlFor={label.toLowerCase().replace(/\s+/g, "-")}>{label}</Label>
+      <Textarea
+        id={label.toLowerCase().replace(/\s+/g, "-")}
+        value={content}
+        readOnly
+        className="h-64 pr-10"
+      />
+      <Button
+        size="icon"
+        variant="ghost"
+        className="absolute right-2 top-8"
+        onClick={onCopy}
+      >
+        <Copy className="h-4 w-4" />
+      </Button>
     </div>
   );
 }
