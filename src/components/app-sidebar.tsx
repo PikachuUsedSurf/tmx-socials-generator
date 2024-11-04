@@ -50,7 +50,7 @@ const data = {
     //   isActive: true,
     // },
     {
-      title: "Social Media Generator",
+      title: "Copy Pasta",
       url: "/social-media-generator",
       icon: CircleFadingPlus,
       items: [

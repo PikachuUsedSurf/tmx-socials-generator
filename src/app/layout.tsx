@@ -14,7 +14,7 @@ function BreadcrumbWrapper() {
 
   if (pathname === "/social-media-generator") {
     breadcrumbItems.push({
-      label: "Social Media Generator",
+      label: "Copy Pasta ",
       href: "/social-media-generator",
     });
   }
