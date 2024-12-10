@@ -27,7 +27,8 @@ type CropName =
   | "CASHEW"
   | "COTTON"
   | "SUNFLOWER"
-  | "PEANUT";
+  | "PEANUT"
+  | "GEMSTONE";
 
 const AVAILABLE_LOCATIONS = [
   "SINGIDA",
@@ -73,6 +74,7 @@ const CROPS: CropName[] = [
   "COTTON",
   "SUNFLOWER",
   "PEANUT",
+  "GEMSTONE",
 ];
 
 const CROP_TRANSLATIONS: Record<CropName, string> = {
@@ -87,6 +89,7 @@ const CROP_TRANSLATIONS: Record<CropName, string> = {
   COTTON: "PAMBA",
   SUNFLOWER: "ALIZETI",
   PEANUT: "KARANGA",
+  GEMSTONE: "MADINI",
 };
 
 const FACEBOOK_TAGS = [
