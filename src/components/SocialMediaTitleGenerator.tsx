@@ -1,20 +1,14 @@
-"use client";
+"use client"
 
-import { useState, useEffect, useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { CheckIcon, Copy, X } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "@/hooks/use-toast";
+import { useState, useEffect, useMemo } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Check, Copy, X } from 'lucide-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { toast } from "@/hooks/use-toast"
 
 type CropName =
   | "COFFEE"
@@ -28,172 +22,99 @@ type CropName =
   | "COTTON"
   | "SUNFLOWER"
   | "PEANUT"
-  | "GEMSTONE";
+  | "GEMSTONE"
+  | "GREEN GRAM"
 
 const AVAILABLE_LOCATIONS = [
-  "SINGIDA",
-  "MBEYA",
-  "MANYARA",
-  "SONGEA",
-  "RUVUMA",
-  "MTWARA",
-  "DODOMA",
-  "LINDI",
-  "MOROGORO",
-  "PWANI",
-  "ARUSHA",
-  "DAR ES SALAAM",
-  "GEITA",
-  "IRINGA",
-  "KAGERA",
-  "KATAVI",
-  "KIGOMA",
-  "KILIMANJARO",
-  "MARA",
-  "MWANZA",
-  "NJOMBE",
-  "PEMBA",
-  "RUKWA",
-  "SHINYANGA",
-  "SIMIYU",
-  "SONGWE",
-  "TABORA",
-  "TANGA",
-  "ZANZIBAR",
-];
+  "SINGIDA", "MBEYA", "MANYARA", "SONGEA", "RUVUMA", "MTWARA", "DODOMA", "LINDI", "MOROGORO", "PWANI",
+  "ARUSHA", "DAR ES SALAAM", "GEITA", "IRINGA", "KAGERA", "KATAVI", "KIGOMA", "KILIMANJARO", "MARA",
+  "MWANZA", "NJOMBE", "PEMBA", "RUKWA", "SHINYANGA", "SIMIYU", "SONGWE", "TABORA", "TANGA", "ZANZIBAR",
+]
 
 const CROPS: CropName[] = [
-  "COFFEE",
-  "SESAME",
-  "SOYA",
-  "BEAN",
-  "COCOA",
-  "CHICK PEA",
-  "PIGEON PEA",
-  "CASHEW",
-  "COTTON",
-  "SUNFLOWER",
-  "PEANUT",
-  "GEMSTONE",
-];
+  "COFFEE", "SESAME", "SOYA", "BEAN", "COCOA", "CHICK PEA", "PIGEON PEA",
+  "CASHEW", "COTTON", "SUNFLOWER", "PEANUT", "GEMSTONE", "GREEN GRAM",
+]
 
 const CROP_TRANSLATIONS: Record<CropName, string> = {
-  COFFEE: "KAHAWA",
-  SESAME: "UFUTA",
-  SOYA: "SOYA",
-  BEAN: "MAHARAGE",
-  COCOA: "KAKAO",
-  "CHICK PEA": "DENGU",
-  "PIGEON PEA": "MBAAZI",
-  CASHEW: "KOROSHO",
-  COTTON: "PAMBA",
-  SUNFLOWER: "ALIZETI",
-  PEANUT: "KARANGA",
-  GEMSTONE: "MADINI",
-};
+  COFFEE: "KAHAWA", SESAME: "UFUTA", SOYA: "SOYA", BEAN: "MAHARAGE", COCOA: "KAKAO",
+  "CHICK PEA": "DENGU", "PIGEON PEA": "MBAAZI", CASHEW: "KOROSHO", COTTON: "PAMBA",
+  SUNFLOWER: "ALIZETI", PEANUT: "KARANGA", GEMSTONE: "MADINI", "GREEN GRAM": "CHOROKO",
+}
 
 const FACEBOOK_TAGS = [
-  "@urtmof",
-  "@Capital Market & Security Authority",
-  "@ofisi_ya_msajili_wa_hazina",
-  "@boatanzania",
-  "@msemajimkuuwaserikali",
-  "@Ikulu Mawasiliano",
-  "@Wizara ya Kilimo",
-  "@Tume Ya Maendeleo Ya Ushirika",
-  "@ushirika_tcdc",
-  "@Wizara ya Viwanda na Biashara",
+  "@urtmof", "@Capital Market & Security Authority", "@ofisi_ya_msajili_wa_hazina",
+  "@boatanzania", "@msemajimkuuwaserikali", "@Ikulu Mawasiliano", "@Wizara ya Kilimo",
+  "@Tume Ya Maendeleo Ya Ushirika", "@ushirika_tcdc", "@Wizara ya Viwanda na Biashara",
   "@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB",
-];
+]
 
 const INSTAGRAM_TAGS = [
-  "@urtmof",
-  "@securities_capital_and_markets",
-  "@ofisi_ya_msajili_wa_hazina",
-  "@boatanzania",
-  "@msemajimkuuwaserikali",
-  "@ikulu_mawasiliano",
-  "@wizara_ya_kilimo",
-  "@ushirika_tcdc",
-  "@biasharaviwanda",
-  "@wrrbwrs",
-];
+  "@urtmof", "@securities_capital_and_markets", "@ofisi_ya_msajili_wa_hazina",
+  "@boatanzania", "@msemajimkuuwaserikali", "@ikulu_mawasiliano", "@wizara_ya_kilimo",
+  "@ushirika_tcdc", "@biasharaviwanda", "@wrrbwrs",
+]
 
 const HASHTAGS = [
-  "#oilseeds",
-  "#buyers",
-  "#trading",
-  "#commodityexchangemarkets",
-  "#commoditiesexchange",
-  "#agriculture",
-  "#commoditiestrading",
-  "#seller",
-  "#commoditytraders",
-  "#agriculturalcommodityexhange",
-  "#farmersmarket",
-  "#onlinetradingsystem",
-  "#agriculturalcommodityexchange",
-  "#onlinetrading",
-  "#commoditytrader",
-  "#traders",
-  "#tradingcommodities",
-  "#OnlineTradingPlatform",
-  "#buyer",
-  "#commoditiesmarket",
-  "#commodities",
-  "#buyersmarket",
-  "#TradingCommodities",
-  "#trader",
-  "#SellersMarket",
-  "#online",
-  "#agriculturalcommodities",
-  "#farmer",
-];
+  "#oilseeds", "#buyers", "#trading", "#commodityexchangemarkets", "#commoditiesexchange",
+  "#agriculture", "#commoditiestrading", "#seller", "#commoditytraders", "#agriculturalcommodityexhange",
+  "#farmersmarket", "#onlinetradingsystem", "#agriculturalcommodityexchange", "#onlinetrading",
+  "#commoditytrader", "#traders", "#tradingcommodities", "#OnlineTradingPlatform", "#buyer",
+  "#commoditiesmarket", "#commodities", "#buyersmarket", "#TradingCommodities", "#trader",
+  "#SellersMarket", "#online", "#agriculturalcommodities", "#farmer",
+]
+
+const transitionProps = {
+  type: "spring",
+  stiffness: 500,
+  damping: 30,
+  mass: 0.5,
+}
 
 export default function SocialMediaTitleGenerator() {
-  const [locations, setLocations] = useState<string[]>([]);
-  const [crop, setCrop] = useState<CropName | "">("");
-  const [date, setDate] = useState("");
+  const [locations, setLocations] = useState<string[]>([])
+  const [crop, setCrop] = useState<CropName | "">("")
+  const [date, setDate] = useState("")
   const [generatedContent, setGeneratedContent] = useState({
     youtube: "",
     facebook: "",
     instagram: "",
     instagramResult: "",
     facebookResult: "",
-  });
+  })
 
   useEffect(() => {
-    const today = new Date();
-    setDate(today.toISOString().split("T")[0]);
-  }, []);
+    const today = new Date()
+    setDate(today.toISOString().split("T")[0])
+  }, [])
 
-  const handleLocationChange = (selectedLocation: string) => {
+  const toggleLocation = (selectedLocation: string) => {
     setLocations((prev) =>
       prev.includes(selectedLocation)
         ? prev.filter((loc) => loc !== selectedLocation)
         : [...prev, selectedLocation]
-    );
-  };
+    )
+  }
 
-  const removeLocation = (locationToRemove: string) => {
-    setLocations((prev) => prev.filter((loc) => loc !== locationToRemove));
-  };
+  const toggleCrop = (selectedCrop: CropName) => {
+    setCrop((prev) => (prev === selectedCrop ? "" : selectedCrop))
+  }
 
   const toCamelCase = (str: string) => {
     return str
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
-  };
+      .join(" ")
+  }
 
   const formattedLocations = useMemo(
     () => locations.map(toCamelCase).join(", "),
     [locations]
-  );
+  )
   const swahiliLocations = useMemo(
     () => locations.map((loc) => toCamelCase(loc)).join(", "),
     [locations]
-  );
+  )
 
   const generateContent = () => {
     if (locations.length === 0 || !crop || !date) {
@@ -201,8 +122,8 @@ export default function SocialMediaTitleGenerator() {
         title: "Error",
         description: "Please fill in all fields",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     const formattedDate = new Date(date)
@@ -211,13 +132,13 @@ export default function SocialMediaTitleGenerator() {
         month: "2-digit",
         year: "numeric",
       })
-      .replace(/\//g, "/");
+      .replace(/\//g, "/")
 
-    const organization = crop === "CASHEW" ? "CBT" : "COPRA";
-    const cropHashtag = `#${crop.toLowerCase().replace(" ", "")}`;
+    const organization = crop === "CASHEW" ? "CBT" : "COPRA"
+    const cropHashtag = `#${crop.toLowerCase().replace(" ", "")}`
 
     const youtubeTitle =
-      `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase();
+      `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase()
 
     const socialMessage = `
 Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
@@ -231,7 +152,7 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
 ${FACEBOOK_TAGS.join("\n")}
 
 ${HASHTAGS.join(" ")} ${cropHashtag}
-    `.trim();
+    `.trim()
 
     const instagramMessage = `
 Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
@@ -245,7 +166,7 @@ We welcome you all to participate in ${crop.toLowerCase()} trading through TMX O
 ${INSTAGRAM_TAGS.join("\n")}
 
 ${HASHTAGS.join(" ")} ${cropHashtag}
-    `.trim();
+    `.trim()
 
     const commodityPriceTitle = `
 Taarifa za Bei za Bidhaa leo. Kwa taarifa zaidi tembelea tovuti kupitia kiunga kwenye bio.
@@ -255,12 +176,12 @@ Commodity Price Information Today. For more information, visit our website throu
 ${FACEBOOK_TAGS.join("\n")}
 
 #sesame #chickpeas #coffee #soya #kahawa #commodityexchangemarkets #commoditiesexchange #agriculture #commoditiestrading #seller #commoditytraders #agriculturalcommodityexhange #farmersmarket #onlinetradingsystem #agriculturalcommodityexchange #onlinetrading #commoditytrader #traders #tradingcommodities #sesameseeds #OnlineTradingPlatform
-    `.trim();
+    `.trim()
 
     const commodityPriceTitleInstagram = commodityPriceTitle.replace(
       FACEBOOK_TAGS.join("\n"),
       INSTAGRAM_TAGS.join("\n")
-    );
+    )
 
     setGeneratedContent({
       youtube: youtubeTitle,
@@ -268,73 +189,150 @@ ${FACEBOOK_TAGS.join("\n")}
       instagram: instagramMessage,
       instagramResult: commodityPriceTitleInstagram,
       facebookResult: commodityPriceTitle,
-    });
-  };
+    })
+  }
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(text)
     toast({
       title: "Copied to clipboard",
       description: "The generated content has been copied to your clipboard.",
-    });
-  };
+    })
+  }
 
   return (
     <div className="w-auto mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <div className="space-y-4">
         <div>
           <Label htmlFor="location">Locations</Label>
-          <Select onValueChange={handleLocationChange}>
-            <SelectTrigger id="location" className="h-auto">
-              <SelectValue placeholder="Select locations" />
-            </SelectTrigger>
-            <SelectContent>
-              {AVAILABLE_LOCATIONS.map((loc) => (
-                <SelectItem key={loc} value={loc}>
-                  <div className="flex items-center">
-                    <span className="mr-2">{loc}</span>
-                    {locations.includes(loc) && <CheckIcon size={16} />}
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {locations.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-2">
-              {locations.map((loc) => (
-                <span
-                  key={loc}
-                  className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-sm flex items-center"
+          <motion.div 
+            className="flex flex-wrap gap-2 mt-2"
+            layout
+            transition={transitionProps}
+          >
+            {AVAILABLE_LOCATIONS.map((location) => {
+              const isSelected = locations.includes(location)
+              return (
+                <motion.button
+                  key={location}
+                  onClick={() => toggleLocation(location)}
+                  layout
+                  initial={false}
+                  animate={{
+                    backgroundColor: isSelected ? "black" : "white",
+                    color: isSelected ? "white" : "black",
+                  }}
+                  whileHover={{
+                    backgroundColor: isSelected ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.1)",
+                  }}
+                  whileTap={{
+                    backgroundColor: isSelected ? "rgba(0, 0, 0, 0.9)" : "rgba(0, 0, 0, 0.2)",
+                  }}
+                  transition={{
+                    ...transitionProps,
+                    backgroundColor: { duration: 0.1 },
+                  }}
+                  className={`
+                    px-3 py-1 rounded-full text-sm font-medium
+                    border border-black
+                  `}
                 >
-                  {loc}
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="ml-1 h-4 w-4"
-                    onClick={() => removeLocation(loc)}
+                  <motion.div 
+                    className="relative flex items-center"
+                    animate={{ 
+                      paddingRight: isSelected ? "1.5rem" : "0",
+                    }}
+                    transition={{
+                      ease: [0.175, 0.885, 0.32, 1.275],
+                      duration: 0.3,
+                    }}
                   >
-                    <X className="h-3 w-3" />
-                  </Button>
-                </span>
-              ))}
-            </div>
-          )}
+                    <span>{location}</span>
+                    <AnimatePresence>
+                      {isSelected && (
+                        <motion.span
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          transition={transitionProps}
+                          className="absolute right-0"
+                        >
+                          <Check className="w-4 h-4 ml-1" />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                </motion.button>
+              )
+            })}
+          </motion.div>
         </div>
+
         <div>
-          <Label htmlFor="crop">Crop</Label>
-          <Select onValueChange={(value) => setCrop(value as CropName)}>
-            <SelectTrigger id="crop">
-              <SelectValue placeholder="Select Crop" />
-            </SelectTrigger>
-            <SelectContent>
-              {CROPS.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label>Crop</Label>
+          <motion.div 
+            className="flex flex-wrap gap-2 mt-2"
+            layout
+            transition={transitionProps}
+          >
+            {CROPS.map((cropName) => {
+              const isSelected = crop === cropName
+              return (
+                <motion.button
+                  key={cropName}
+                  onClick={() => toggleCrop(cropName)}
+                  layout
+                  initial={false}
+                  animate={{
+                    backgroundColor: isSelected ? "black" : "white",
+                    color: isSelected ? "white" : "black",
+                  }}
+                  whileHover={{
+                    backgroundColor: isSelected ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.1)",
+                  }}
+                  whileTap={{
+                    backgroundColor: isSelected ? "rgba(0, 0, 0, 0.9)" : "rgba(0, 0, 0, 0.2)",
+                  }}
+                  transition={{
+                    ...transitionProps,
+                    backgroundColor: { duration: 0.1 },
+                  }}
+                  className={`
+                    px-3 py-1 rounded-full text-sm font-medium
+                    border border-black
+                  `}
+                >
+                  <motion.div 
+                    className="relative flex items-center"
+                    animate={{ 
+                      paddingRight: isSelected ? "1.5rem" : "0",
+                    }}
+                    transition={{
+                      ease: [0.175, 0.885, 0.32, 1.275],
+                      duration: 0.3,
+                    }}
+                  >
+                    <span>{cropName}</span>
+                    <AnimatePresence>
+                      {isSelected && (
+                        <motion.span
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          transition={transitionProps}
+                          className="absolute right-0"
+                        >
+                          <Check className="w-4 h-4 ml-1" />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                </motion.button>
+              )
+            })}
+          </motion.div>
         </div>
+
         <div>
           <Label htmlFor="date">Date</Label>
           <Input
@@ -391,7 +389,7 @@ ${FACEBOOK_TAGS.join("\n")}
         )}
       </div>
     </div>
-  );
+  )
 }
 
 function ContentDisplay({
@@ -399,9 +397,9 @@ function ContentDisplay({
   content,
   onCopy,
 }: {
-  label: string;
-  content: string;
-  onCopy: () => void;
+  label: string
+  content: string
+  onCopy: () => void
 }) {
   return (
     <div className="relative">
@@ -421,5 +419,5 @@ function ContentDisplay({
         <Copy className="h-4 w-4" />
       </Button>
     </div>
-  );
+  )
 }
