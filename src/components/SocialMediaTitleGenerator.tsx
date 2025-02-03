@@ -23,7 +23,6 @@ type CropName =
   | "SUNFLOWER"
   | "PEANUT"
   | "GEMSTONE"
-  | "GREEN GRAM"
 
 const AVAILABLE_LOCATIONS = [
   "SINGIDA", "MBEYA", "MANYARA", "SONGEA", "RUVUMA", "MTWARA", "DODOMA", "LINDI", "MOROGORO", "PWANI",
@@ -33,13 +32,13 @@ const AVAILABLE_LOCATIONS = [
 
 const CROPS: CropName[] = [
   "COFFEE", "SESAME", "SOYA", "BEAN", "COCOA", "CHICK PEA", "PIGEON PEA",
-  "CASHEW", "COTTON", "SUNFLOWER", "PEANUT", "GEMSTONE", "GREEN GRAM",
+  "CASHEW", "COTTON", "SUNFLOWER", "PEANUT", "GEMSTONE",
 ]
 
 const CROP_TRANSLATIONS: Record<CropName, string> = {
   COFFEE: "KAHAWA", SESAME: "UFUTA", SOYA: "SOYA", BEAN: "MAHARAGE", COCOA: "KAKAO",
   "CHICK PEA": "DENGU", "PIGEON PEA": "MBAAZI", CASHEW: "KOROSHO", COTTON: "PAMBA",
-  SUNFLOWER: "ALIZETI", PEANUT: "KARANGA", GEMSTONE: "MADINI", "GREEN GRAM": "CHOROKO",
+  SUNFLOWER: "ALIZETI", PEANUT: "KARANGA", GEMSTONE: "MADINI",
 }
 
 const FACEBOOK_TAGS = [
@@ -109,10 +108,10 @@ export default function SocialMediaTitleGenerator() {
 
   const formattedLocations = useMemo(
     () => locations.map(toCamelCase).join(", "),
-    [locations]
+    [locations] 
   )
   const swahiliLocations = useMemo(
-    () => locations.map((loc) => toCamelCase(loc)).join(", "),
+    () => locations.map(toCamelCase).join(", "),
     [locations]
   )
 
@@ -359,9 +358,10 @@ ${FACEBOOK_TAGS.join("\n")}
                 label="YouTube Title"
                 content={generatedContent.youtube}
                 onCopy={() => copyToClipboard(generatedContent.youtube)}
+                showCharCount
               />
             </TabsContent>
-            <TabsContent value="facebook" className="space-y-8">
+            <TabsContent value="facebook" className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
               <ContentDisplay
                 label="Facebook Message"
                 content={generatedContent.facebook}
@@ -373,7 +373,7 @@ ${FACEBOOK_TAGS.join("\n")}
                 onCopy={() => copyToClipboard(generatedContent.facebookResult)}
               />
             </TabsContent>
-            <TabsContent value="instagram" className="space-y-8">
+            <TabsContent value="instagram" className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
               <ContentDisplay
                 label="Instagram Message"
                 content={generatedContent.instagram}
@@ -396,14 +396,25 @@ function ContentDisplay({
   label,
   content,
   onCopy,
+  showCharCount = false,
 }: {
   label: string
   content: string
   onCopy: () => void
+  showCharCount?: boolean
 }) {
+  const charCount = content.length
+
   return (
-    <div className="relative">
-      <Label htmlFor={label.toLowerCase().replace(/\s+/g, "-")}>{label}</Label>
+    <div className="relative flex-1">
+      <Label htmlFor={label.toLowerCase().replace(/\s+/g, "-")} className="flex justify-between items-center">
+        <span>{label}</span>
+        {showCharCount && (
+          <span className={`text-sm ${charCount < 100 ? 'text-green-500' : 'text-red-500'}`}>
+            {charCount} characters
+          </span>
+        )}
+      </Label>
       <Textarea
         id={label.toLowerCase().replace(/\s+/g, "-")}
         value={content}
