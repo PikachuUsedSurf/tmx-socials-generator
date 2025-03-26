@@ -135,6 +135,7 @@ export default function SocialMediaTitleGenerator() {
       .replace(/\//g, "/")
 
     const organization = crop === "CASHEW" ? "CBT" : "COPRA"
+    const organization_mineral = crop === "GEMSTONE" ? "MC" : "TCDC"
     const cropHashtag = `#${crop.toLowerCase().replace(" ", "")}`
 
     const youtubeTitle =
@@ -143,9 +144,9 @@ export default function SocialMediaTitleGenerator() {
     const socialMessage = `
 Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
       crop
-    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, TCDC na ${organization}.
+    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, ${organization_mineral} na ${organization}.
 
-We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, TCDC and ${organization} in ${formattedLocations} Region${
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, ${organization_mineral} and ${organization} in ${formattedLocations} Region${
       locations.length > 1 ? "s" : ""
     }.
 
@@ -157,9 +158,9 @@ ${HASHTAGS.join(" ")} ${cropHashtag}
     const instagramMessage = `
 Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
       crop
-    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, TCDC na ${organization}.
+    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, ${organization_mineral} na ${organization}.
 
-We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, TCDC and ${organization} in ${formattedLocations} Region${
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, ${organization_mineral} and ${organization} in ${formattedLocations} Region${
       locations.length > 1 ? "s" : ""
     }.
 
