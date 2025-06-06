@@ -44,14 +44,14 @@ const CROP_TRANSLATIONS: Record<CropName, string> = {
 
 const FACEBOOK_TAGS = [
   "@urtmof", "@Capital Market & Security Authority", "@ofisi_ya_msajili_wa_hazina",
-  "@boatanzania", "@msemajimkuuwaserikali", "@Ikulu Mawasiliano", "@Wizara ya Kilimo",
+  "@Bank of Tanzania", "@msemajimkuuwaserikali", "@Ikulu Mawasiliano", "@Wizara ya Kilimo",
   "@Tume Ya Maendeleo Ya Ushirika", "@ushirika_tcdc", "@Wizara ya Viwanda na Biashara",
   "@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB",
 ]
 
 const INSTAGRAM_TAGS = [
-  "@urtmof", "@securities_capital_and_markets", "@ofisi_ya_msajili_wa_hazina",
-  "@boatanzania", "@msemajimkuuwaserikali", "@ikulu_mawasiliano", "@wizara_ya_kilimo",
+  "@urtmof", "@cmsa.go.tz", "@ofisi_ya_msajili_wa_hazina",
+  "@bankoftanzania_", "@msemajimkuuwaserikali", "@ikulu_mawasiliano", "@wizara_ya_kilimo",
   "@ushirika_tcdc", "@biasharaviwanda", "@wrrbwrs",
 ]
 
