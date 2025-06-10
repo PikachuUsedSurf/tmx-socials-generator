@@ -149,7 +149,7 @@ export default function SocialMediaTitleGenerator() {
     const ORGANIZATION_MAP: Record<CropName, string[]> = {
       COFFEE: ["TCB", "TCDC", "WRRB"],
       CASHEW: ["CBT", "TCDC", "WRRB"],
-      GEMSTONE: ["MC", "TCDC", "WRRB"],
+      GEMSTONE: ["MC", "RMO"],
       SESAME: ["COPRA", "TCDC", "WRRB"],
       SOYA: ["COPRA", "TCDC", "WRRB"],
       BEAN: ["COPRA", "TCDC", "WRRB"],
