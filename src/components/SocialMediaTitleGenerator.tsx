@@ -109,12 +109,23 @@ export default function SocialMediaTitleGenerator() {
 
   const formattedLocations = useMemo(
     () => locations.map(toCamelCase).join(", "),
-    [locations] 
+    [locations]
   )
   const swahiliLocations = useMemo(
     () => locations.map(toCamelCase).join(", "),
     [locations]
   )
+
+  const formatOrganizations = (orgs: string[], language: 'swahili' | 'english') => {
+    if (orgs.length === 0) return ""
+    if (orgs.length === 1) return orgs[0]
+    if (orgs.length === 2) {
+      return language === 'swahili' ? `${orgs[0]} na ${orgs[1]}` : `${orgs[0]} and ${orgs[1]}`
+    }
+    return language === 'swahili'
+      ? `${orgs.slice(0, -1).join(", ")}, na ${orgs[orgs.length - 1]}`
+      : `${orgs.slice(0, -1).join(", ")}, and ${orgs[orgs.length - 1]}`
+  }
 
   const generateContent = () => {
     if (locations.length === 0 || !crop || !date) {
@@ -134,19 +145,36 @@ export default function SocialMediaTitleGenerator() {
       })
       .replace(/\//g, "/")
 
-    const organization = crop === "CASHEW" ? "CBT" : "COPRA"
-    const organization_mineral = crop === "GEMSTONE" ? "MC" : "TCDC"
+    // Map crops to their respective organizations
+    const ORGANIZATION_MAP: Record<CropName, string[]> = {
+      COFFEE: ["TCB", "TCDC", "WRRB"],
+      CASHEW: ["CBT", "TCDC", "WRRB"],
+      GEMSTONE: ["MC", "TCDC", "WRRB"],
+      SESAME: ["COPRA", "TCDC", "WRRB"],
+      SOYA: ["COPRA", "TCDC", "WRRB"],
+      BEAN: ["COPRA", "TCDC", "WRRB"],
+      COCOA: ["COPRA", "TCDC", "WRRB"],
+      "CHICK PEA": ["COPRA", "TCDC", "WRRB"],
+      "PIGEON PEA": ["COPRA", "TCDC", "WRRB"],
+      COTTON: ["COPRA", "TCDC", "WRRB"],
+      SUNFLOWER: ["COPRA", "TCDC", "WRRB"],
+      GROUNDNUT: ["COPRA", "TCDC", "WRRB"],
+      "GREEN GRAM": ["COPRA", "TCDC", "WRRB"],
+    }
+
+    const organizations = ORGANIZATION_MAP[crop]
+    const formattedOrganizationsSwahili = formatOrganizations(organizations, 'swahili')
+    const formattedOrganizationsEnglish = formatOrganizations(organizations, 'english')
     const cropHashtag = `#${crop.toLowerCase().replace(" ", "")}`
 
-    const youtubeTitle =
-      `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase()
+    const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase()
 
     const socialMessage = `
 Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
       crop
-    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, ${organization_mineral} na ${organization}.
+    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
-We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, ${organization_mineral} and ${organization} in ${formattedLocations} Region${
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${
       locations.length > 1 ? "s" : ""
     }.
 
@@ -158,9 +186,9 @@ ${HASHTAGS.join(" ")} ${cropHashtag}
     const instagramMessage = `
 Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
       crop
-    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na WRRB, ${organization_mineral} na ${organization}.
+    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
-We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with WRRB, ${organization_mineral} and ${organization} in ${formattedLocations} Region${
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${
       locations.length > 1 ? "s" : ""
     }.
 
@@ -427,7 +455,7 @@ function ContentDisplay({
         size="icon"
         variant="ghost"
         className="absolute right-2 top-8"
-        onClick={onCopy}
+        onCopy={onCopy}
       >
         <Copy className="h-4 w-4" />
       </Button>
