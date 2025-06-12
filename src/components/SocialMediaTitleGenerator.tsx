@@ -455,7 +455,7 @@ function ContentDisplay({
         size="icon"
         variant="ghost"
         className="absolute right-2 top-8"
-        onCopy={onCopy}
+        onClick={onCopy}
       >
         <Copy className="h-4 w-4" />
       </Button>
