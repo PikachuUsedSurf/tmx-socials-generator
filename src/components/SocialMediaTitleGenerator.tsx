@@ -43,17 +43,16 @@ const CROP_TRANSLATIONS: Record<CropName, string> = {
 }
 
 const FACEBOOK_TAGS = [
-  "@urtmof", "@Capital Market & Security Authority", "@ofisi_ya_msajili_wa_hazina",
-  "@Bank of Tanzania", "@msemajimkuuwaserikali", "@Ikulu Mawasiliano", "@Wizara ya Kilimo",
-  "@Tume Ya Maendeleo Ya Ushirika", "@ushirika_tcdc", "@Wizara ya Viwanda na Biashara",
-  "@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB",
+  "@Samia Suluhu Hassan ", "@Ikulu Mawasiliano", "@Wizara ya Fedha",
+  "@Wizara ya Viwanda na Biashara", "@Ofisi ya Rais - Tamisemi", "@Capital Market & Security Authority", "@Bank of Tanzania",
+  "@Tume Ya Maendeleo Ya Ushirika", "@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB",
 ]
 
 const INSTAGRAM_TAGS = [
-  "@urtmof", "@cmsa.go.tz", "@ofisi_ya_msajili_wa_hazina",
-  "@bankoftanzania_", "@msemajimkuuwaserikali", "@ikulu_mawasiliano", "@wizara_ya_kilimo",
-  "@ushirika_tcdc", "@biasharaviwanda", "@wrrbwrs",
+  "@samia_suluhu_hassan", "@ikulu_mawasiliano", "@urtmof", "@viwandabiashara", "@ortamisemi", "@cmsa.go.tz",
+  "@bankoftanzania_","@ushirika_tcdc", "@wrrbwrs",
 ]
+// "@wizara_ya_kilimo"
 
 const HASHTAGS = [
   "#oilseeds", "#buyers", "#trading", "#commodityexchangemarkets", "#commoditiesexchange",
@@ -172,7 +171,7 @@ export default function SocialMediaTitleGenerator() {
     const socialMessage = `
 Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
       crop
-    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+    ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
 We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${
       locations.length > 1 ? "s" : ""
@@ -186,7 +185,7 @@ ${HASHTAGS.join(" ")} ${cropHashtag}
     const instagramMessage = `
 Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
       crop
-    ].toLowerCase()} mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+    ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
 We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${
       locations.length > 1 ? "s" : ""
