@@ -26,7 +26,7 @@ type CropName =
   | "GREEN GRAM"
 
 const AVAILABLE_LOCATIONS = [
-  "SINGIDA", "MBEYA", "MANYARA", "SONGEA", "RUVUMA", "MTWARA", "DODOMA", "LINDI", "MOROGORO", "PWANI",
+  "SINGIDA", "MBEYA", "MANYARA", "RUVUMA", "MTWARA", "DODOMA", "LINDI", "MOROGORO", "PWANI",
   "ARUSHA", "DAR ES SALAAM", "GEITA", "IRINGA", "KAGERA", "KATAVI", "KIGOMA", "KILIMANJARO", "MARA",
   "MWANZA", "NJOMBE", "PEMBA", "RUKWA", "SHINYANGA", "SIMIYU", "SONGWE", "TABORA", "TANGA", "ZANZIBAR",
 ]
@@ -169,7 +169,7 @@ export default function SocialMediaTitleGenerator() {
     const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase()
 
     const socialMessage = `
-Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
+Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS[
       crop
     ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
@@ -183,7 +183,7 @@ ${HASHTAGS.join(" ")} ${cropHashtag}
     `.trim()
 
     const instagramMessage = `
-Karibuni kushiriki kwenye mauzo wa zao la ${CROP_TRANSLATIONS[
+Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS[
       crop
     ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
