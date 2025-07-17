@@ -56,6 +56,10 @@ const data = {
           title: "Copy Pasta",
           url: "/social-media-generator",
         },
+        {      
+          title: "Social Media Poster",
+          url: "/social-media-poster",
+        },
         {
           title: "Region Codes",
           url: "/region-code",
