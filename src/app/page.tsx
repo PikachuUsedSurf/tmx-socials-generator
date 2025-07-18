@@ -5,7 +5,7 @@ export default function Home() {
         Welcome to TMX Content Generator
       </h1>
       <p className="text-center text-lg">
-        Select an option from the sidebar to get started.
+        Added new features and fixed bugs. Explore the sidebar to navigate through different sections.
       </p>
     </div>
   );

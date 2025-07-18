@@ -724,7 +724,7 @@ const PosterCanvas: React.FC<PosterCanvasProps> = ({
       </main>
 
       <footer
-        className="absolute bottom-0 left-0 right-0 flex justify-center items-center gap-8 px-10 py-4 shadow-lg z-10"
+        className="absolute bottom-0 left-0 right-0 flex justify-center items-center gap-14 px-10 py-4 shadow-lg z-10"
         style={{ backgroundColor: headerFooterBackgroundColor }}
       >
         {footerLogos.map(
@@ -751,13 +751,13 @@ const App: React.FC = () => {
     heading: {
       content: "DENGU",
       position: { x: 5, y: 55 },
-      downloadPosition: { x: 5, y: 55 },
+      downloadPosition: { x: 5, y: 45 },
     },
     paragraph: {
       content:
         "TMX, COPRA, WRRB, TCDC na Serikali ya Mikoa ya Singida na Dodoma Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la DENGU Mikoa ya Singida na Dodoma.\n\nMnada utafanyika Jumatano, tarehe 09/07/2025 Kuanzia saa Nne na nusu Asubuhi Kwa njia ya kielektroniki.\n\nKaribuni wote",
       position: { x: 5, y: 68 },
-      downloadPosition: { x: 5, y: 68 },
+      downloadPosition: { x: 5, y: 60 },
     },
     backgroundImage: "/images/backgrounds/default-background.jpg", // Updated to use local image
     backgroundStyle: {
@@ -776,16 +776,16 @@ const App: React.FC = () => {
       mainText: {
         content: "09",
         position: { x: 50, y: 50 },
-        downloadPosition: { x: 50, y: 50 },
+        downloadPosition: { x: 50, y: 33 },
       },
       bottomText: {
         content: "Julai\n2025",
         position: { x: 50, y: 80 },
-        downloadPosition: { x: 50, y: 80 },
+        downloadPosition: { x: 50, y: 75 },
       },
     },
     topLeftLogo: "/images/logos/government-logo.png", // Updated to use local image
-    topRightLogo: "/images/logos/tmx-logo.png", // Updated to use local image
+    topRightLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5a/Tanzania_Mercantile_Exchange_Logo.png/250px-Tanzania_Mercantile_Exchange_Logo.png", // Updated to use local image
     footerLogos: [
       "/images/logos/tmx-logo.png",
       "/images/logos/wrrb-logo.png",
@@ -918,7 +918,7 @@ const App: React.FC = () => {
           <div className="lg:col-span-1">
             <ScrollArea className="h-[calc(100vh-200px)]">
               <div className="space-y-6">
-                {/* AI Content Generator */}
+                {/* Content Generator */}
                 <ContentGenerator onApplyContent={handleContentUpdate} />
 
                 {/* Editing Controls */}
