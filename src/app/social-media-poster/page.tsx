@@ -182,7 +182,7 @@ const generatePosterContent = (locations: string[], crop: CropName, date: string
   return {
     topText,
     heading: { content: heading, position: { x: 54, y: 594 } },
-    paragraph: { content: paragraph, position: { x: 54, y: 734 } },
+    paragraph: { content: paragraph, position: { x: 54, y: 552 } },
     dateCircle: { ...dateCircleContent, position: { x: 162, y: 378 } },
     footerLogos,
   }
@@ -328,7 +328,7 @@ const PosterCanvas: React.FC<PosterCanvasProps> = (props) => {
           </div>
         </div>
         <div className="absolute" style={{ top: heading.position.y, left: heading.position.x, width: `calc(100% - ${heading.position.x}px - 54px)` }}>
-          <h1 className="text-9xl font-extrabold tracking-wider">{heading.content}</h1>
+          <h1 className="text-8xl font-extrabold tracking-wider">{heading.content}</h1>
         </div>
         <div className="absolute" style={{ top: paragraph.position.y, left: paragraph.position.x, width: `calc(100% - ${paragraph.position.x}px - 54px)` }}>
           <p className="text-3xl text-justify max-w-5xl whitespace-pre-wrap leading-relaxed">{renderRichText(paragraph.content)}</p>
@@ -353,15 +353,15 @@ const App: React.FC = () => {
   // State for poster visual elements
   const [posterState, setPosterState] = useState<PosterState>({
     topText: "JAMHURI YA MUUNGANO WA TANZANIA\nWIZARA YA FEDHA\nSOKO LA BIDHAA TANZANIA",
-    heading: { content: "DENGU", position: { x: 54, y: 594 } },
-    paragraph: { content: "TMX, COPRA, TCDC, WRRB na Serikali ya Mikoa ya **Singida, na Dodoma** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la dengu Mikoa ya **Singida, na Dodoma**.\n\nMnada utafanyika **Jumatano**, tarehe **23/07/2025** Kuanzia **Saa Nne na nusu Asubuhi** Kwa njia ya kielektroniki.\n\nKaribuni wote", position: { x: 54, y: 734 } },
+    heading: { content: "DENGU", position: { x: 54, y: 444 } },
+    paragraph: { content: "TMX, COPRA, TCDC, WRRB na Serikali ya Mikoa ya **Singida, na Dodoma** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la dengu Mikoa ya **Singida, na Dodoma**.\n\nMnada utafanyika **Jumatano**, tarehe **23/07/2025** Kuanzia **Saa Nne na nusu Asubuhi** Kwa njia ya kielektroniki.\n\nKaribuni wote", position: { x: 54, y: 552 } },
     backgroundImage: "images/backgrounds/default-background.jpg",
     backgroundStyle: { objectFit: "cover", objectPosition: "center center" },
     headerFooterBackgroundColor: "#fefadf",
     dateCircle: {
-      position: { x: 162, y: 378 },
+      position: { x: 162, y: 310 },
       topText: { content: "Tarehe", position: { x: 100, y: 40 } },
-      mainText: { content: "23", position: { x: 100, y: 100 } },
+      mainText: { content: "23", position: { x: 100, y: 90 } },
       bottomText: { content: "Julai\n2025", position: { x: 100, y: 160 } },
     },
     topLeftLogo: "/images/logos/government-logo.png",
@@ -403,22 +403,22 @@ const App: React.FC = () => {
     })
   }, [])
 
+  const mergeContentIntoState = (prevState: PosterState, content: Partial<PosterState>): PosterState => {
+    const newState = JSON.parse(JSON.stringify(prevState)) // Deep copy for safety
+    if (content.topText) newState.topText = content.topText
+    if (content.footerLogos) newState.footerLogos = content.footerLogos
+    if (content.heading?.content) newState.heading.content = content.heading.content
+    if (content.paragraph?.content) newState.paragraph.content = content.paragraph.content
+    if (content.dateCircle) {
+      if (content.dateCircle.topText?.content) newState.dateCircle.topText.content = content.dateCircle.topText.content
+      if (content.dateCircle.mainText?.content) newState.dateCircle.mainText.content = content.dateCircle.mainText.content
+      if (content.dateCircle.bottomText?.content) newState.dateCircle.bottomText.content = content.dateCircle.bottomText.content
+    }
+    return newState
+  }
+
   const handleContentUpdate = useCallback((content: Partial<PosterState>) => {
-    setPosterState(prevState => {
-      const newState = { ...prevState }
-      if (content.topText) newState.topText = content.topText
-      if (content.footerLogos) newState.footerLogos = content.footerLogos
-      if (content.heading?.content) newState.heading = { ...prevState.heading, content: content.heading.content }
-      if (content.paragraph?.content) newState.paragraph = { ...prevState.paragraph, content: content.paragraph.content }
-      if (content.dateCircle) {
-        const newDateCircle = { ...prevState.dateCircle }
-        if (content.dateCircle.topText?.content) newDateCircle.topText = { ...prevState.dateCircle.topText, content: content.dateCircle.topText.content }
-        if (content.dateCircle.mainText?.content) newDateCircle.mainText = { ...prevState.dateCircle.mainText, content: content.dateCircle.mainText.content }
-        if (content.dateCircle.bottomText?.content) newDateCircle.bottomText = { ...prevState.dateCircle.bottomText, content: content.dateCircle.bottomText.content }
-        newState.dateCircle = newDateCircle
-      }
-      return newState
-    })
+    setPosterState(prevState => mergeContentIntoState(prevState, content))
   }, [])
 
   const handleBackgroundStyleChange = useCallback((key: keyof BackgroundStyle, value: string) => {
@@ -463,14 +463,14 @@ const App: React.FC = () => {
     try {
       // Generate and capture English version
       const enContent = generatePosterContent(locations, crop, date, time, "en")
-      setDownloadPosterState({ ...posterState, ...enContent })
+      setDownloadPosterState(mergeContentIntoState(posterState, enContent))
       await new Promise(resolve => setTimeout(resolve, 500)) // Wait for DOM update
       const enDataUrl = await captureCanvas("download-poster")
       triggerDownload(enDataUrl, `poster_${CROP_NAMES_EN[crop].toLowerCase().replace(" ", "_")}_en.png`)
 
       // Generate and capture Swahili version
       const swContent = generatePosterContent(locations, crop, date, time, "sw")
-      setDownloadPosterState({ ...posterState, ...swContent })
+      setDownloadPosterState(mergeContentIntoState(posterState, swContent))
       await new Promise(resolve => setTimeout(resolve, 500)) // Wait for DOM update
       const swDataUrl = await captureCanvas("download-poster")
       triggerDownload(swDataUrl, `poster_${CROP_TRANSLATIONS_SW[crop].toLowerCase().replace(" ", "_")}_sw.png`)
