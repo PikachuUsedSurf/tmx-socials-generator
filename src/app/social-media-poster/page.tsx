@@ -158,7 +158,7 @@ const generatePosterContent = (locations: string[], crop: CropName, date: string
     const cropSwahili = CROP_TRANSLATIONS_SW[crop]
     topText = `JAMHURI YA MUUNGANO WA TANZANIA\nWIZARA YA FEDHA\nSOKO LA BIDHAA TANZANIA`
     heading = cropSwahili.toUpperCase()
-    paragraph = `TMX, ${formattedOrganizations} na Serikali ya Mikoa ya **${formattedLocations}** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la ${cropSwahili.toLowerCase()} Mikoa ya **${formattedLocations}**.\n\nMnada utafanyika **${swahiliWeekday}**, tarehe **${fullDateGB}** Kuanzia **${formattedTime}** Kwa njia ya kielektroniki.\n\nKaribuni wote`
+    paragraph = `TMX, ${formattedOrganizations} na Serikali ya Mikoa ya **${formattedLocations}** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la **${cropSwahili.toUpperCase()}** Mikoa ya **${formattedLocations}**.\n\nMnada utafanyika **${swahiliWeekday}**, tarehe **${fullDateGB}** Kuanzia **${formattedTime}** Kwa njia ya kielektroniki.\n\nKaribuni wote`
     dateCircleContent = {
       topText: { content: "Tarehe", position: { x: 100, y: 40 } },
       mainText: { content: day, position: { x: 100, y: 100 } },
@@ -169,7 +169,7 @@ const generatePosterContent = (locations: string[], crop: CropName, date: string
     const regionText = `Region${locations.length > 1 ? "s" : ""}`
     topText = `THE UNITED REPUBLIC OF TANZANIA\nMINISTRY OF FINANCE\nTANZANIA MERCANTILE EXCHANGE`
     heading = cropEnglish.toUpperCase()
-    paragraph = `TMX, ${formattedOrganizations} and the Regional Government of **${formattedLocations}** invite all Buyers and Stakeholders to participate in the ${cropEnglish.toLowerCase()} auction from the **${formattedLocations}** ${regionText}.\n\nThe auction will be held electronically on **${englishWeekday}**, **${fullDateGB}**, starting at **${formattedTime}**.\n\nAll are welcome`
+    paragraph = `TMX, ${formattedOrganizations} the Regional and District Government Authorities of **${formattedLocations}** hereby invites youto participate in the **${cropEnglish.toUpperCase()}** auction in **${formattedLocations}** ${regionText}.\n\nThe auction will take place on **${englishWeekday}**, **${fullDateGB}**, from **${formattedTime}** through TMX Online Trading System.\n\nAll are welcome`
     dateCircleContent = {
       topText: { content: "Date", position: { x: 100, y: 40 } },
       mainText: { content: day, position: { x: 100, y: 100 } },
@@ -181,9 +181,9 @@ const generatePosterContent = (locations: string[], crop: CropName, date: string
 
   return {
     topText,
-    heading: { content: heading, position: { x: 54, y: 594 } },
-    paragraph: { content: paragraph, position: { x: 54, y: 552 } },
-    dateCircle: { ...dateCircleContent, position: { x: 162, y: 378 } },
+    heading: { content: heading, position: { x: 54, y: 465 } },
+    paragraph: { content: paragraph, position: { x: 54, y: 587 } },
+    dateCircle: { ...dateCircleContent, position: { x: 162, y: 300 } },
     footerLogos,
   }
 }
@@ -331,7 +331,7 @@ const PosterCanvas: React.FC<PosterCanvasProps> = (props) => {
           <h1 className="text-8xl font-extrabold tracking-wider">{heading.content}</h1>
         </div>
         <div className="absolute" style={{ top: paragraph.position.y, left: paragraph.position.x, width: `calc(100% - ${paragraph.position.x}px - 54px)` }}>
-          <p className="text-3xl text-justify max-w-5xl whitespace-pre-wrap leading-relaxed">{renderRichText(paragraph.content)}</p>
+          <p className="text-2xl text-justify max-w-5xl whitespace-pre-wrap leading-relaxed">{renderRichText(paragraph.content)}</p>
         </div>
       </main>
 
@@ -353,13 +353,13 @@ const App: React.FC = () => {
   // State for poster visual elements
   const [posterState, setPosterState] = useState<PosterState>({
     topText: "JAMHURI YA MUUNGANO WA TANZANIA\nWIZARA YA FEDHA\nSOKO LA BIDHAA TANZANIA",
-    heading: { content: "DENGU", position: { x: 54, y: 444 } },
-    paragraph: { content: "TMX, COPRA, TCDC, WRRB na Serikali ya Mikoa ya **Singida, na Dodoma** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la dengu Mikoa ya **Singida, na Dodoma**.\n\nMnada utafanyika **Jumatano**, tarehe **23/07/2025** Kuanzia **Saa Nne na nusu Asubuhi** Kwa njia ya kielektroniki.\n\nKaribuni wote", position: { x: 54, y: 552 } },
+    heading: { content: "DENGU", position: { x: 54, y: 465 } },
+    paragraph: { content: "TMX, COPRA, TCDC, WRRB na Serikali ya Mikoa ya **Singida, na Dodoma** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la dengu Mikoa ya **Singida, na Dodoma**.\n\nMnada utafanyika **Jumatano**, tarehe **23/07/2025** Kuanzia **Saa Nne na nusu Asubuhi** Kwa njia ya kielektroniki.\n\nKaribuni wote", position: { x: 54, y: 587 } },
     backgroundImage: "images/backgrounds/default-background.jpg",
     backgroundStyle: { objectFit: "cover", objectPosition: "center center" },
     headerFooterBackgroundColor: "#fefadf",
     dateCircle: {
-      position: { x: 162, y: 310 },
+      position: { x: 162, y: 300 },
       topText: { content: "Tarehe", position: { x: 100, y: 40 } },
       mainText: { content: "23", position: { x: 100, y: 90 } },
       bottomText: { content: "Julai\n2025", position: { x: 100, y: 160 } },
