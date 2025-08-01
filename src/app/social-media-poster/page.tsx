@@ -215,7 +215,7 @@ const CROP_BACKGROUND_IMAGES: Record<CropName, CropImage[]> = {
     },
     {
       id: "sesame-3",
-      url: "/images/crop/sesame3.png",
+      url: "/images/crop/sesame1.png",
       title: "Sesame Farming",
       description: "Farmers working in sesame fields",
     },
@@ -1034,6 +1034,7 @@ interface PosterCanvasProps extends PosterState {
   id: string
 }
 
+// PosterCanvas component renders the poster with all elements positioned correctly
 const PosterCanvas: React.FC<PosterCanvasProps> = (props) => {
   const {
     id,
@@ -1084,7 +1085,7 @@ const PosterCanvas: React.FC<PosterCanvasProps> = (props) => {
             />
           )}
         </div>
-        <div className="w-1/2 text-center font-bold text-black text-xl leading-tight whitespace-pre-wrap">
+        <div className="w-1/2 text-center font-bold text-black text-2xl leading-tight whitespace-pre-wrap">
           {topText}
         </div>
         <div className="w-1/4 flex justify-end">
@@ -1106,7 +1107,7 @@ const PosterCanvas: React.FC<PosterCanvasProps> = (props) => {
         >
           <div
             className="bg-[#009A9A] rounded-full text-center shadow-lg relative"
-            style={{ width: 200, height: 200, padding: 16 }}
+            style={{ width: 250, height: 250, padding: 16 }}
           >
             <div
               className="absolute text-xl font-medium w-full"
@@ -1160,7 +1161,7 @@ const PosterCanvas: React.FC<PosterCanvasProps> = (props) => {
             width: `calc(100% - ${paragraph.position.x}px - 54px)`,
           }}
         >
-          <p className="text-2xl text-justify max-w-5xl whitespace-pre-wrap leading-relaxed">
+          <p className="text-[27px]/6 text-justify max-w-5xl whitespace-pre-wrap leading-relaxed">
             {renderRichText(paragraph.content)}
           </p>
         </div>
@@ -1202,7 +1203,7 @@ const App: React.FC = () => {
     paragraph: {
       content:
         "TMX, COPRA, TCDC, WRRB na Serikali ya Mikoa ya **Singida, na Dodoma** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la dengu Mikoa ya **Singida, na Dodoma**.\n\nMnada utafanyika **Jumatano**, tarehe **23/07/2025** Kuanzia **Saa Nne na nusu Asubuhi** Kwa njia ya kielektroniki.\n\nKaribuni wote",
-      position: { x: 54, y: 587 },
+      position: { x: 54, y: 560 },
     },
     backgroundImage: "/images/logos/tmx-logo.png",
     backgroundStyle: { objectFit: "cover", objectPosition: "center center" },
@@ -1791,7 +1792,7 @@ const generatePosterContent = (
   return {
     topText,
     heading: { content: heading, position: { x: 54, y: 465 } },
-    paragraph: { content: paragraph, position: { x: 54, y: 587 } },
+    paragraph: { content: paragraph, position: { x: 54, y: 560 } },
     dateCircle: { ...dateCircleContent, position: { x: 162, y: 300 } },
     footerLogos,
   }
