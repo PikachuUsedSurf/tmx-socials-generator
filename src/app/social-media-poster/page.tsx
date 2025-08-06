@@ -1107,7 +1107,7 @@ const PosterCanvas: React.FC<PosterCanvasProps> = (props) => {
         >
           <div
             className="bg-[#009A9A] rounded-full text-center shadow-lg relative"
-            style={{ width: 250, height: 250, padding: 16 }}
+            style={{ width: 200, height: 200, padding: 16 }}
           >
             <div
               className="absolute text-xl font-medium w-full"
