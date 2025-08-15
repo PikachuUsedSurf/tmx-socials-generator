@@ -1161,7 +1161,7 @@ const PosterCanvas: React.FC<PosterCanvasProps> = (props) => {
             width: `calc(100% - ${paragraph.position.x}px - 54px)`,
           }}
         >
-          <p className="text-[27px]/6 text-justify max-w-5xl whitespace-pre-wrap leading-relaxed">
+          <p className="text-[27px]/6 text-justify tracking-tight max-w-5xl whitespace-pre-wrap leading-relaxed">
             {renderRichText(paragraph.content)}
           </p>
         </div>
@@ -1202,7 +1202,7 @@ const App: React.FC = () => {
     heading: { content: "DENGU", position: { x: 54, y: 465 } },
     paragraph: {
       content:
-        "TMX, COPRA, TCDC, WRRB na Serikali ya Mikoa ya **Singida, na Dodoma** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la dengu Mikoa ya **Singida, na Dodoma**.\n\nMnada utafanyika **Jumatano**, tarehe **23/07/2025** Kuanzia **Saa Nne na nusu Asubuhi** Kwa njia ya kielektroniki.\n\nKaribuni wote",
+        "TMX, COPRA, TCDC, WRRB na Serikali ya Mikoa ya **Singida, na Dodoma** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la dengu Mikoa ya **Singida, na Dodoma**.\n\nMnada utafanyika **Jumatano**, tarehe **23/07/2025** Kuanzia **Saa Nne na nusu Asubuhi** Kwa njia ya Kidijitali.\n\nKaribuni wote",
       position: { x: 54, y: 560 },
     },
     backgroundImage: "/images/logos/tmx-logo.png",
@@ -1766,7 +1766,7 @@ const generatePosterContent = (
     const cropSwahili = CROP_TRANSLATIONS_SW[crop]
     topText = `JAMHURI YA MUUNGANO WA TANZANIA\nWIZARA YA FEDHA\nSOKO LA BIDHAA TANZANIA`
     heading = cropSwahili.toUpperCase()
-    paragraph = `TMX, ${formattedOrganizations} na Serikali ya Mikoa ya **${formattedLocations}** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la **${cropSwahili.toUpperCase()}** Mikoa ya **${formattedLocations}**.\n\nMnada utafanyika **${swahiliWeekday}**, tarehe **${fullDateGB}** Kuanzia **${formattedTime}** Kwa njia ya kielektroniki.\n\nKaribuni wote`
+    paragraph = `TMX, ${formattedOrganizations} na Serikali ya Mikoa ya **${formattedLocations}** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la **${cropSwahili.toUpperCase()}** Mikoa ya **${formattedLocations}**.\n\nMnada utafanyika **${swahiliWeekday}**, tarehe **${fullDateGB}** Kuanzia **${formattedTime}** Kwa njia ya Kidijitali.\n\nKaribuni wote`
     dateCircleContent = {
       topText: { content: "Tarehe", position: { x: 100, y: 40 } },
       mainText: { content: day, position: { x: 100, y: 100 } },
