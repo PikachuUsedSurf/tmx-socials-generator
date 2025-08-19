@@ -171,7 +171,7 @@ export default function SocialMediaTitleGenerator() {
     const socialMessage = `
 Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS[
       crop
-    ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+    ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
 We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${
       locations.length > 1 ? "s" : ""
@@ -185,7 +185,7 @@ ${HASHTAGS.join(" ")} ${cropHashtag}
     const instagramMessage = `
 Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS[
       crop
-    ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kieletroniki wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+    ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
 We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${
       locations.length > 1 ? "s" : ""

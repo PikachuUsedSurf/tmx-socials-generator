@@ -66,7 +66,7 @@ const data = {
         },
         {
           title: "Commodity Price Generator",
-          url: "#",
+          url: "/commodity-price",
         },
       ],
     },
