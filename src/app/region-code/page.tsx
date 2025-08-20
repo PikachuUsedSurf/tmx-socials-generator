@@ -63,7 +63,7 @@ const REGIONS = [
   "TABORA",
   "TANGA",
   "ZANZIBAR",
-] as const
+]
 
 const Regions: Region[] = REGIONS.map((name) => ({ name, code: REGION_CODES[name] }));
 
