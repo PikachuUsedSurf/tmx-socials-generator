@@ -189,7 +189,7 @@ export default function CommodityPriceGenerator() {
       ctx.fillRect(0, 0, 1000, 1000)
       drawContent()
     }
-    img.src = "/placeholder-we4cu.png"
+    img.src = "/images/crops/coffee1.jpg"
 
     const drawContent = () => {
       ctx.fillStyle = "#000"
