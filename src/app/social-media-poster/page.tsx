@@ -1535,24 +1535,24 @@ const App: React.FC = () => {
     )
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Hidden canvas for high-resolution downloads */}
       <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
         {downloadPosterState && <PosterCanvas {...downloadPosterState} id="download-poster" />}
       </div>
 
-      <div className="max-w-8xl mx-auto p-4 sm:p-6">
+      <div className="max-w-screen mx-auto">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
           {/* Controls Panel */}
           <div className="xl:col-span-1">
-            <ScrollArea className="h-[calc(100vh-100px)] sm:h-[calc(100vh-120px)] pr-2 sm:pr-4">
+            
               <div className="space-y-6">
                 <EditableContentGenerator
                   onApplyContent={handleContentUpdate}
                   {...{ locations, setLocations, crop, setCrop, date, setDate, time, setTime }}
                 />
 
-                <Tabs defaultValue="content" className="w-full">
+                <Tabs defaultValue="content" className="w-full ">
                    <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1">
                      <TabsTrigger value="content" className="text-xs sm:text-sm">
                        <Type className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
@@ -1931,7 +1931,7 @@ const App: React.FC = () => {
                   </CardContent>
                 </Card>
               </div>
-            </ScrollArea>
+            
           </div>
 
           {/* Poster Preview */}
