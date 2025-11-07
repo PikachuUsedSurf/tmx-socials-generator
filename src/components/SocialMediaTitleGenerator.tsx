@@ -11,35 +11,34 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "@/hooks/use-toast"
 
 type CropName =
-  | "COFFEE"
-  | "SESAME"
-  | "SOYA"
   | "BEAN"
-  | "COCOA"
-  | "CHICK PEA"
-  | "PIGEON PEA"
   | "CASHEW"
-  | "COTTON"
-  | "SUNFLOWER"
-  | "GROUNDNUT"
+  | "CHICK PEA"
+  | "COCOA"
+  | "COFFEE"
   | "GEMSTONE"
   | "GREEN GRAM"
+  | "GROUNDNUT"
+  | "PIGEON PEA"
+  | "SESAME"
+  | "SOYA"
+  | "SUNFLOWER"
 
 const AVAILABLE_LOCATIONS = [
-  "SINGIDA", "MBEYA", "MANYARA", "RUVUMA", "MTWARA", "DODOMA", "LINDI", "MOROGORO", "PWANI",
-  "ARUSHA", "DAR ES SALAAM", "GEITA", "IRINGA", "KAGERA", "KATAVI", "KIGOMA", "KILIMANJARO", "MARA",
-  "MWANZA", "NJOMBE", "PEMBA", "RUKWA", "SHINYANGA", "SIMIYU", "SONGWE", "TABORA", "TANGA", "ZANZIBAR",
+  "ARUSHA", "DAR ES SALAAM", "DODOMA", "GEITA", "IRINGA", "KAGERA", "KATAVI", "KIGOMA", "KILIMANJARO",
+  "LINDI", "MANYARA", "MARA", "MBEYA", "MOROGORO", "MTWARA", "MWANZA", "NJOMBE", "PEMBA", "PWANI",
+  "RUKWA", "RUVUMA", "SHINYANGA", "SIMIYU", "SINGIDA", "SONGWE", "TABORA", "TANGA", "ZANZIBAR",
 ]
 
 const CROPS: CropName[] = [
-  "COFFEE", "SESAME", "SOYA", "BEAN", "COCOA", "CHICK PEA", "PIGEON PEA",
-  "CASHEW", "COTTON", "SUNFLOWER", "GROUNDNUT", "GEMSTONE", "GREEN GRAM"
+  "BEAN", "CASHEW", "CHICK PEA", "COCOA", "COFFEE", "GEMSTONE", "GREEN GRAM",
+  "GROUNDNUT", "PIGEON PEA", "SESAME", "SOYA", "SUNFLOWER"
 ]
 
 const CROP_TRANSLATIONS: Record<CropName, string> = {
-  COFFEE: "KAHAWA", SESAME: "UFUTA", SOYA: "SOYA", BEAN: "MAHARAGE", COCOA: "KAKAO",
-  "CHICK PEA": "DENGU", "PIGEON PEA": "MBAAZI", CASHEW: "KOROSHO", COTTON: "PAMBA",
-  SUNFLOWER: "ALIZETI", GROUNDNUT: "KARANGA", GEMSTONE: "MADINI", "GREEN GRAM": "CHOROKO",
+  BEAN: "MAHARAGE", CASHEW: "KOROSHO", "CHICK PEA": "DENGU", COCOA: "KAKAO",
+  COFFEE: "KAHAWA", GEMSTONE: "MADINI", "GREEN GRAM": "CHOROKO", GROUNDNUT: "KARANGA",
+  "PIGEON PEA": "MBAAZI", SESAME: "UFUTA", SOYA: "SOYA", SUNFLOWER: "ALIZETI",
 }
 
 const FACEBOOK_TAGS = [
@@ -146,19 +145,18 @@ export default function SocialMediaTitleGenerator() {
 
     // Map crops to their respective organizations
     const ORGANIZATION_MAP: Record<CropName, string[]> = {
-      COFFEE: ["TCB", "TCDC", "WRRB"],
+      BEAN: ["COPRA", "TCDC", "WRRB"],
       CASHEW: ["CBT", "TCDC", "WRRB"],
+      "CHICK PEA": ["COPRA", "TCDC", "WRRB"],
+      COCOA: ["COPRA", "TCDC", "WRRB"],
+      COFFEE: ["TCB", "TCDC", "WRRB"],
       GEMSTONE: ["MC", "RMO"],
+      "GREEN GRAM": ["COPRA", "TCDC", "WRRB"],
+      GROUNDNUT: ["COPRA", "TCDC", "WRRB"],
+      "PIGEON PEA": ["COPRA", "TCDC", "WRRB"],
       SESAME: ["COPRA", "TCDC", "WRRB"],
       SOYA: ["COPRA", "TCDC", "WRRB"],
-      BEAN: ["COPRA", "TCDC", "WRRB"],
-      COCOA: ["COPRA", "TCDC", "WRRB"],
-      "CHICK PEA": ["COPRA", "TCDC", "WRRB"],
-      "PIGEON PEA": ["COPRA", "TCDC", "WRRB"],
-      COTTON: ["COPRA", "TCDC", "WRRB"],
       SUNFLOWER: ["COPRA", "TCDC", "WRRB"],
-      GROUNDNUT: ["COPRA", "TCDC", "WRRB"],
-      "GREEN GRAM": ["COPRA", "TCDC", "WRRB"],
     }
 
     const organizations = ORGANIZATION_MAP[crop]

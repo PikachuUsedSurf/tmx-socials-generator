@@ -27,7 +27,9 @@ import {
   Edit3,
   Save,
   X,
+  Copy,
 } from "lucide-react"
+import { toast } from "@/hooks/use-toast"
 
 // --- TYPES ---
 type ObjectFit = "cover" | "contain" | "fill" | "none" | "scale-down"
@@ -79,45 +81,45 @@ const POSTER_WIDTH = 1080
 const POSTER_HEIGHT = 1080
 
 type CropName =
+  | "BEAN"
+  | "CASHEW"
+  | "CHICK PEA"
+  | "COCOA"
   | "COFFEE"
+  | "COTTON"
+  | "GEMSTONE"
+  | "GROUNDNUT"
+  | "GREEN GRAM"
+  | "PIGEON PEA"
   | "SESAME"
   | "SOYA"
-  | "BEAN"
-  | "COCOA"
-  | "CHICK PEA"
-  | "PIGEON PEA"
-  | "CASHEW"
-  | "COTTON"
   | "SUNFLOWER"
-  | "GROUNDNUT"
-  | "GEMSTONE"
-  | "GREEN GRAM"
 
 const AVAILABLE_LOCATIONS: string[] = [
-  "SINGIDA",
-  "MBEYA",
-  "MANYARA",
-  "RUVUMA",
-  "MTWARA",
-  "DODOMA",
-  "LINDI",
-  "MOROGORO",
-  "PWANI",
   "ARUSHA",
   "DAR ES SALAAM",
+  "DODOMA",
   "GEITA",
   "IRINGA",
   "KAGERA",
   "KATAVI",
   "KIGOMA",
   "KILIMANJARO",
+  "LINDI",
+  "MANYARA",
   "MARA",
+  "MBEYA",
+  "MOROGORO",
+  "MTWARA",
   "MWANZA",
   "NJOMBE",
   "PEMBA",
+  "PWANI",
   "RUKWA",
+  "RUVUMA",
   "SHINYANGA",
   "SIMIYU",
+  "SINGIDA",
   "SONGWE",
   "TABORA",
   "TANGA",
@@ -125,55 +127,135 @@ const AVAILABLE_LOCATIONS: string[] = [
 ]
 
 const CROPS: CropName[] = [
+  "BEAN",
+  "CASHEW",
+  "CHICK PEA",
+  "COCOA",
   "COFFEE",
+  "COTTON",
+  "GEMSTONE",
+  "GROUNDNUT",
+  "GREEN GRAM",
+  "PIGEON PEA",
   "SESAME",
   "SOYA",
-  "BEAN",
-  "COCOA",
-  "CHICK PEA",
-  "PIGEON PEA",
-  "CASHEW",
-  "COTTON",
   "SUNFLOWER",
-  "GROUNDNUT",
-  "GEMSTONE",
-  "GREEN GRAM",
 ]
 
 const CROP_TRANSLATIONS_SW: Record<CropName, string> = {
+  BEAN: "MAHARAGE",
+  CASHEW: "KOROSHO",
+  "CHICK PEA": "DENGU",
+  COCOA: "KAKAO",
   COFFEE: "KAHAWA",
+  COTTON: "PAMBA",
+  GEMSTONE: "MADINI",
+  GROUNDNUT: "KARANGA",
+  "GREEN GRAM": "CHOROKO",
+  "PIGEON PEA": "MBAAZI",
   SESAME: "UFUTA",
   SOYA: "SOYA",
-  BEAN: "MAHARAGE",
-  COCOA: "KAKAO",
-  "CHICK PEA": "DENGU",
-  "PIGEON PEA": "MBAAZI",
-  CASHEW: "KOROSHO",
-  COTTON: "PAMBA",
   SUNFLOWER: "ALIZETI",
-  GROUNDNUT: "KARANGA",
-  GEMSTONE: "MADINI",
-  "GREEN GRAM": "CHOROKO",
 }
 
 const CROP_NAMES_EN: Record<CropName, string> = {
+  BEAN: "Beans",
+  CASHEW: "Cashew Nut",
+  "CHICK PEA": "Chick Peas",
+  COCOA: "Cocoa",
   COFFEE: "Coffee",
+  COTTON: "Cotton",
+  GEMSTONE: "Gemstones",
+  GROUNDNUT: "Groundnuts",
+  "GREEN GRAM": "Green Grams",
+  "PIGEON PEA": "Pigeon Peas",
   SESAME: "Sesame",
   SOYA: "Soya",
-  BEAN: "Beans",
-  COCOA: "Cocoa",
-  "CHICK PEA": "Chick Peas",
-  "PIGEON PEA": "Pigeon Peas",
-  CASHEW: "Cashews",
-  COTTON: "Cotton",
   SUNFLOWER: "Sunflower",
-  GROUNDNUT: "Groundnuts",
-  GEMSTONE: "Gemstones",
-  "GREEN GRAM": "Green Grams",
 }
 
 // Crop-specific background images
 const CROP_BACKGROUND_IMAGES: Record<CropName, CropImage[]> = {
+  BEAN: [
+    {
+      id: "bean-1",
+      url: "/placeholder.svg?height=1080&width=1080&text=Bean+Field",
+      title: "Bean Field",
+      description: "Healthy bean plants growing",
+    },
+    {
+      id: "bean-2",
+      url: "/placeholder.svg?height=1080&width=1080&text=Bean+Harvest",
+      title: "Bean Harvest",
+      description: "Fresh beans being harvested",
+    },
+    {
+      id: "bean-3",
+      url: "/placeholder.svg?height=1080&width=1080&text=Bean+Farm+Landscape",
+      title: "Bean Farm",
+      description: "Expansive bean farming landscape",
+    },
+  ],
+  CASHEW: [
+    {
+      id: "cashew-1",
+      url: "/images/crop/cashew1.jpg",
+      title: "Cashew Orchard",
+      description: "Cashew trees in orchard",
+    },
+    {
+      id: "cashew-2",
+      url: "/images/crop/cashew2.jpg",
+      title: "Cashew Nuts",
+      description: "Fresh cashew nuts on trees",
+    },
+    {
+      id: "cashew-3",
+      url: "/images/crop/cashew3.jpg",
+      title: "Cashew Harvest",
+      description: "Harvesting cashew nuts",
+    },
+  ],
+  "CHICK PEA": [
+    {
+      id: "chickpea-1",
+      url: "/images/crop/chickpeas1.png",
+      title: "Chickpea Field",
+      description: "Chickpea plants in the field",
+    },
+    {
+      id: "chickpea-2",
+      url: "/images/crop/chickpeas2.png",
+      title: "Chickpea Harvest",
+      description: "Harvesting chickpeas",
+    },
+    {
+      id: "chickpea-3",
+      url: "/images/crop/chickpeas3.png",
+      title: "Chickpea Farm",
+      description: "Traditional chickpea farming",
+    },
+  ],
+  COCOA: [
+    {
+      id: "cocoa-1",
+      url: "/images/crop/cocoa1.png",
+      title: "Cocoa Plantation",
+      description: "Cocoa trees with pods",
+    },
+    {
+      id: "cocoa-2",
+      url: "/images/crop/cocoa2.png",
+      title: "Cocoa Pods",
+      description: "Ripe cocoa pods on trees",
+    },
+    {
+      id: "cocoa-3",
+      url: "/images/crop/cocoa3.png",
+      title: "Cocoa Harvest",
+      description: "Farmers harvesting cocoa pods",
+    },
+  ],
   COFFEE: [
     {
       id: "coffee-1",
@@ -198,6 +280,106 @@ const CROP_BACKGROUND_IMAGES: Record<CropName, CropImage[]> = {
       url: "/images/crop/coffee3.jpeg",
       title: "Coffee Processing",
       description: "Coffee beans drying in the sun",
+    },
+  ],
+  COTTON: [
+    {
+      id: "cotton-1",
+      url: "/placeholder.svg?height=1080&width=1080&text=Cotton+Field",
+      title: "Cotton Field",
+      description: "White cotton ready for harvest",
+    },
+    {
+      id: "cotton-2",
+      url: "/placeholder.svg?height=1080&width=1080&text=Cotton+Harvest",
+      title: "Cotton Harvest",
+      description: "Cotton being harvested",
+    },
+    {
+      id: "cotton-3",
+      url: "/placeholder.svg?height=1080&width=1080&text=Cotton+Farm+Landscape",
+      title: "Cotton Farm",
+      description: "Expansive cotton farming area",
+    },
+  ],
+  GEMSTONE: [
+    {
+      id: "gemstone-1",
+      url: "/placeholder.svg?height=1080&width=1080&text=Mining+Site",
+      title: "Mining Site",
+      description: "Gemstone mining operations",
+    },
+    {
+      id: "gemstone-2",
+      url: "/placeholder.svg?height=1080&width=1080&text=Gemstone+Collection",
+      title: "Gemstone Collection",
+      description: "Various gemstones display",
+    },
+    {
+      id: "gemstone-3",
+      url: "/placeholder.svg?height=1080&width=1080&text=Mining+Landscape",
+      title: "Mining Landscape",
+      description: "Gemstone mining landscape",
+    },
+  ],
+  GROUNDNUT: [
+    {
+      id: "groundnut-1",
+      url: "/placeholder.svg?height=1080&width=1080&text=Groundnut+Field",
+      title: "Groundnut Field",
+      description: "Groundnut plants in field",
+    },
+    {
+      id: "groundnut-2",
+      url: "/placeholder.svg?height=1080&width=1080&text=Groundnut+Harvest",
+      title: "Groundnut Harvest",
+      description: "Harvesting groundnuts",
+    },
+    {
+      id: "groundnut-3",
+      url: "/placeholder.svg?height=1080&width=1080&text=Groundnut+Farm",
+      title: "Groundnut Farm",
+      description: "Traditional groundnut farming",
+    },
+  ],
+  "GREEN GRAM": [
+    {
+      id: "greengram-1",
+      url: "/images/crop/greengrams1.png",
+      title: "Green Gram Field",
+      description: "Green gram plants growing",
+    },
+    {
+      id: "greengram-2",
+      url: "/images/crop/greengrams2.png",
+      title: "Green Gram Harvest",
+      description: "Harvesting green gram",
+    },
+    {
+      id: "greengram-3",
+      url: "/images/crop/greengrams3.png",
+      title: "Green Gram Farm",
+      description: "Green gram farming area",
+    },
+  ],
+  "PIGEON PEA": [
+    {
+      id: "pigeonpea-1",
+      url: "/images/crop/pigeonpeas1.png",
+      title: "Pigeon Pea Field",
+      description: "Pigeon pea plants growing",
+    },
+    {
+      id: "pigeonpea-2",
+      url: "/images/crop/pigeonpeas2.png",
+      title: "Pigeon Pea Harvest",
+      description: "Harvesting pigeon peas",
+    },
+    {
+      id: "pigeonpea-3",
+      url: "/images/crop/pigeonpeas3.png",
+      title: "Pigeon Pea Farm",
+      description: "Pigeon pea farming landscape",
     },
   ],
   SESAME: [
@@ -240,126 +422,6 @@ const CROP_BACKGROUND_IMAGES: Record<CropName, CropImage[]> = {
       description: "Soybeans being processed",
     },
   ],
-  BEAN: [
-    {
-      id: "bean-1",
-      url: "/placeholder.svg?height=1080&width=1080&text=Bean+Field",
-      title: "Bean Field",
-      description: "Healthy bean plants growing",
-    },
-    {
-      id: "bean-2",
-      url: "/placeholder.svg?height=1080&width=1080&text=Bean+Harvest",
-      title: "Bean Harvest",
-      description: "Fresh beans being harvested",
-    },
-    {
-      id: "bean-3",
-      url: "/placeholder.svg?height=1080&width=1080&text=Bean+Farm+Landscape",
-      title: "Bean Farm",
-      description: "Expansive bean farming landscape",
-    },
-  ],
-  COCOA: [
-    {
-      id: "cocoa-1",
-      url: "/images/crop/cocoa1.png",
-      title: "Cocoa Plantation",
-      description: "Cocoa trees with pods",
-    },
-    {
-      id: "cocoa-2",
-      url: "/images/crop/cocoa2.png",
-      title: "Cocoa Pods",
-      description: "Ripe cocoa pods on trees",
-    },
-    {
-      id: "cocoa-3",
-      url: "/images/crop/cocoa3.png",
-      title: "Cocoa Harvest",
-      description: "Farmers harvesting cocoa pods",
-    },
-  ],
-  "CHICK PEA": [
-    {
-      id: "chickpea-1",
-      url: "/images/crop/chickpeas1.png",
-      title: "Chickpea Field",
-      description: "Chickpea plants in the field",
-    },
-    {
-      id: "chickpea-2",
-      url: "/images/crop/chickpeas2.png",
-      title: "Chickpea Harvest",
-      description: "Harvesting chickpeas",
-    },
-    {
-      id: "chickpea-3",
-      url: "/images/crop/chickpeas3.png",
-      title: "Chickpea Farm",
-      description: "Traditional chickpea farming",
-    },
-  ],
-  "PIGEON PEA": [
-    {
-      id: "pigeonpea-1",
-      url: "/images/crop/pigeonpeas1.png",
-      title: "Pigeon Pea Field",
-      description: "Pigeon pea plants growing",
-    },
-    {
-      id: "pigeonpea-2",
-      url: "/images/crop/pigeonpeas2.png",
-      title: "Pigeon Pea Harvest",
-      description: "Harvesting pigeon peas",
-    },
-    {
-      id: "pigeonpea-3",
-      url: "/images/crop/pigeonpeas3.png",
-      title: "Pigeon Pea Farm",
-      description: "Pigeon pea farming landscape",
-    },
-  ],
-  CASHEW: [
-    {
-      id: "cashew-1",
-      url: "/placeholder.svg?height=1080&width=1080&text=Cashew+Orchard",
-      title: "Cashew Orchard",
-      description: "Cashew trees in orchard",
-    },
-    {
-      id: "cashew-2",
-      url: "/placeholder.svg?height=1080&width=1080&text=Cashew+Nuts",
-      title: "Cashew Nuts",
-      description: "Fresh cashew nuts on trees",
-    },
-    {
-      id: "cashew-3",
-      url: "/placeholder.svg?height=1080&width=1080&text=Cashew+Harvest",
-      title: "Cashew Harvest",
-      description: "Harvesting cashew nuts",
-    },
-  ],
-  COTTON: [
-    {
-      id: "cotton-1",
-      url: "/placeholder.svg?height=1080&width=1080&text=Cotton+Field",
-      title: "Cotton Field",
-      description: "White cotton ready for harvest",
-    },
-    {
-      id: "cotton-2",
-      url: "/placeholder.svg?height=1080&width=1080&text=Cotton+Harvest",
-      title: "Cotton Harvest",
-      description: "Cotton being harvested",
-    },
-    {
-      id: "cotton-3",
-      url: "/placeholder.svg?height=1080&width=1080&text=Cotton+Farm+Landscape",
-      title: "Cotton Farm",
-      description: "Expansive cotton farming area",
-    },
-  ],
   SUNFLOWER: [
     {
       id: "sunflower-1",
@@ -380,82 +442,22 @@ const CROP_BACKGROUND_IMAGES: Record<CropName, CropImage[]> = {
       description: "Golden sunflower farming landscape",
     },
   ],
-  GROUNDNUT: [
-    {
-      id: "groundnut-1",
-      url: "/placeholder.svg?height=1080&width=1080&text=Groundnut+Field",
-      title: "Groundnut Field",
-      description: "Groundnut plants in field",
-    },
-    {
-      id: "groundnut-2",
-      url: "/placeholder.svg?height=1080&width=1080&text=Groundnut+Harvest",
-      title: "Groundnut Harvest",
-      description: "Harvesting groundnuts",
-    },
-    {
-      id: "groundnut-3",
-      url: "/placeholder.svg?height=1080&width=1080&text=Groundnut+Farm",
-      title: "Groundnut Farm",
-      description: "Traditional groundnut farming",
-    },
-  ],
-  GEMSTONE: [
-    {
-      id: "gemstone-1",
-      url: "/placeholder.svg?height=1080&width=1080&text=Mining+Site",
-      title: "Mining Site",
-      description: "Gemstone mining operations",
-    },
-    {
-      id: "gemstone-2",
-      url: "/placeholder.svg?height=1080&width=1080&text=Gemstone+Collection",
-      title: "Gemstone Collection",
-      description: "Various gemstones display",
-    },
-    {
-      id: "gemstone-3",
-      url: "/placeholder.svg?height=1080&width=1080&text=Mining+Landscape",
-      title: "Mining Landscape",
-      description: "Gemstone mining landscape",
-    },
-  ],
-  "GREEN GRAM": [
-    {
-      id: "greengram-1",
-      url: "/images/crop/greengrams1.png",
-      title: "Green Gram Field",
-      description: "Green gram plants growing",
-    },
-    {
-      id: "greengram-2",
-      url: "/images/crop/greengrams2.png",
-      title: "Green Gram Harvest",
-      description: "Harvesting green gram",
-    },
-    {
-      id: "greengram-3",
-      url: "/images/crop/greengrams3.png",
-      title: "Green Gram Farm",
-      description: "Green gram farming area",
-    },
-  ],
 }
 
 const ORGANIZATION_MAP: Record<CropName, string[]> = {
-  COFFEE: ["TCB", "TCDC", "WRRB"],
-  CASHEW: ["CBT", "TCDC", "WRRB"],
-  GEMSTONE: ["MC"],
-  SESAME: ["COPRA", "TCDC", "WRRB"],
-  SOYA: ["COPRA", "TCDC", "WRRB"],
   BEAN: ["COPRA", "TCDC", "WRRB"],
-  COCOA: ["COPRA", "TCDC", "WRRB"],
+  CASHEW: ["CBT", "TCDC", "WRRB"],
   "CHICK PEA": ["COPRA", "TCDC", "WRRB"],
-  "PIGEON PEA": ["COPRA", "TCDC", "WRRB"],
+  COCOA: ["COPRA", "TCDC", "WRRB"],
+  COFFEE: ["TCB", "TCDC", "WRRB"],
   COTTON: ["COPRA", "TCDC", "WRRB"],
-  SUNFLOWER: ["COPRA", "TCDC", "WRRB"],
+  GEMSTONE: ["MC"],
   GROUNDNUT: ["COPRA", "TCDC", "WRRB"],
   "GREEN GRAM": ["COPRA", "TCDC", "WRRB"],
+  "PIGEON PEA": ["COPRA", "TCDC", "WRRB"],
+  SESAME: ["COPRA", "TCDC", "WRRB"],
+  SOYA: ["COPRA", "TCDC", "WRRB"],
+  SUNFLOWER: ["COPRA", "TCDC", "WRRB"],
 }
 
 const LOGO_URL_MAP: Record<string, string> = {
@@ -467,6 +469,26 @@ const LOGO_URL_MAP: Record<string, string> = {
   CBT: "images/logos/cbt-logo.png",
   MC: "images/logos/mc-logo.png",
 }
+
+const FACEBOOK_TAGS = [
+  "@Samia Suluhu Hassan ", "@Ikulu Mawasiliano", "@Wizara ya Fedha",
+  "@Wizara ya Viwanda na Biashara", "@Ofisi ya Rais - Tamisemi", "@Capital Market & Security Authority", "@Bank of Tanzania",
+  "@Tume Ya Maendeleo Ya Ushirika", "@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB",
+]
+
+const INSTAGRAM_TAGS = [
+  "@samia_suluhu_hassan", "@ikulu_mawasiliano", "@urtmof", "@viwandabiashara", "@ortamisemi", "@cmsa.go.tz",
+  "@bankoftanzania_","@ushirika_tcdc", "@wrrbwrs",
+]
+
+const HASHTAGS = [
+  "#oilseeds", "#buyers", "#trading", "#commodityexchangemarkets", "#commoditiesexchange",
+  "#agriculture", "#commoditiestrading", "#seller", "#commoditytraders", "#agriculturalcommodityexhange",
+  "#farmersmarket", "#onlinetradingsystem", "#agriculturalcommodityexchange", "#onlinetrading",
+  "#commoditytrader", "#traders", "#tradingcommodities", "#OnlineTradingPlatform", "#buyer",
+  "#commoditiesmarket", "#commodities", "#buyersmarket", "#TradingCommodities", "#trader",
+  "#SellersMarket", "#online", "#agriculturalcommodities", "#farmer",
+]
 
 // --- HELPER FUNCTIONS ---
 const toCamelCase = (str: string): string =>
@@ -481,6 +503,129 @@ const formatList = (items: string[], lang: "sw" | "en"): string => {
   if (items.length === 1) return items[0]
   if (items.length === 2) return `${items[0]} ${conjunction} ${items[1]}`
   return `${items.slice(0, -1).join(", ")}, ${conjunction} ${items[items.length - 1]}`
+}
+
+const formatOrganizations = (orgs: string[], language: 'swahili' | 'english') => {
+  if (orgs.length === 0) return ""
+  if (orgs.length === 1) return orgs[0]
+  if (orgs.length === 2) {
+    return language === 'swahili' ? `${orgs[0]} na ${orgs[1]}` : `${orgs[0]} and ${orgs[1]}`
+  }
+  return language === 'swahili'
+    ? `${orgs.slice(0, -1).join(", ")}, na ${orgs[orgs.length - 1]}`
+    : `${orgs.slice(0, -1).join(", ")}, and ${orgs[orgs.length - 1]}`
+}
+
+const generateSocialContent = (locations: string[], crop: CropName, date: string, time: string) => {
+  if (locations.length === 0 || !crop || !date || !time) {
+    toast({
+      title: "Error",
+      description: "Please fill in all fields",
+      variant: "destructive",
+    })
+    return
+  }
+
+  const formattedDate = new Date(date)
+    .toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+    .replace(/\//g, "/")
+
+  const organizations = ORGANIZATION_MAP[crop]
+  const formattedOrganizationsSwahili = formatOrganizations(organizations, 'swahili')
+  const formattedOrganizationsEnglish = formatOrganizations(organizations, 'english')
+  const cropHashtag = `#${crop.toLowerCase().replace(" ", "")}`
+
+  const formattedLocations = locations.map(toCamelCase).join(", ")
+  const swahiliLocations = locations.map(toCamelCase).join(", ")
+
+  const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS_SW[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase()
+
+  const socialMessage = `
+Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS_SW[
+    crop
+  ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${
+    locations.length > 1 ? "s" : ""
+  }.
+
+${FACEBOOK_TAGS.join("\n")}
+
+${HASHTAGS.join(" ")} ${cropHashtag}
+  `.trim()
+
+  const instagramMessage = `
+Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS_SW[
+    crop
+  ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${
+    locations.length > 1 ? "s" : ""
+  }.
+
+${INSTAGRAM_TAGS.join("\n")}
+
+${HASHTAGS.join(" ")} ${cropHashtag}
+  `.trim()
+
+  return {
+    youtube: youtubeTitle,
+    facebook: socialMessage,
+    instagram: instagramMessage,
+  }
+}
+
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text)
+  toast({
+    title: "Copied to clipboard",
+    description: "The generated content has been copied to your clipboard.",
+  })
+}
+
+const ContentDisplay = ({
+  label,
+  content,
+  onCopy,
+  showCharCount = false,
+}: {
+  label: string
+  content: string
+  onCopy: () => void
+  showCharCount?: boolean
+}) => {
+  const charCount = content.length
+
+  return (
+    <div className="relative flex-1">
+      <Label htmlFor={label.toLowerCase().replace(/\s+/g, "-")} className="flex justify-between items-center">
+        <span>{label}</span>
+        {showCharCount && (
+          <span className={`text-sm ${charCount < 100 ? 'text-green-500' : 'text-red-500'}`}>
+            {charCount} characters
+          </span>
+        )}
+      </Label>
+      <Textarea
+        id={label.toLowerCase().replace(/\s+/g, "-")}
+        value={content}
+        readOnly
+        className="h-64 pr-10"
+      />
+      <Button
+        size="icon"
+        variant="ghost"
+        className="absolute right-2 top-8"
+        onClick={onCopy}
+      >
+        <Copy className="h-4 w-4" />
+      </Button>
+    </div>
+  )
 }
 
 const SWAHILI_NUMBERS: Record<number, string> = {
@@ -720,7 +865,7 @@ const EditableContentGenerator: React.FC<EditableContentGeneratorProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-blue-600" />
-          Enhanced Content Generator
+          Tmx Content Generator
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -746,7 +891,7 @@ const EditableContentGenerator: React.FC<EditableContentGeneratorProps> = ({
 
         <div>
           <Label className="text-sm font-medium mb-3 block">Locations</Label>
-          <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+          <div className="flex flex-wrap gap-1 sm:gap-2 max-h-48 sm:max-h-64 overflow-y-auto">
             {AVAILABLE_LOCATIONS.map((location) => {
               const isSelected = locations.includes(location)
               return (
@@ -766,7 +911,7 @@ const EditableContentGenerator: React.FC<EditableContentGeneratorProps> = ({
 
         <div>
           <Label className="text-sm font-medium mb-3 block">Crop</Label>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1 sm:gap-2">
             {CROPS.map((cropName) => {
               const isSelected = crop === cropName
               return (
@@ -784,7 +929,7 @@ const EditableContentGenerator: React.FC<EditableContentGeneratorProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="date" className="text-sm font-medium">
               Date
@@ -1229,6 +1374,29 @@ const App: React.FC = () => {
   const previewContainerRef = useRef<HTMLDivElement>(null)
   const [previewScale, setPreviewScale] = useState(1)
 
+  // State for social media content generation
+  const [generatedSocialContent, setGeneratedSocialContent] = useState({
+    youtube: "",
+    facebook: "",
+    instagram: "",
+  })
+
+  // Auto-generate social content when inputs change
+  useEffect(() => {
+    if (locations.length > 0 && crop && date && time) {
+      const content = generateSocialContent(locations, crop, date, time)
+      if (content) {
+        setGeneratedSocialContent(content)
+      }
+    } else {
+      setGeneratedSocialContent({
+        youtube: "",
+        facebook: "",
+        instagram: "",
+      })
+    }
+  }, [locations, crop, date, time])
+
   useEffect(() => {
     const today = new Date()
     const offset = today.getTimezoneOffset()
@@ -1373,11 +1541,11 @@ const App: React.FC = () => {
         {downloadPosterState && <PosterCanvas {...downloadPosterState} id="download-poster" />}
       </div>
 
-      <div className="max-w-8xl mx-auto p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-8xl mx-auto p-4 sm:p-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
           {/* Controls Panel */}
-          <div className="lg:col-span-1">
-            <ScrollArea className="h-[calc(100vh-120px)] pr-4">
+          <div className="xl:col-span-1">
+            <ScrollArea className="h-[calc(100vh-100px)] sm:h-[calc(100vh-120px)] pr-2 sm:pr-4">
               <div className="space-y-6">
                 <EditableContentGenerator
                   onApplyContent={handleContentUpdate}
@@ -1385,24 +1553,33 @@ const App: React.FC = () => {
                 />
 
                 <Tabs defaultValue="content" className="w-full">
-                  <TabsList className="grid w-full grid-cols-4">
-                    <TabsTrigger value="content">
-                      <Type className="h-4 w-4 mr-1" />
-                      Content
-                    </TabsTrigger>
-                    <TabsTrigger value="design">
-                      <Palette className="h-4 w-4 mr-1" />
-                      Design
-                    </TabsTrigger>
-                    <TabsTrigger value="images">
-                      <ImageIcon className="h-4 w-4 mr-1" />
-                      Images
-                    </TabsTrigger>
-                    <TabsTrigger value="date">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      Date
-                    </TabsTrigger>
-                  </TabsList>
+                   <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1">
+                     <TabsTrigger value="content" className="text-xs sm:text-sm">
+                       <Type className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                       <span className="hidden sm:inline">Content</span>
+                       <span className="sm:hidden">Cont</span>
+                     </TabsTrigger>
+                     <TabsTrigger value="design" className="text-xs sm:text-sm">
+                       <Palette className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                       <span className="hidden sm:inline">Design</span>
+                       <span className="sm:hidden">Des</span>
+                     </TabsTrigger>
+                     <TabsTrigger value="images" className="text-xs sm:text-sm">
+                       <ImageIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                       <span className="hidden sm:inline">Images</span>
+                       <span className="sm:hidden">Img</span>
+                     </TabsTrigger>
+                     <TabsTrigger value="date" className="text-xs sm:text-sm">
+                       <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                       <span className="hidden sm:inline">Date</span>
+                       <span className="sm:hidden">Date</span>
+                     </TabsTrigger>
+                     <TabsTrigger value="copy-pasta" className="text-xs sm:text-sm">
+                       <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                       <span className="hidden sm:inline">Copy Pasta</span>
+                       <span className="sm:hidden">Copy</span>
+                     </TabsTrigger>
+                   </TabsList>
 
                   <TabsContent value="content" className="space-y-4 pt-4">
                     <Card>
@@ -1446,7 +1623,7 @@ const App: React.FC = () => {
                             onChange={(e) => handleNestedChange(["heading", "content"], e.target.value)}
                             className="mt-1"
                           />
-                          <div className="grid grid-cols-2 gap-4 mt-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
                             <PositionSlider
                               label="X Position"
                               value={posterState.heading.position.x}
@@ -1469,7 +1646,7 @@ const App: React.FC = () => {
                             rows={8}
                             className="mt-1"
                           />
-                          <div className="grid grid-cols-2 gap-4 mt-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
                             <PositionSlider
                               label="X Position"
                               value={posterState.paragraph.position.x}
@@ -1511,7 +1688,7 @@ const App: React.FC = () => {
 
                         <Separator />
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <Label>Image Fit</Label>
                             <Select
@@ -1604,7 +1781,7 @@ const App: React.FC = () => {
                       <CardContent className="space-y-6">
                         <div>
                           <Label className="text-sm font-medium mb-3 block">Circle Position</Label>
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <PositionSlider
                               label="X"
                               value={posterState.dateCircle.position.x}
@@ -1625,7 +1802,7 @@ const App: React.FC = () => {
                             onChange={(e) => handleNestedChange(["dateCircle", "topText", "content"], e.target.value)}
                             className="mb-3"
                           />
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <PositionSlider
                               label="X"
                               value={posterState.dateCircle.topText.position.x}
@@ -1648,7 +1825,7 @@ const App: React.FC = () => {
                             onChange={(e) => handleNestedChange(["dateCircle", "mainText", "content"], e.target.value)}
                             className="mb-3"
                           />
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <PositionSlider
                               label="X"
                               value={posterState.dateCircle.mainText.position.x}
@@ -1689,6 +1866,52 @@ const App: React.FC = () => {
                             />
                           </div>
                         </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+
+                  <TabsContent value="copy-pasta" className="space-y-4 pt-4">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Social Media Content</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {generatedSocialContent.youtube ? (
+                          <Tabs defaultValue="youtube" className="w-full">
+                            <TabsList className="grid w-full grid-cols-3">
+                              <TabsTrigger value="youtube">YouTube</TabsTrigger>
+                              <TabsTrigger value="facebook">Facebook</TabsTrigger>
+                              <TabsTrigger value="instagram">Instagram</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="youtube">
+                              <ContentDisplay
+                                label="YouTube Title"
+                                content={generatedSocialContent.youtube}
+                                onCopy={() => copyToClipboard(generatedSocialContent.youtube)}
+                                showCharCount
+                              />
+                            </TabsContent>
+                            <TabsContent value="facebook">
+                              <ContentDisplay
+                                label="Facebook Post"
+                                content={generatedSocialContent.facebook}
+                                onCopy={() => copyToClipboard(generatedSocialContent.facebook)}
+                              />
+                            </TabsContent>
+                            <TabsContent value="instagram">
+                              <ContentDisplay
+                                label="Instagram Caption"
+                                content={generatedSocialContent.instagram}
+                                onCopy={() => copyToClipboard(generatedSocialContent.instagram)}
+                              />
+                            </TabsContent>
+                          </Tabs>
+                        ) : (
+                          <div className="text-center py-8 text-gray-500">
+                            <Copy className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                            <p>Select locations, crop, date, and time to generate social media content</p>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   </TabsContent>
@@ -1766,7 +1989,11 @@ const generatePosterContent = (
     const cropSwahili = CROP_TRANSLATIONS_SW[crop]
     topText = `JAMHURI YA MUUNGANO WA TANZANIA\nWIZARA YA FEDHA\nSOKO LA BIDHAA TANZANIA`
     heading = cropSwahili.toUpperCase()
-    paragraph = `TMX, ${formattedOrganizations} na Serikali ya Mikoa ya **${formattedLocations}** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la **${cropSwahili.toUpperCase()}** Mikoa ya **${formattedLocations}**.\n\nMnada utafanyika **${swahiliWeekday}**, tarehe **${fullDateGB}** Kuanzia **${formattedTime}** Kwa njia ya Kidijitali.\n\nKaribuni wote`
+    if (locations.length < 2) {
+      paragraph = `**${formattedOrganizations}** na Serikali ya Mkoa wa **${formattedLocations}** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la **${cropSwahili.toUpperCase()}** Mkoa wa **${formattedLocations}**.\n\nMnada utafanyika **${swahiliWeekday}**, tarehe **${fullDateGB}** Kuanzia **${formattedTime}** Kwa njia ya Kidijitali.\n\nKaribuni wote`
+    } else {
+      paragraph = `TMX, ${formattedOrganizations} na Serikali ya Mikoa ya **${formattedLocations}** Zinawataarifu Wanunuzi na Wadau wote kushiriki mnada wa zao la **${cropSwahili.toUpperCase()}** Mikoa ya **${formattedLocations}**.\n\nMnada utafanyika **${swahiliWeekday}**, tarehe **${fullDateGB}** Kuanzia **${formattedTime}** Kwa njia ya Kidijitali.\n\nKaribuni wote`
+    }
     dateCircleContent = {
       topText: { content: "Tarehe", position: { x: 100, y: 40 } },
       mainText: { content: day, position: { x: 100, y: 100 } },
@@ -1777,7 +2004,11 @@ const generatePosterContent = (
     const regionText = `Region${locations.length > 1 ? "s" : ""}`
     topText = `THE UNITED REPUBLIC OF TANZANIA\nMINISTRY OF FINANCE\nTANZANIA MERCANTILE EXCHANGE`
     heading = cropEnglish.toUpperCase()
-    paragraph = `TMX, ${formattedOrganizations} the Regional and District Government Authorities of **${formattedLocations}** hereby invites you to participate in the **${cropEnglish.toUpperCase()}** auction in **${formattedLocations}** ${regionText}.\n\nThe auction will take place on **${englishWeekday}**, **${fullDateGB}**, from **${formattedTime}** through TMX Online Trading System.\n\nAll are welcome`
+    if (locations.length < 2 ){
+      paragraph = `TMX, ${formattedOrganizations} the Regional and District Government Authority of **${formattedLocations}** hereby invites you to participate in the **${cropEnglish.toUpperCase()}** auction in **${formattedLocations}** ${regionText}.\n\nThe auction will take place on **${englishWeekday}**, **${fullDateGB}**, from **${formattedTime}** through TMX Online Trading System.\n\nAll are welcome`
+    } else {
+      paragraph = `TMX, ${formattedOrganizations} the Regional and District Government Authorities of **${formattedLocations}** hereby invites you to participate in the **${cropEnglish.toUpperCase()}** auction in **${formattedLocations}** ${regionText}.\n\nThe auction will take place on **${englishWeekday}**, **${fullDateGB}**, from **${formattedTime}** through TMX Online Trading System.\n\nAll are welcome`
+    }
     dateCircleContent = {
       topText: { content: "Date", position: { x: 100, y: 40 } },
       mainText: { content: day, position: { x: 100, y: 100 } },
