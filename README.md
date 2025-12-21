@@ -1,75 +1,118 @@
 # TMX Social Media Content Generator
 
-A comprehensive web application for generating social media content, posters, and price tables for the Tanzania Mercantile Exchange (TMX). Built with Next.js, TypeScript, and modern web technologies.
+A comprehensive web application for generating social media content, posters, and price tables for the Tanzania Mercantile Exchange (TMX). Built with Next.js 15, TypeScript, and modern web technologies.
 
 ## Features
 
-### 🏷️ Social Media Title Generator
+### 🖼️ Social Media Poster Creator
+- Create customizable 1080x1080px auction posters
+- Crop-specific background image galleries
+- Bilingual content generation (Swahili and English)
+- Customizable logos, colors, and element positioning
+- Date circle with Swahili date formatting
+- High-resolution PNG export
+
+### 📝 Social Media Title Generator
 - Generate YouTube video titles for live trading sessions
 - Create Facebook and Instagram posts for commodity auctions
 - Support for multiple Tanzanian regions and crops
-- Bilingual content generation (Swahili and English)
+- Pre-configured organization tagging
 - Copy-to-clipboard functionality
 
-### 🖼️ Social Media Poster Creator
-- Create customizable auction posters
-- Support for crop-specific background images
-- Bilingual poster generation (Swahili and English)
-- Customizable logos and branding
-- Date circle positioning and styling
-- High-resolution PNG export (1080x1080px)
-
 ### 💰 Commodity Price Generator
-- Generate official price table images
+- Generate official price table images (1000x1000px)
 - Support for multiple commodities and regions
 - Customizable high/low prices and weights
 - Professional table layout with TMX branding
-- PNG export functionality
 
 ### 🗺️ Region Codes Reference
-- Complete list of Tanzanian region codes
+- Complete list of 28 Tanzanian region codes
 - Used for commodity identification and tracking
-
-### 📊 Dashboard
-- Centralized navigation and access to all tools
-- Modern sidebar interface
 
 ## Supported Commodities
 
-- Coffee (Kahawa)
-- Sesame (Ufuta)
-- Soya (Soya)
-- Beans (Maharage)
-- Cocoa (Kakao)
-- Chick Peas (Dengu)
-- Pigeon Peas (Mbaazi)
-- Cashew (Korosho)
-- Cotton (Pamba)
-- Sunflower (Alizeti)
-- Groundnuts (Karanga)
-- Gemstones (Madini)
-- Green Grams (Choroko)
-
-## Supported Regions
-
-All 31 Tanzanian regions including Arusha, Dar es Salaam, Dodoma, Geita, Iringa, Kagera, Katavi, Kigoma, Kilimanjaro, Lindi, Manyara, Mara, Mbeya, Morogoro, Mtwara, Mwanza, Njombe, Pemba, Pwani, Rukwa, Ruvuma, Shinyanga, Simiyu, Singida, Songwe, Tabora, Tanga, Zanzibar.
+| English | Swahili | Code |
+|---------|---------|------|
+| Coffee | Kahawa | CF |
+| Sesame | Ufuta | SS |
+| Soya | Soya | SY |
+| Beans | Maharage | BN |
+| Cocoa | Kakao | CC |
+| Chick Peas | Dengu | CP |
+| Pigeon Peas | Mbaazi | PP |
+| Cashew | Korosho | CW |
+| Cotton | Pamba | CT |
+| Sunflower | Alizeti | SF |
+| Groundnuts | Karanga | GN |
+| Gemstones | Madini | GM |
+| Green Grams | Choroko | GG |
 
 ## Technology Stack
 
-- **Framework:** Next.js 15
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **UI Components:** shadcn/ui
-- **Animations:** Framer Motion
+- **Framework:** Next.js 15.4.2 (with Turbopack)
+- **Language:** TypeScript 5
+- **React:** 19.1.0
+- **Styling:** Tailwind CSS 3.4
+- **UI Components:** shadcn/ui (Radix-based)
+- **Animations:** Framer Motion 12
 - **Image Generation:** html-to-image
 - **Icons:** Lucide React
+
+## Project Structure
+
+```
+tmx-socials-generator/
+├── src/
+│   ├── app/                          # Next.js App Router pages
+│   │   ├── commodity-price/          # Price table generator
+│   │   ├── dashboard/                # Dashboard
+│   │   ├── region-code/              # Region codes reference
+│   │   ├── social-media-generator/   # Copy-paste content generator
+│   │   └── social-media-poster/      # Visual poster creator
+│   │
+│   ├── lib/                          # Shared library
+│   │   ├── types/                    # TypeScript interfaces
+│   │   ├── constants/                # Crops, locations, organizations
+│   │   └── utils/                    # Formatting & time utilities
+│   │
+│   ├── components/
+│   │   ├── social-media/             # Shared UI components
+│   │   │   ├── LocationSelector      # Multi-select locations
+│   │   │   ├── CropSelector          # Single-select crop
+│   │   │   ├── DateTimePicker        # Date & time inputs
+│   │   │   └── ContentDisplay        # Read-only textarea + copy
+│   │   │
+│   │   ├── poster/                   # Poster-specific components
+│   │   │   ├── PosterCanvas          # Main poster renderer
+│   │   │   ├── CropImageSelector     # Background gallery
+│   │   │   ├── ImageUpload           # File upload
+│   │   │   ├── PositionSlider        # X/Y controls
+│   │   │   ├── DateCircleEditor      # Date circle editor
+│   │   │   └── LogoManager           # Footer logos
+│   │   │
+│   │   ├── generator/                # Generator components
+│   │   │   └── SocialContentTabs     # YT/FB/IG tabs
+│   │   │
+│   │   └── ui/                       # shadcn/ui components
+│   │
+│   └── hooks/                        # Custom React hooks
+│
+├── public/images/                    # Static assets
+│   ├── logos/                        # Organization logos
+│   ├── crop/                         # Crop background images
+│   └── backgrounds/                  # Overlay images
+│
+└── .agent/                           # Documentation
+    ├── walkthrough.md                # Project walkthrough
+    └── implementation_plan.md        # Refactoring details
+```
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- npm, yarn, or bun
+- npm, yarn, pnpm, or bun
 
 ### Installation
 
@@ -82,50 +125,70 @@ cd tmx-socials-generator
 2. Install dependencies:
 ```bash
 npm install
-# or
-yarn install
-# or
-bun install
 ```
 
 3. Run the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-bun dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Usage
 
-1. **Navigate** through the sidebar to access different tools
-2. **Social Media Generator:** Select regions, crop, date, and time to generate content
-3. **Poster Creator:** Customize poster elements and download high-quality images
-4. **Price Generator:** Input commodity prices and export as images
-5. **Region Codes:** Reference region codes for commodity identification
+### Social Media Poster
+1. Navigate to `/social-media-poster`
+2. Select locations, crop, date, and time
+3. Choose a background image or upload custom
+4. Adjust element positions as needed
+5. Download the poster as PNG
 
-## Project Structure
+### Title Generator
+1. Navigate to `/social-media-generator`
+2. Select locations and crop
+3. Choose a date
+4. Click "Generate Content"
+5. Copy the generated content for YouTube, Facebook, or Instagram
 
-```
-tmx-socials-generator/
-├── src/
-│   ├── app/
-│   │   ├── commodity-price/
-│   │   ├── dashboard/
-│   │   ├── region-code/
-│   │   ├── social-media-generator/
-│   │   └── social-media-poster/
-│   ├── components/
-│   │   ├── ui/          # shadcn/ui components
-│   │   └── ...          # Custom components
-│   └── lib/
-├── public/
-│   └── images/          # Logos, backgrounds, crop images
-├── package.json
-└── README.md
+### Price Generator
+1. Navigate to `/commodity-price`
+2. Add commodity rows (up to 4)
+3. Select commodity, region, and union
+4. Enter prices and weights
+5. Download as image
+
+## Key Features
+
+### Swahili Time Formatting
+The poster creator converts 24-hour time to traditional Swahili time:
+- 10:30 AM → "Saa Nne na nusu Asubuhi"
+- Swahili hours are 6 hours offset from the clock
+- Periods: Asubuhi (morning), Mchana (afternoon), Jioni (evening), Usiku (night)
+
+### Rich Text Support
+Poster text supports **bold** markdown syntax for emphasis.
+
+### Organization Mapping
+Each crop automatically maps to its relevant organizations:
+- Coffee → TCB, TCDC, WRRB
+- Cashew → CBT, TCDC, WRRB
+- Gemstones → MC (Mining Commission)
+- Most others → COPRA, TCDC, WRRB
+
+## Scripts
+
+```bash
+# Development server with Turbopack
+npm run dev
+
+# Production build
+npm run build
+
+# Start production server
+npm start
+
+# Run linting
+npm run lint
 ```
 
 ## Contributing
