@@ -167,3 +167,68 @@ The existing page files still work with their original code. A future improvemen
 - [ ] Refactor `src/components/SocialMediaTitleGenerator.tsx` to use new components
 
 This would reduce the poster page from ~2000 lines to ~150 lines.
+
+---
+
+## Docker Deployment ✅
+
+### Docker Files Created
+
+| File | Purpose |
+|------|---------|
+| `Dockerfile` | Multi-stage build for optimized production image |
+| `docker-compose.yml` | Container orchestration with prod and dev services |
+| `.dockerignore` | Excludes unnecessary files from build context |
+| `next.config.mjs` | Updated with `output: "standalone"` for Docker |
+
+### Docker Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Dockerfile                               │
+├─────────────────────────────────────────────────────────────┤
+│  Stage 1: Builder                                           │
+│  ├── node:20-alpine                                         │
+│  ├── npm ci (install deps)                                  │
+│  └── npm run build (compile)                                │
+├─────────────────────────────────────────────────────────────┤
+│  Stage 2: Runner                                            │
+│  ├── node:20-alpine (minimal)                               │
+│  ├── Copy standalone build                                  │
+│  ├── Run as non-root user (nextjs)                          │
+│  └── Expose port 3000                                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Quick Commands
+
+```bash
+# Production deployment
+docker-compose up -d
+
+# Development with hot reload
+docker-compose --profile dev up dev
+
+# Manual build and run
+docker build -t tmx-socials-generator .
+docker run -p 3000:3000 tmx-socials-generator
+
+# View logs
+docker-compose logs -f
+
+# Stop containers
+docker-compose down
+
+# Rebuild after code changes
+docker-compose up -d --build
+```
+
+### Features
+
+- 🏗️ **Multi-stage build**: Separate build and runtime stages
+- 📦 **Small image size**: Alpine-based (~150MB)
+- 🔒 **Security**: Runs as non-root `nextjs` user
+- ❤️ **Health checks**: Automatic container health monitoring
+- 🔄 **Dev mode**: Hot reload support with volume mounting
+- 📤 **Standalone output**: No node_modules in production
+

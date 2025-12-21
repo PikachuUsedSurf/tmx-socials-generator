@@ -113,6 +113,7 @@ tmx-socials-generator/
 
 - Node.js 18+
 - npm, yarn, pnpm, or bun
+- Docker (optional, for containerized deployment)
 
 ### Installation
 
@@ -133,6 +134,37 @@ npm run dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Docker Deployment
+
+#### Production Build
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Or build manually
+docker build -t tmx-socials-generator .
+docker run -p 3000:3000 tmx-socials-generator
+```
+
+#### Development with Hot Reload
+```bash
+# Run development container with volume mounting
+docker-compose --profile dev up dev
+```
+
+#### Docker Commands
+```bash
+# Stop containers
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Rebuild after changes
+docker-compose up -d --build
+```
+
 
 ## Usage
 

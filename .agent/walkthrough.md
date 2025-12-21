@@ -89,6 +89,10 @@ tmx-socials-generator/
 │   ├── walkthrough.md                    # This file
 │   └── implementation_plan.md            # Refactoring plan
 │
+├── Dockerfile                            # 🐳 Multi-stage Docker build
+├── docker-compose.yml                    # 🐳 Container orchestration
+├── .dockerignore                         # 🐳 Docker build exclusions
+├── next.config.mjs                       # Next.js config (standalone output)
 └── package.json
 ```
 
@@ -243,6 +247,45 @@ import type { CropName, PosterState } from "@/lib/types"
 // Import utilities
 import { formatTime, toCamelCase } from "@/lib/utils"
 ```
+
+---
+
+## Docker Deployment
+
+### Production Build
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Or build manually
+docker build -t tmx-socials-generator .
+docker run -p 3000:3000 tmx-socials-generator
+```
+
+### Development with Hot Reload
+```bash
+# Run development container with volume mounting
+docker-compose --profile dev up dev
+```
+
+### Docker Commands
+```bash
+# Stop containers
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Rebuild after changes
+docker-compose up -d --build
+```
+
+### Docker Architecture
+- **Multi-stage build**: Builder stage compiles, runner stage is minimal
+- **Alpine base**: Small image size (~150MB)
+- **Non-root user**: Runs as `nextjs` user for security
+- **Health checks**: Automatic container health monitoring
+- **Standalone output**: No node_modules needed in production
 
 ---
 
