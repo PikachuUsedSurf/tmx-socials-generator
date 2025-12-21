@@ -49,7 +49,7 @@ const FACEBOOK_TAGS = [
 
 const INSTAGRAM_TAGS = [
   "@samia_suluhu_hassan", "@ikulu_mawasiliano", "@urtmof", "@viwandabiashara", "@ortamisemi", "@cmsa.go.tz",
-  "@bankoftanzania_","@ushirika_tcdc", "@wrrbwrs",
+  "@bankoftanzania_", "@ushirika_tcdc", "@wrrbwrs",
 ]
 // "@wizara_ya_kilimo"
 
@@ -63,7 +63,7 @@ const HASHTAGS = [
 ]
 
 const transitionProps = {
-  type: "spring",
+  type: "spring" as const,
   stiffness: 500,
   damping: 30,
   mass: 0.5,
@@ -168,12 +168,11 @@ export default function SocialMediaTitleGenerator() {
 
     const socialMessage = `
 Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS[
-      crop
-    ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+        crop
+      ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
-We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${
-      locations.length > 1 ? "s" : ""
-    }.
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${locations.length > 1 ? "s" : ""
+      }.
 
 ${FACEBOOK_TAGS.join("\n")}
 
@@ -182,12 +181,11 @@ ${HASHTAGS.join(" ")} ${cropHashtag}
 
     const instagramMessage = `
 Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS[
-      crop
-    ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+        crop
+      ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
-We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${
-      locations.length > 1 ? "s" : ""
-    }.
+We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${locations.length > 1 ? "s" : ""
+      }.
 
 ${INSTAGRAM_TAGS.join("\n")}
 
@@ -231,7 +229,7 @@ ${FACEBOOK_TAGS.join("\n")}
       <div className="space-y-4">
         <div>
           <Label htmlFor="location">Locations</Label>
-          <motion.div 
+          <motion.div
             className="flex flex-wrap gap-2 mt-2"
             layout
             transition={transitionProps}
@@ -263,9 +261,9 @@ ${FACEBOOK_TAGS.join("\n")}
                     border border-black
                   `}
                 >
-                  <motion.div 
+                  <motion.div
                     className="relative flex items-center"
-                    animate={{ 
+                    animate={{
                       paddingRight: isSelected ? "1.5rem" : "0",
                     }}
                     transition={{
@@ -296,7 +294,7 @@ ${FACEBOOK_TAGS.join("\n")}
 
         <div>
           <Label>Crop</Label>
-          <motion.div 
+          <motion.div
             className="flex flex-wrap gap-2 mt-2"
             layout
             transition={transitionProps}
@@ -328,9 +326,9 @@ ${FACEBOOK_TAGS.join("\n")}
                     border border-black
                   `}
                 >
-                  <motion.div 
+                  <motion.div
                     className="relative flex items-center"
-                    animate={{ 
+                    animate={{
                       paddingRight: isSelected ? "1.5rem" : "0",
                     }}
                     transition={{
@@ -374,46 +372,46 @@ ${FACEBOOK_TAGS.join("\n")}
         {(generatedContent.youtube ||
           generatedContent.facebook ||
           generatedContent.instagram) && (
-          <Tabs defaultValue="youtube" className="w-full mt-4">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="youtube">YouTube</TabsTrigger>
-              <TabsTrigger value="facebook">Facebook</TabsTrigger>
-              <TabsTrigger value="instagram">Instagram</TabsTrigger>
-            </TabsList>
-            <TabsContent value="youtube">
-              <ContentDisplay
-                label="YouTube Title"
-                content={generatedContent.youtube}
-                onCopy={() => copyToClipboard(generatedContent.youtube)}
-                showCharCount
-              />
-            </TabsContent>
-            <TabsContent value="facebook" className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
-              <ContentDisplay
-                label="Facebook Message"
-                content={generatedContent.facebook}
-                onCopy={() => copyToClipboard(generatedContent.facebook)}
-              />
-              <ContentDisplay
-                label="Facebook Results Caption"
-                content={generatedContent.facebookResult}
-                onCopy={() => copyToClipboard(generatedContent.facebookResult)}
-              />
-            </TabsContent>
-            <TabsContent value="instagram" className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
-              <ContentDisplay
-                label="Instagram Message"
-                content={generatedContent.instagram}
-                onCopy={() => copyToClipboard(generatedContent.instagram)}
-              />
-              <ContentDisplay
-                label="Instagram Results Caption"
-                content={generatedContent.instagramResult}
-                onCopy={() => copyToClipboard(generatedContent.instagramResult)}
-              />
-            </TabsContent>
-          </Tabs>
-        )}
+            <Tabs defaultValue="youtube" className="w-full mt-4">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="youtube">YouTube</TabsTrigger>
+                <TabsTrigger value="facebook">Facebook</TabsTrigger>
+                <TabsTrigger value="instagram">Instagram</TabsTrigger>
+              </TabsList>
+              <TabsContent value="youtube">
+                <ContentDisplay
+                  label="YouTube Title"
+                  content={generatedContent.youtube}
+                  onCopy={() => copyToClipboard(generatedContent.youtube)}
+                  showCharCount
+                />
+              </TabsContent>
+              <TabsContent value="facebook" className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
+                <ContentDisplay
+                  label="Facebook Message"
+                  content={generatedContent.facebook}
+                  onCopy={() => copyToClipboard(generatedContent.facebook)}
+                />
+                <ContentDisplay
+                  label="Facebook Results Caption"
+                  content={generatedContent.facebookResult}
+                  onCopy={() => copyToClipboard(generatedContent.facebookResult)}
+                />
+              </TabsContent>
+              <TabsContent value="instagram" className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
+                <ContentDisplay
+                  label="Instagram Message"
+                  content={generatedContent.instagram}
+                  onCopy={() => copyToClipboard(generatedContent.instagram)}
+                />
+                <ContentDisplay
+                  label="Instagram Results Caption"
+                  content={generatedContent.instagramResult}
+                  onCopy={() => copyToClipboard(generatedContent.instagramResult)}
+                />
+              </TabsContent>
+            </Tabs>
+          )}
       </div>
     </div>
   )
