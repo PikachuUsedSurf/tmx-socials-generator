@@ -3,3 +3,5 @@ export * from "./crops"
 export * from "./locations"
 export * from "./organizations"
 export * from "./social-tags"
+export * from "./image-search"
+
