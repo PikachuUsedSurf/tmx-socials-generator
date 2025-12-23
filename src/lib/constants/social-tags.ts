@@ -1,27 +1,28 @@
 // Facebook tags for social media posts
 export const FACEBOOK_TAGS = [
-    "@Samia Suluhu Hassan ",
-    "@Ikulu Mawasiliano",
+    "@Tume Ya Maendeleo Ya Ushirika",
+    "@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB",
     "@Wizara ya Fedha",
     "@Wizara ya Viwanda na Biashara",
     "@Ofisi ya Rais - Tamisemi",
     "@Capital Market & Security Authority",
     "@Bank of Tanzania",
-    "@Tume Ya Maendeleo Ya Ushirika",
-    "@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB",
+    "@Samia Suluhu Hassan ",
+    "@Ikulu Mawasiliano",
 ]
 
 // Instagram handles for social media posts
 export const INSTAGRAM_TAGS = [
-    "@samia_suluhu_hassan",
-    "@ikulu_mawasiliano",
+    "@copra_tz",
+    "@ushirika_tcdc",
+    "@wrrbwrs",
     "@urtmof",
     "@viwandabiashara",
     "@ortamisemi",
     "@cmsa.go.tz",
     "@bankoftanzania_",
-    "@ushirika_tcdc",
-    "@wrrbwrs",
+    "@samia_suluhu_hassan",
+    "@ikulu_mawasiliano",
 ]
 
 // Hashtags for social media posts
@@ -33,7 +34,7 @@ export const HASHTAGS = [
     "#commoditiesexchange",
     "#agriculture",
     "#commoditiestrading",
-    "#seller",
+    "#tanzania",
     "#commoditytraders",
     "#agriculturalcommodityexhange",
     "#farmersmarket",
@@ -41,7 +42,7 @@ export const HASHTAGS = [
     "#agriculturalcommodityexchange",
     "#onlinetrading",
     "#commoditytrader",
-    "#traders",
+    "#tanzaniatrader",
     "#tradingcommodities",
     "#OnlineTradingPlatform",
     "#buyer",
