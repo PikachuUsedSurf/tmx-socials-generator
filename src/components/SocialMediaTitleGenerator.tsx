@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Check, Copy, X } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "@/hooks/use-toast"
+import { FACEBOOK_TAGS, INSTAGRAM_TAGS, HASHTAGS } from "@/lib/constants/social-tags"
 
 type CropName =
   | "BEAN"
@@ -41,26 +42,6 @@ const CROP_TRANSLATIONS: Record<CropName, string> = {
   "PIGEON PEA": "MBAAZI", SESAME: "UFUTA", SOYA: "SOYA", SUNFLOWER: "ALIZETI",
 }
 
-const FACEBOOK_TAGS = [
-  "@Samia Suluhu Hassan ", "@Ikulu Mawasiliano", "@Wizara ya Fedha",
-  "@Wizara ya Viwanda na Biashara", "@Ofisi ya Rais - Tamisemi", "@Capital Market & Security Authority", "@Bank of Tanzania",
-  "@Tume Ya Maendeleo Ya Ushirika", "@Bodi ya Usimamizi wa Stakabadhi za Ghala-WRRB",
-]
-
-const INSTAGRAM_TAGS = [
-  "@samia_suluhu_hassan", "@ikulu_mawasiliano", "@urtmof", "@viwandabiashara", "@ortamisemi", "@cmsa.go.tz",
-  "@bankoftanzania_", "@ushirika_tcdc", "@wrrbwrs",
-]
-// "@wizara_ya_kilimo"
-
-const HASHTAGS = [
-  "#oilseeds", "#buyers", "#trading", "#commodityexchangemarkets", "#commoditiesexchange",
-  "#agriculture", "#commoditiestrading", "#seller", "#commoditytraders", "#agriculturalcommodityexhange",
-  "#farmersmarket", "#onlinetradingsystem", "#agriculturalcommodityexchange", "#onlinetrading",
-  "#commoditytrader", "#traders", "#tradingcommodities", "#OnlineTradingPlatform", "#buyer",
-  "#commoditiesmarket", "#commodities", "#buyersmarket", "#TradingCommodities", "#trader",
-  "#SellersMarket", "#online", "#agriculturalcommodities", "#farmer",
-]
 
 const transitionProps = {
   type: "spring" as const,
