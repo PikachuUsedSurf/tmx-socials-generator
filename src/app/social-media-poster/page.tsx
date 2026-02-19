@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import React, { useState, useCallback, useRef, useEffect } from "react"
 import { toPng } from "html-to-image"
@@ -31,445 +31,13 @@ import {
 } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 import { CropImageSelector } from "@/components/poster"
-
-// --- TYPES ---
-type ObjectFit = "cover" | "contain" | "fill" | "none" | "scale-down"
-
-interface BackgroundStyle {
-  objectFit: ObjectFit
-  objectPosition: string
-}
-
-interface Position {
-  x: number
-  y: number
-}
-
-interface PositionableElement {
-  content: string
-  position: Position
-}
-
-interface DateCircleState {
-  position: Position
-  topText: PositionableElement
-  mainText: PositionableElement
-  bottomText: PositionableElement
-}
-
-interface PosterState {
-  topText: string
-  heading: PositionableElement
-  paragraph: PositionableElement
-  backgroundImage: string | null
-  backgroundStyle: BackgroundStyle
-  headerFooterBackgroundColor: string
-  dateCircle: DateCircleState
-  topLeftLogo: string | null
-  topRightLogo: string | null
-  footerLogos: string[]
-}
-
-interface CropImage {
-  id: string
-  url: string
-  title: string
-  description: string
-}
-
-// --- CONSTANTS ---
-const POSTER_WIDTH = 1080
-const POSTER_HEIGHT = 1080
-
-type CropName =
-  | "BEAN"
-  | "CASHEW"
-  | "CHICK PEA"
-  | "COCOA"
-  | "COFFEE"
-  | "COTTON"
-  | "GEMSTONE"
-  | "GROUNDNUT"
-  | "GREEN GRAM"
-  | "PIGEON PEA"
-  | "SESAME"
-  | "SOYA"
-  | "SUNFLOWER"
-
-const AVAILABLE_LOCATIONS: string[] = [
-  "ARUSHA",
-  "DAR ES SALAAM",
-  "DODOMA",
-  "GEITA",
-  "IRINGA",
-  "KAGERA",
-  "KATAVI",
-  "KIGOMA",
-  "KILIMANJARO",
-  "LINDI",
-  "MANYARA",
-  "MARA",
-  "MBEYA",
-  "MOROGORO",
-  "MTWARA",
-  "MWANZA",
-  "NJOMBE",
-  "PEMBA",
-  "PWANI",
-  "RUKWA",
-  "RUVUMA",
-  "SHINYANGA",
-  "SIMIYU",
-  "SINGIDA",
-  "SONGWE",
-  "TABORA",
-  "TANGA",
-  "ZANZIBAR",
-]
-
-const CROPS: CropName[] = [
-  "BEAN",
-  "CASHEW",
-  "CHICK PEA",
-  "COCOA",
-  "COFFEE",
-  "COTTON",
-  "GEMSTONE",
-  "GROUNDNUT",
-  "GREEN GRAM",
-  "PIGEON PEA",
-  "SESAME",
-  "SOYA",
-  "SUNFLOWER",
-]
-
-const CROP_TRANSLATIONS_SW: Record<CropName, string> = {
-  BEAN: "MAHARAGE",
-  CASHEW: "KOROSHO",
-  "CHICK PEA": "DENGU",
-  COCOA: "KAKAO",
-  COFFEE: "KAHAWA",
-  COTTON: "PAMBA",
-  GEMSTONE: "MADINI",
-  GROUNDNUT: "KARANGA",
-  "GREEN GRAM": "CHOROKO",
-  "PIGEON PEA": "MBAAZI",
-  SESAME: "UFUTA",
-  SOYA: "SOYA",
-  SUNFLOWER: "ALIZETI",
-}
-
-const CROP_NAMES_EN: Record<CropName, string> = {
-  BEAN: "Beans",
-  CASHEW: "Cashew Nut",
-  "CHICK PEA": "Chick Peas",
-  COCOA: "Cocoa",
-  COFFEE: "Coffee",
-  COTTON: "Cotton",
-  GEMSTONE: "Gemstones",
-  GROUNDNUT: "Groundnuts",
-  "GREEN GRAM": "Green Grams",
-  "PIGEON PEA": "Pigeon Peas",
-  SESAME: "Sesame",
-  SOYA: "Soya",
-  SUNFLOWER: "Sunflower",
-}
-
-// Crop-specific background images
-const CROP_BACKGROUND_IMAGES: Record<CropName, CropImage[]> = {
-  BEAN: [
-    {
-      id: "bean-1",
-      url: "/placeholder.svg?height=1080&width=1080&text=Bean+Field",
-      title: "Bean Field",
-      description: "Healthy bean plants growing",
-    },
-    {
-      id: "bean-2",
-      url: "/placeholder.svg?height=1080&width=1080&text=Bean+Harvest",
-      title: "Bean Harvest",
-      description: "Fresh beans being harvested",
-    },
-    {
-      id: "bean-3",
-      url: "/placeholder.svg?height=1080&width=1080&text=Bean+Farm+Landscape",
-      title: "Bean Farm",
-      description: "Expansive bean farming landscape",
-    },
-  ],
-  CASHEW: [
-    {
-      id: "cashew-1",
-      url: "/images/crop/cashew1.jpg",
-      title: "Cashew Orchard",
-      description: "Cashew trees in orchard",
-    },
-    {
-      id: "cashew-2",
-      url: "/images/crop/cashew2.jpg",
-      title: "Cashew Nuts",
-      description: "Fresh cashew nuts on trees",
-    },
-    {
-      id: "cashew-3",
-      url: "/images/crop/cashew3.jpg",
-      title: "Cashew Harvest",
-      description: "Harvesting cashew nuts",
-    },
-  ],
-  "CHICK PEA": [
-    {
-      id: "chickpea-1",
-      url: "/images/crop/chickpeas1.png",
-      title: "Chickpea Field",
-      description: "Chickpea plants in the field",
-    },
-    {
-      id: "chickpea-2",
-      url: "/images/crop/chickpeas2.png",
-      title: "Chickpea Harvest",
-      description: "Harvesting chickpeas",
-    },
-    {
-      id: "chickpea-3",
-      url: "/images/crop/chickpeas3.png",
-      title: "Chickpea Farm",
-      description: "Traditional chickpea farming",
-    },
-  ],
-  COCOA: [
-    {
-      id: "cocoa-1",
-      url: "/images/crop/cocoa1.png",
-      title: "Cocoa Plantation",
-      description: "Cocoa trees with pods",
-    },
-    {
-      id: "cocoa-2",
-      url: "/images/crop/cocoa2.png",
-      title: "Cocoa Pods",
-      description: "Ripe cocoa pods on trees",
-    },
-    {
-      id: "cocoa-3",
-      url: "/images/crop/cocoa3.png",
-      title: "Cocoa Harvest",
-      description: "Farmers harvesting cocoa pods",
-    },
-  ],
-  COFFEE: [
-    {
-      id: "coffee-1",
-      url: "/images/crop/coffee1.jpg",
-      title: "Coffee Plantation",
-      description: "Lush coffee plantation with green beans",
-    },
-    {
-      id: "coffee-2",
-      url: "/images/crop/coffee2.jpg",
-      title: "Coffee Harvest",
-      description: "Fresh coffee beans being harvested",
-    },
-    {
-      id: "coffee-3",
-      url: "/images/crop/coffee3.jpeg",
-      title: "Coffee Farm",
-      description: "Rolling hills of coffee farms",
-    },
-    {
-      id: "coffee-4",
-      url: "/images/crop/coffee3.jpeg",
-      title: "Coffee Processing",
-      description: "Coffee beans drying in the sun",
-    },
-  ],
-  COTTON: [
-    {
-      id: "cotton-1",
-      url: "/placeholder.svg?height=1080&width=1080&text=Cotton+Field",
-      title: "Cotton Field",
-      description: "White cotton ready for harvest",
-    },
-    {
-      id: "cotton-2",
-      url: "/placeholder.svg?height=1080&width=1080&text=Cotton+Harvest",
-      title: "Cotton Harvest",
-      description: "Cotton being harvested",
-    },
-    {
-      id: "cotton-3",
-      url: "/placeholder.svg?height=1080&width=1080&text=Cotton+Farm+Landscape",
-      title: "Cotton Farm",
-      description: "Expansive cotton farming area",
-    },
-  ],
-  GEMSTONE: [
-    {
-      id: "gemstone-1",
-      url: "/placeholder.svg?height=1080&width=1080&text=Mining+Site",
-      title: "Mining Site",
-      description: "Gemstone mining operations",
-    },
-    {
-      id: "gemstone-2",
-      url: "/placeholder.svg?height=1080&width=1080&text=Gemstone+Collection",
-      title: "Gemstone Collection",
-      description: "Various gemstones display",
-    },
-    {
-      id: "gemstone-3",
-      url: "/placeholder.svg?height=1080&width=1080&text=Mining+Landscape",
-      title: "Mining Landscape",
-      description: "Gemstone mining landscape",
-    },
-  ],
-  GROUNDNUT: [
-    {
-      id: "groundnut-1",
-      url: "/placeholder.svg?height=1080&width=1080&text=Groundnut+Field",
-      title: "Groundnut Field",
-      description: "Groundnut plants in field",
-    },
-    {
-      id: "groundnut-2",
-      url: "/placeholder.svg?height=1080&width=1080&text=Groundnut+Harvest",
-      title: "Groundnut Harvest",
-      description: "Harvesting groundnuts",
-    },
-    {
-      id: "groundnut-3",
-      url: "/placeholder.svg?height=1080&width=1080&text=Groundnut+Farm",
-      title: "Groundnut Farm",
-      description: "Traditional groundnut farming",
-    },
-  ],
-  "GREEN GRAM": [
-    {
-      id: "greengram-1",
-      url: "/images/crop/greengrams1.png",
-      title: "Green Gram Field",
-      description: "Green gram plants growing",
-    },
-    {
-      id: "greengram-2",
-      url: "/images/crop/greengrams2.png",
-      title: "Green Gram Harvest",
-      description: "Harvesting green gram",
-    },
-    {
-      id: "greengram-3",
-      url: "/images/crop/greengrams3.png",
-      title: "Green Gram Farm",
-      description: "Green gram farming area",
-    },
-  ],
-  "PIGEON PEA": [
-    {
-      id: "pigeonpea-1",
-      url: "/images/crop/pigeonpeas1.png",
-      title: "Pigeon Pea Field",
-      description: "Pigeon pea plants growing",
-    },
-    {
-      id: "pigeonpea-2",
-      url: "/images/crop/pigeonpeas2.png",
-      title: "Pigeon Pea Harvest",
-      description: "Harvesting pigeon peas",
-    },
-    {
-      id: "pigeonpea-3",
-      url: "/images/crop/pigeonpeas3.png",
-      title: "Pigeon Pea Farm",
-      description: "Pigeon pea farming landscape",
-    },
-  ],
-  SESAME: [
-    {
-      id: "sesame-1",
-      url: "/images/crop/sesame1.png",
-      title: "Sesame Field",
-      description: "Golden sesame plants in the field",
-    },
-    {
-      id: "sesame-2",
-      url: "/images/crop/sesame2.png",
-      title: "Sesame Harvest",
-      description: "Sesame seeds ready for harvest",
-    },
-    {
-      id: "sesame-3",
-      url: "/images/crop/sesame1.png",
-      title: "Sesame Farming",
-      description: "Farmers working in sesame fields",
-    },
-  ],
-  SOYA: [
-    {
-      id: "soya-1",
-      url: "/images/crop/soya1.png",
-      title: "Soybean Field",
-      description: "Green soybean plants in rows",
-    },
-    {
-      id: "soya-2",
-      url: "/images/crop/soya2.png",
-      title: "Soybean Harvest",
-      description: "Mature soybeans ready for harvest",
-    },
-    {
-      id: "soya-3",
-      url: "/images/crop/soya3.png",
-      title: "Soybean Processing",
-      description: "Soybeans being processed",
-    },
-  ],
-  SUNFLOWER: [
-    {
-      id: "sunflower-1",
-      url: "/placeholder.svg?height=1080&width=1080&text=Sunflower+Field",
-      title: "Sunflower Field",
-      description: "Bright sunflower field",
-    },
-    {
-      id: "sunflower-2",
-      url: "/placeholder.svg?height=1080&width=1080&text=Sunflower+Harvest",
-      title: "Sunflower Harvest",
-      description: "Harvesting sunflower seeds",
-    },
-    {
-      id: "sunflower-3",
-      url: "/placeholder.svg?height=1080&width=1080&text=Sunflower+Farm",
-      title: "Sunflower Farm",
-      description: "Golden sunflower farming landscape",
-    },
-  ],
-}
-
-const ORGANIZATION_MAP: Record<CropName, string[]> = {
-  BEAN: ["COPRA", "TCDC", "WRRB"],
-  CASHEW: ["CBT", "TCDC", "WRRB"],
-  "CHICK PEA": ["COPRA", "TCDC", "WRRB"],
-  COCOA: ["COPRA", "TCDC", "WRRB"],
-  COFFEE: ["TCB", "TCDC", "WRRB"],
-  COTTON: ["COPRA", "TCDC", "WRRB"],
-  GEMSTONE: ["MC"],
-  GROUNDNUT: ["COPRA", "TCDC", "WRRB"],
-  "GREEN GRAM": ["COPRA", "TCDC", "WRRB"],
-  "PIGEON PEA": ["COPRA", "TCDC", "WRRB"],
-  SESAME: ["COPRA", "TCDC", "WRRB"],
-  SOYA: ["COPRA", "TCDC", "WRRB"],
-  SUNFLOWER: ["COPRA", "TCDC", "WRRB"],
-}
-
-const LOGO_URL_MAP: Record<string, string> = {
-  TMX: "images/logos/tmx-logo.png",
-  WRRB: "images/logos/wrrb-logo.png",
-  COPRA: "images/logos/copra-logo.png",
-  TCDC: "images/logos/tcdc-logo.png",
-  TCB: "images/logos/tcb-logo.png",
-  CBT: "images/logos/cbt-logo.png",
-  MC: "images/logos/madini.png",
-}
+import type { ObjectFit, BackgroundStyle, Position, PositionableElement, DateCircleState, PosterState, CropImage, CropName } from "@/lib/types"
+import { POSTER_WIDTH, POSTER_HEIGHT } from "@/lib/types"
+import { AVAILABLE_LOCATIONS } from "@/lib/constants/locations"
+import { ORGANIZATION_MAP, LOGO_URL_MAP } from "@/lib/constants/organizations"
+import { CROPS, CROP_TRANSLATIONS_SW, CROP_NAMES_EN, CROP_BACKGROUND_IMAGES } from "@/lib/constants/crops"
+import { toCamelCase, formatList, formatOrganizations } from "@/lib/utils/formatting"
+import { SWAHILI_NUMBERS, getSwahiliPeriod, formatTime } from "@/lib/utils/time"
 
 const FACEBOOK_TAGS = [
   "@Samia Suluhu Hassan ", "@Ikulu Mawasiliano", "@Wizara ya Fedha",
@@ -491,31 +59,6 @@ const HASHTAGS = [
   "#SellersMarket", "#online", "#agriculturalcommodities", "#farmer",
 ]
 
-// --- HELPER FUNCTIONS ---
-const toCamelCase = (str: string): string =>
-  str
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ")
-
-const formatList = (items: string[], lang: "sw" | "en"): string => {
-  const conjunction = lang === "sw" ? "na" : "and"
-  if (items.length === 0) return ""
-  if (items.length === 1) return items[0]
-  if (items.length === 2) return `${items[0]} ${conjunction} ${items[1]}`
-  return `${items.slice(0, -1).join(", ")}, ${conjunction} ${items[items.length - 1]}`
-}
-
-const formatOrganizations = (orgs: string[], language: 'swahili' | 'english') => {
-  if (orgs.length === 0) return ""
-  if (orgs.length === 1) return orgs[0]
-  if (orgs.length === 2) {
-    return language === 'swahili' ? `${orgs[0]} na ${orgs[1]}` : `${orgs[0]} and ${orgs[1]}`
-  }
-  return language === 'swahili'
-    ? `${orgs.slice(0, -1).join(", ")}, na ${orgs[orgs.length - 1]}`
-    : `${orgs.slice(0, -1).join(", ")}, and ${orgs[orgs.length - 1]}`
-}
 
 const generateSocialContent = (locations: string[], crop: CropName, date: string, time: string) => {
   if (locations.length === 0 || !crop || !date || !time) {
@@ -541,14 +84,13 @@ const generateSocialContent = (locations: string[], crop: CropName, date: string
   const cropHashtag = `#${crop.toLowerCase().replace(" ", "")}`
 
   const formattedLocations = locations.map(toCamelCase).join(", ")
-  const swahiliLocations = locations.map(toCamelCase).join(", ")
 
-  const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS_SW[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase()
+  const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS_SW[crop]} ${formattedLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase()
 
   const socialMessage = `
 Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS_SW[
       crop
-    ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+    ].toLowerCase()} Mkoa wa ${formattedLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
 We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${locations.length > 1 ? "s" : ""
     }.
@@ -561,7 +103,7 @@ ${HASHTAGS.join(" ")} ${cropHashtag}
   const instagramMessage = `
 Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS_SW[
       crop
-    ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+    ].toLowerCase()} Mkoa wa ${formattedLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
 We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${locations.length > 1 ? "s" : ""
     }.
@@ -627,53 +169,6 @@ const ContentDisplay = ({
   )
 }
 
-const SWAHILI_NUMBERS: Record<number, string> = {
-  1: "Moja",
-  2: "Mbili",
-  3: "Tatu",
-  4: "Nne",
-  5: "Tano",
-  6: "Sita",
-  7: "Saba",
-  8: "Nane",
-  9: "Tisa",
-  10: "Kumi",
-  11: "Kumi na Moja",
-  12: "Kumi na Mbili",
-}
-
-const getSwahiliPeriod = (hour: number): string => {
-  if (hour >= 5 && hour < 12) return "Asubuhi"
-  if (hour >= 12 && hour < 16) return "Mchana"
-  if (hour >= 16 && hour < 19) return "Jioni"
-  return "Usiku"
-}
-
-const formatTime = (time: string, lang: "sw" | "en"): string => {
-  const [hour, minute] = time.split(":").map(Number)
-  if (lang === "en") {
-    const ampm = hour >= 12 ? "PM" : "AM"
-    let h12 = hour % 12
-    if (h12 === 0) h12 = 12
-    const formattedMinute = minute.toString().padStart(2, "0")
-    return `${h12}:${formattedMinute} ${ampm}`
-  }
-  let swahiliHour = hour >= 7 ? hour - 6 : hour + 6
-  if (swahiliHour > 12) swahiliHour -= 12
-  if (swahiliHour === 0) swahiliHour = 12
-  const period = getSwahiliPeriod(hour)
-  const swahiliHourWord = SWAHILI_NUMBERS[swahiliHour]
-  if (minute === 0) return `Saa ${swahiliHourWord} kamili ${period}`
-  if (minute === 15) return `Saa ${swahiliHourWord} na robo ${period}`
-  if (minute === 30) return `Saa ${swahiliHourWord} na nusu ${period}`
-  const nextSwahiliHour = (swahiliHour % 12) + 1
-  const nextSwahiliHourWord = SWAHILI_NUMBERS[nextSwahiliHour]
-  if (minute === 45) return `Saa ${nextSwahiliHourWord} kasorobo ${period}`
-  if (minute < 30) return `Saa ${swahiliHourWord} na dakika ${minute} ${period}`
-  const minutesToNextHour = 60 - minute
-  return `Saa ${nextSwahiliHourWord} kasoro dakika ${minutesToNextHour} ${period}`
-}
-
 // CropImageSelector is now imported from @/components/poster
 
 interface EditableContentGeneratorProps {
@@ -721,7 +216,11 @@ const EditableContentGenerator: React.FC<EditableContentGeneratorProps> = ({
 
   const handleGenerate = () => {
     if (locations.length === 0 || !crop || !date || !time) {
-      alert("Please select at least one location, a crop, a date, and a time.")
+      toast({
+        title: "Missing fields",
+        description: "Please select at least one location, a crop, a date, and a time.",
+        variant: "destructive",
+      })
       return
     }
     const content = generatePosterContent(locations, crop, date, time, language)
@@ -779,7 +278,7 @@ const EditableContentGenerator: React.FC<EditableContentGeneratorProps> = ({
   const handleApply = () => {
     if (generated) {
       onApplyContent(generated)
-      alert("Content applied to poster!")
+      toast({ title: "Applied", description: "Content applied to poster." })
     }
   }
 
@@ -1346,8 +845,8 @@ const App: React.FC = () => {
 
   const handleNestedChange = useCallback((path: (string | number)[], value: any) => {
     setPosterState((prevState) => {
-      const newState = JSON.parse(JSON.stringify(prevState))
-      let current = newState
+      const newState = structuredClone(prevState) as any
+      let current: any = newState
       for (let i = 0; i < path.length - 1; i++) {
         current = current[path[i]]
       }
@@ -1357,7 +856,7 @@ const App: React.FC = () => {
   }, [])
 
   const mergeContentIntoState = (prevState: PosterState, content: Partial<PosterState>): PosterState => {
-    const newState = JSON.parse(JSON.stringify(prevState)) // Deep copy for safety
+    const newState = structuredClone(prevState)
     if (content.topText) newState.topText = content.topText
     if (content.footerLogos) newState.footerLogos = content.footerLogos
     if (content.heading?.content) newState.heading.content = content.heading.content
@@ -1413,27 +912,36 @@ const App: React.FC = () => {
 
   const handleDownload = async () => {
     if (!crop) {
-      alert("Please select a crop before downloading.")
+      toast({
+        title: "No crop selected",
+        description: "Please select a crop before downloading.",
+        variant: "destructive",
+      })
       return
     }
     setIsDownloading(true)
     try {
       // Generate and capture English version
-      const enContent = generatePosterContent(locations, crop, date, time, "en")
+      // Exclude auto-generated footerLogos so user's manual edits are preserved
+      const { footerLogos: _en, ...enContent } = generatePosterContent(locations, crop, date, time, "en")
       setDownloadPosterState(mergeContentIntoState(posterState, enContent))
       await new Promise((resolve) => setTimeout(resolve, 500)) // Wait for DOM update
       const enDataUrl = await captureCanvas("download-poster")
       triggerDownload(enDataUrl, `poster_${CROP_NAMES_EN[crop].toLowerCase().replace(" ", "_")}_en.png`)
 
       // Generate and capture Swahili version
-      const swContent = generatePosterContent(locations, crop, date, time, "sw")
+      const { footerLogos: _sw, ...swContent } = generatePosterContent(locations, crop, date, time, "sw")
       setDownloadPosterState(mergeContentIntoState(posterState, swContent))
       await new Promise((resolve) => setTimeout(resolve, 500)) // Wait for DOM update
       const swDataUrl = await captureCanvas("download-poster")
       triggerDownload(swDataUrl, `poster_${CROP_TRANSLATIONS_SW[crop].toLowerCase().replace(" ", "_")}_sw.png`)
     } catch (err) {
       console.error("Failed to download poster:", err)
-      alert("An error occurred while downloading the poster. Check the console for details.")
+      toast({
+        title: "Download failed",
+        description: "An error occurred while downloading the poster.",
+        variant: "destructive",
+      })
     } finally {
       setIsDownloading(false)
       setDownloadPosterState(null)

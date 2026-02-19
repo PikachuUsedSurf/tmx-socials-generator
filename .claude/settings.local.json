@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(powershell -File cleanup.ps1)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}

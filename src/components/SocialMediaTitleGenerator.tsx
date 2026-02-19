@@ -10,6 +10,8 @@ import { Check, Copy, X } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "@/hooks/use-toast"
 import { FACEBOOK_TAGS, INSTAGRAM_TAGS, HASHTAGS } from "@/lib/constants/social-tags"
+import { AVAILABLE_LOCATIONS } from "@/lib/constants/locations"
+import { toCamelCase, formatOrganizations } from "@/lib/utils/formatting"
 
 type CropName =
   | "BEAN"
@@ -24,12 +26,6 @@ type CropName =
   | "SESAME"
   | "SOYA"
   | "SUNFLOWER"
-
-const AVAILABLE_LOCATIONS = [
-  "ARUSHA", "DAR ES SALAAM", "DODOMA", "GEITA", "IRINGA", "KAGERA", "KATAVI", "KIGOMA", "KILIMANJARO",
-  "LINDI", "MANYARA", "MARA", "MBEYA", "MOROGORO", "MTWARA", "MWANZA", "NJOMBE", "PEMBA", "PWANI",
-  "RUKWA", "RUVUMA", "SHINYANGA", "SIMIYU", "SINGIDA", "SONGWE", "TABORA", "TANGA", "ZANZIBAR",
-]
 
 const CROPS: CropName[] = [
   "BEAN", "CASHEW", "CHICK PEA", "COCOA", "COFFEE", "GEMSTONE", "GREEN GRAM",
@@ -79,32 +75,10 @@ export default function SocialMediaTitleGenerator() {
     setCrop((prev) => (prev === selectedCrop ? "" : selectedCrop))
   }
 
-  const toCamelCase = (str: string) => {
-    return str
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ")
-  }
-
   const formattedLocations = useMemo(
     () => locations.map(toCamelCase).join(", "),
     [locations]
   )
-  const swahiliLocations = useMemo(
-    () => locations.map(toCamelCase).join(", "),
-    [locations]
-  )
-
-  const formatOrganizations = (orgs: string[], language: 'swahili' | 'english') => {
-    if (orgs.length === 0) return ""
-    if (orgs.length === 1) return orgs[0]
-    if (orgs.length === 2) {
-      return language === 'swahili' ? `${orgs[0]} na ${orgs[1]}` : `${orgs[0]} and ${orgs[1]}`
-    }
-    return language === 'swahili'
-      ? `${orgs.slice(0, -1).join(", ")}, na ${orgs[orgs.length - 1]}`
-      : `${orgs.slice(0, -1).join(", ")}, and ${orgs[orgs.length - 1]}`
-  }
 
   const generateContent = () => {
     if (locations.length === 0 || !crop || !date) {
@@ -145,12 +119,12 @@ export default function SocialMediaTitleGenerator() {
     const formattedOrganizationsEnglish = formatOrganizations(organizations, 'english')
     const cropHashtag = `#${crop.toLowerCase().replace(" ", "")}`
 
-    const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${swahiliLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase()
+    const youtubeTitle = `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS[crop]} ${formattedLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase()
 
     const socialMessage = `
 Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS[
         crop
-      ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+      ].toLowerCase()} Mkoa wa ${formattedLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
 We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${locations.length > 1 ? "s" : ""
       }.
@@ -163,7 +137,7 @@ ${HASHTAGS.join(" ")} ${cropHashtag}
     const instagramMessage = `
 Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS[
         crop
-      ].toLowerCase()} Mkoa wa ${swahiliLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
+      ].toLowerCase()} Mkoa wa ${formattedLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.
 
 We welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${locations.length > 1 ? "s" : ""
       }.
