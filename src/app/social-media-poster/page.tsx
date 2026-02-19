@@ -195,8 +195,6 @@ const EditableContentGenerator: React.FC<EditableContentGeneratorProps> = ({
   onApplyContent,
 }) => {
   const [language, setLanguage] = useState<"sw" | "en">("sw")
-  const [generated, setGenerated] = useState<Partial<PosterState> | null>(null)
-  const [isEditing, setIsEditing] = useState(false)
   const [editableContent, setEditableContent] = useState({
     topText: "",
     heading: "",
@@ -206,27 +204,18 @@ const EditableContentGenerator: React.FC<EditableContentGeneratorProps> = ({
     dateCircleBottom: "",
   })
 
-  const toggleLocation = (selectedLocation: string) =>
-    setLocations(
-      locations.includes(selectedLocation)
-        ? locations.filter((loc) => loc !== selectedLocation)
-        : [...locations, selectedLocation],
-    )
-  const toggleCrop = (selectedCrop: CropName) => setCrop(crop === selectedCrop ? "" : selectedCrop)
+  // Stable ref so effects don't need onApplyContent as a dependency
+  const onApplyContentRef = useRef(onApplyContent)
+  useEffect(() => { onApplyContentRef.current = onApplyContent }, [onApplyContent])
 
-  const handleGenerate = () => {
-    if (locations.length === 0 || !crop || !date || !time) {
-      toast({
-        title: "Missing fields",
-        description: "Please select at least one location, a crop, a date, and a time.",
-        variant: "destructive",
-      })
-      return
-    }
+  // Holds the last auto-generated structural data (positions, footerLogos)
+  const generatedRef = useRef<Partial<PosterState> | null>(null)
+
+  // Auto-generate and apply whenever any input changes
+  useEffect(() => {
+    if (locations.length === 0 || !crop || !date || !time) return
     const content = generatePosterContent(locations, crop, date, time, language)
-    setGenerated(content)
-
-    // Set editable content
+    generatedRef.current = content
     setEditableContent({
       topText: content.topText || "",
       heading: content.heading?.content || "",
@@ -235,52 +224,53 @@ const EditableContentGenerator: React.FC<EditableContentGeneratorProps> = ({
       dateCircleMain: content.dateCircle?.mainText.content || "",
       dateCircleBottom: content.dateCircle?.bottomText.content || "",
     })
+    onApplyContentRef.current(content)
+  }, [locations, crop, date, time, language])
+
+  const toggleLocation = (selectedLocation: string) =>
+    setLocations(
+      locations.includes(selectedLocation)
+        ? locations.filter((loc) => loc !== selectedLocation)
+        : [...locations, selectedLocation],
+    )
+  const toggleCrop = (selectedCrop: CropName) => setCrop(crop === selectedCrop ? "" : selectedCrop)
+
+  // Apply a single field change immediately to the poster
+  const updateField = (field: keyof typeof editableContent, value: string) => {
+    const updated = { ...editableContent, [field]: value }
+    setEditableContent(updated)
+    const base = generatedRef.current
+    if (!base) return
+    onApplyContentRef.current({
+      topText: updated.topText,
+      heading: base.heading ? { ...base.heading, content: updated.heading } : undefined,
+      paragraph: base.paragraph ? { ...base.paragraph, content: updated.paragraph } : undefined,
+      dateCircle: base.dateCircle ? {
+        ...base.dateCircle,
+        topText: { ...base.dateCircle.topText, content: updated.dateCircleTop },
+        mainText: { ...base.dateCircle.mainText, content: updated.dateCircleMain },
+        bottomText: { ...base.dateCircle.bottomText, content: updated.dateCircleBottom },
+      } : undefined,
+    })
   }
 
-  const handleEdit = () => {
-    setIsEditing(true)
+  // Reset back to auto-generated content from current inputs
+  const handleReset = () => {
+    if (locations.length === 0 || !crop || !date || !time) return
+    const content = generatePosterContent(locations, crop, date, time, language)
+    generatedRef.current = content
+    setEditableContent({
+      topText: content.topText || "",
+      heading: content.heading?.content || "",
+      paragraph: content.paragraph?.content || "",
+      dateCircleTop: content.dateCircle?.topText.content || "",
+      dateCircleMain: content.dateCircle?.mainText.content || "",
+      dateCircleBottom: content.dateCircle?.bottomText.content || "",
+    })
+    onApplyContentRef.current(content)
   }
 
-  const handleSaveEdit = () => {
-    if (generated) {
-      const updatedContent = {
-        ...generated,
-        topText: editableContent.topText,
-        heading: { ...generated.heading!, content: editableContent.heading },
-        paragraph: { ...generated.paragraph!, content: editableContent.paragraph },
-        dateCircle: {
-          ...generated.dateCircle!,
-          topText: { ...generated.dateCircle!.topText, content: editableContent.dateCircleTop },
-          mainText: { ...generated.dateCircle!.mainText, content: editableContent.dateCircleMain },
-          bottomText: { ...generated.dateCircle!.bottomText, content: editableContent.dateCircleBottom },
-        },
-      }
-      setGenerated(updatedContent)
-      setIsEditing(false)
-    }
-  }
-
-  const handleCancelEdit = () => {
-    setIsEditing(false)
-    // Reset to original generated content
-    if (generated) {
-      setEditableContent({
-        topText: generated.topText || "",
-        heading: generated.heading?.content || "",
-        paragraph: generated.paragraph?.content || "",
-        dateCircleTop: generated.dateCircle?.topText.content || "",
-        dateCircleMain: generated.dateCircle?.mainText.content || "",
-        dateCircleBottom: generated.dateCircle?.bottomText.content || "",
-      })
-    }
-  }
-
-  const handleApply = () => {
-    if (generated) {
-      onApplyContent(generated)
-      toast({ title: "Applied", description: "Content applied to poster." })
-    }
-  }
+  const hasContent = !!editableContent.heading
 
   return (
     <Card>
@@ -353,149 +343,80 @@ const EditableContentGenerator: React.FC<EditableContentGeneratorProps> = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="date" className="text-sm font-medium">
-              Date
-            </Label>
+            <Label htmlFor="date" className="text-sm font-medium">Date</Label>
             <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1" />
           </div>
           <div>
-            <Label htmlFor="time" className="text-sm font-medium">
-              Time
-            </Label>
+            <Label htmlFor="time" className="text-sm font-medium">Time</Label>
             <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} className="mt-1" />
           </div>
         </div>
 
-        <Button onClick={handleGenerate} className="w-full">
-          <Sparkles className="mr-2 h-4 w-4" />
-          Generate Content
-        </Button>
-
-        {generated && (
+        {hasContent && (
           <Card className="bg-blue-50 border-blue-200">
-            <CardHeader>
+            <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg text-blue-800">Generated Content</CardTitle>
-                <div className="flex gap-2">
-                  {!isEditing ? (
-                    <Button onClick={handleEdit} size="sm" variant="outline">
-                      <Edit3 className="h-4 w-4 mr-1" />
-                      Edit
-                    </Button>
-                  ) : (
-                    <>
-                      <Button onClick={handleSaveEdit} size="sm" variant="default">
-                        <Save className="h-4 w-4 mr-1" />
-                        Save
-                      </Button>
-                      <Button onClick={handleCancelEdit} size="sm" variant="outline">
-                        <X className="h-4 w-4 mr-1" />
-                        Cancel
-                      </Button>
-                    </>
-                  )}
-                </div>
+                <CardTitle className="text-base text-blue-800">Poster Content</CardTitle>
+                <Button onClick={handleReset} size="sm" variant="outline" className="text-xs">
+                  <X className="h-3 w-3 mr-1" />
+                  Reset
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {!isEditing ? (
-                <>
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700">Top Text</Label>
-                    <p className="mt-1 p-2 bg-white rounded-md text-sm border whitespace-pre-wrap">
-                      {editableContent.topText}
-                    </p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700">Heading</Label>
-                    <p className="mt-1 p-2 bg-white rounded-md text-sm border">{editableContent.heading}</p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700">Content</Label>
-                    <p className="mt-1 p-2 bg-white rounded-md text-sm border whitespace-pre-wrap">
-                      {editableContent.paragraph}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div>
-                      <Label className="text-sm font-medium text-blue-700">Date Top</Label>
-                      <p className="mt-1 p-2 bg-white rounded-md text-xs border">{editableContent.dateCircleTop}</p>
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-blue-700">Date Main</Label>
-                      <p className="mt-1 p-2 bg-white rounded-md text-xs border">{editableContent.dateCircleMain}</p>
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-blue-700">Date Bottom</Label>
-                      <p className="mt-1 p-2 bg-white rounded-md text-xs border whitespace-pre-wrap">
-                        {editableContent.dateCircleBottom}
-                      </p>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700">Top Text</Label>
-                    <Textarea
-                      value={editableContent.topText}
-                      onChange={(e) => setEditableContent((prev) => ({ ...prev, topText: e.target.value }))}
-                      rows={3}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700">Heading</Label>
-                    <Input
-                      value={editableContent.heading}
-                      onChange={(e) => setEditableContent((prev) => ({ ...prev, heading: e.target.value }))}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700">Content</Label>
-                    <Textarea
-                      value={editableContent.paragraph}
-                      onChange={(e) => setEditableContent((prev) => ({ ...prev, paragraph: e.target.value }))}
-                      rows={6}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div>
-                      <Label className="text-sm font-medium text-blue-700">Date Top</Label>
-                      <Input
-                        value={editableContent.dateCircleTop}
-                        onChange={(e) => setEditableContent((prev) => ({ ...prev, dateCircleTop: e.target.value }))}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-blue-700">Date Main</Label>
-                      <Input
-                        value={editableContent.dateCircleMain}
-                        onChange={(e) => setEditableContent((prev) => ({ ...prev, dateCircleMain: e.target.value }))}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-blue-700">Date Bottom</Label>
-                      <Textarea
-                        value={editableContent.dateCircleBottom}
-                        onChange={(e) => setEditableContent((prev) => ({ ...prev, dateCircleBottom: e.target.value }))}
-                        rows={2}
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {!isEditing && (
-                <Button onClick={handleApply} className="w-full bg-green-600 hover:bg-green-700">
-                  Apply to Poster
-                </Button>
-              )}
+              <div>
+                <Label className="text-sm font-medium text-blue-700">Top Text</Label>
+                <Textarea
+                  value={editableContent.topText}
+                  onChange={(e) => updateField("topText", e.target.value)}
+                  rows={3}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label className="text-sm font-medium text-blue-700">Heading</Label>
+                <Input
+                  value={editableContent.heading}
+                  onChange={(e) => updateField("heading", e.target.value)}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label className="text-sm font-medium text-blue-700">Content</Label>
+                <Textarea
+                  value={editableContent.paragraph}
+                  onChange={(e) => updateField("paragraph", e.target.value)}
+                  rows={6}
+                  className="mt-1"
+                />
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <Label className="text-sm font-medium text-blue-700">Date Top</Label>
+                  <Input
+                    value={editableContent.dateCircleTop}
+                    onChange={(e) => updateField("dateCircleTop", e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-blue-700">Date Main</Label>
+                  <Input
+                    value={editableContent.dateCircleMain}
+                    onChange={(e) => updateField("dateCircleMain", e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-blue-700">Date Bottom</Label>
+                  <Textarea
+                    value={editableContent.dateCircleBottom}
+                    onChange={(e) => updateField("dateCircleBottom", e.target.value)}
+                    rows={2}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -842,6 +763,15 @@ const App: React.FC = () => {
   const handleStateChange = useCallback(<K extends keyof PosterState>(key: K, value: PosterState[K]) => {
     setPosterState((prevState) => ({ ...prevState, [key]: value }))
   }, [])
+
+  // Auto-apply first local background image when crop changes
+  useEffect(() => {
+    if (!crop) return
+    const images = CROP_BACKGROUND_IMAGES[crop as CropName]
+    if (images && images.length > 0) {
+      handleStateChange("backgroundImage", images[0].url)
+    }
+  }, [crop, handleStateChange])
 
   const handleNestedChange = useCallback((path: (string | number)[], value: any) => {
     setPosterState((prevState) => {
