@@ -36,7 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body suppressHydrationWarning>
         <SidebarProvider>
           <div className="flex w-screen h-screen">
             <AppSidebar />
