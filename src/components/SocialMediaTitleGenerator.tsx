@@ -242,10 +242,14 @@ function SelectablePill({
         color: isSelected ? "white" : "black",
       }}
       whileHover={{
-        backgroundColor: isSelected ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.1)",
+        backgroundColor: isSelected
+          ? "rgba(0, 0, 0, 0.8)"
+          : "rgba(0, 0, 0, 0.1)",
       }}
       whileTap={{
-        backgroundColor: isSelected ? "rgba(0, 0, 0, 0.9)" : "rgba(0, 0, 0, 0.2)",
+        backgroundColor: isSelected
+          ? "rgba(0, 0, 0, 0.9)"
+          : "rgba(0, 0, 0, 0.2)",
       }}
       transition={{ ...transitionProps, backgroundColor: { duration: 0.1 } }}
       className="px-3 py-1 rounded-full text-sm font-medium border border-black"

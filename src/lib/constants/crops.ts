@@ -138,14 +138,14 @@ export const CROP_BACKGROUND_IMAGES: Record<CropName, CropImage[]> = {
   ],
   COFFEE: [
     {
-      id: "coffee-1",
-      url: "/images/crop/coffee1.jpg",
+      id: "coffee-2",
+      url: "/images/crop/coffee2.jpg",
       title: "Coffee Plantation",
       description: "Lush coffee plantation with green beans",
     },
     {
-      id: "coffee-2",
-      url: "/images/crop/coffee2.jpg",
+      id: "coffee-1",
+      url: "/images/crop/coffee1.jpg",
       title: "Coffee Harvest",
       description: "Fresh coffee beans being harvested",
     },
