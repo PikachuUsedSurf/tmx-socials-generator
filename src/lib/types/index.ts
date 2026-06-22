@@ -66,6 +66,7 @@ export type CropName =
     | "SESAME"
     | "SOYA"
     | "SUNFLOWER"
+    | "COW PEA"
 
 // Poster dimensions
 export const POSTER_WIDTH = 1080

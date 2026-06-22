@@ -25,6 +25,31 @@ export const INSTAGRAM_TAGS = [
     "@ikulu_mawasiliano",
 ]
 
+// Hashtags for commodity price posts
+export const COMMODITY_PRICE_HASHTAGS = [
+    "#sesame",
+    "#chickpeas",
+    "#coffee",
+    "#soya",
+    "#kahawa",
+    "#commodityexchangemarkets",
+    "#commoditiesexchange",
+    "#agriculture",
+    "#commoditiestrading",
+    "#seller",
+    "#commoditytraders",
+    "#agriculturalcommodityexhange",
+    "#farmersmarket",
+    "#onlinetradingsystem",
+    "#agriculturalcommodityexchange",
+    "#onlinetrading",
+    "#commoditytrader",
+    "#traders",
+    "#tradingcommodities",
+    "#sesameseeds",
+    "#OnlineTradingPlatform",
+]
+
 // Hashtags for social media posts
 export const HASHTAGS = [
     "#oilseeds",
