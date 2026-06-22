@@ -1004,17 +1004,23 @@ const App: React.FC = () => {
       if (content.dateCircle.position)
         newState.dateCircle.position = content.dateCircle.position;
       if (content.dateCircle.topText?.content)
-        newState.dateCircle.topText.content = content.dateCircle.topText.content;
+        newState.dateCircle.topText.content =
+          content.dateCircle.topText.content;
       if (content.dateCircle.topText?.position)
-        newState.dateCircle.topText.position = content.dateCircle.topText.position;
+        newState.dateCircle.topText.position =
+          content.dateCircle.topText.position;
       if (content.dateCircle.mainText?.content)
-        newState.dateCircle.mainText.content = content.dateCircle.mainText.content;
+        newState.dateCircle.mainText.content =
+          content.dateCircle.mainText.content;
       if (content.dateCircle.mainText?.position)
-        newState.dateCircle.mainText.position = content.dateCircle.mainText.position;
+        newState.dateCircle.mainText.position =
+          content.dateCircle.mainText.position;
       if (content.dateCircle.bottomText?.content)
-        newState.dateCircle.bottomText.content = content.dateCircle.bottomText.content;
+        newState.dateCircle.bottomText.content =
+          content.dateCircle.bottomText.content;
       if (content.dateCircle.bottomText?.position)
-        newState.dateCircle.bottomText.position = content.dateCircle.bottomText.position;
+        newState.dateCircle.bottomText.position =
+          content.dateCircle.bottomText.position;
     }
     return newState;
   };
@@ -1796,7 +1802,7 @@ const generatePosterContent = (
     }
     dateCircleContent = {
       topText: { content: "Date", position: { x: 100, y: 40 } },
-      mainText: { content: day, position: { x: 100, y: 100 } },
+      mainText: { content: day, position: { x: 100, y: 91 } },
       bottomText: {
         content: `${englishMonth}\n${year}`,
         position: { x: 100, y: 160 },
