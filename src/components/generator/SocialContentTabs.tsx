@@ -37,7 +37,6 @@ export function SocialContentTabs({
                     content={youtube}
                     onCopy={() => copyToClipboard(youtube)}
                     showCharCount
-                    charLimit={100}
                 />
             </TabsContent>
 
