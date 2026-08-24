@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,17 +9,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Check, Copy } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
-import {
-  FACEBOOK_TAGS,
-  INSTAGRAM_TAGS,
-  HASHTAGS,
-  COMMODITY_PRICE_HASHTAGS,
-} from "@/lib/constants/social-tags";
 import { AVAILABLE_LOCATIONS } from "@/lib/constants/locations";
-import { toCamelCase, formatOrganizations } from "@/lib/utils/formatting";
 import type { CropName } from "@/lib/types";
-import { CROPS, CROP_TRANSLATIONS_SW } from "@/lib/constants/crops";
-import { ORGANIZATION_MAP } from "@/lib/constants/organizations";
+import { CROPS } from "@/lib/constants/crops";
+import {
+  generateTitleGeneratorContent,
+  type TitleGeneratorContent,
+} from "@/lib/generators/title-generator";
 
 const transitionProps = {
   type: "spring" as const,
@@ -32,13 +28,8 @@ export default function SocialMediaTitleGenerator() {
   const [locations, setLocations] = useState<string[]>([]);
   const [crop, setCrop] = useState<CropName | "">("");
   const [date, setDate] = useState("");
-  const [generatedContent, setGeneratedContent] = useState({
-    youtube: "",
-    facebook: "",
-    instagram: "",
-    instagramResult: "",
-    facebookResult: "",
-  });
+  const [generatedContent, setGeneratedContent] =
+    useState<TitleGeneratorContent | null>(null);
 
   useEffect(() => {
     const today = new Date();
@@ -57,11 +48,6 @@ export default function SocialMediaTitleGenerator() {
     setCrop((prev) => (prev === selectedCrop ? "" : selectedCrop));
   };
 
-  const formattedLocations = useMemo(
-    () => locations.map(toCamelCase).join(", "),
-    [locations],
-  );
-
   const generateContent = () => {
     if (locations.length === 0 || !crop || !date) {
       toast({
@@ -72,42 +58,8 @@ export default function SocialMediaTitleGenerator() {
       return;
     }
 
-    const formattedDate = new Date(date).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-
-    const organizations = ORGANIZATION_MAP[crop];
-    const formattedOrganizationsSwahili = formatOrganizations(
-      organizations,
-      "swahili",
-    );
-    const formattedOrganizationsEnglish = formatOrganizations(
-      organizations,
-      "english",
-    );
-    const cropHashtag = `#${crop.toLowerCase().replace(" ", "")}`;
-
-    const youtubeTitle =
-      `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS_SW[crop]} ${formattedLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase();
-
-    const tradeBody = `Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS_SW[crop].toLowerCase()} Mkoa wa ${formattedLocations} kupitia Mfumo wa Mauzo wa Kidijitali wa TMX kwa kushirikiana na ${formattedOrganizationsSwahili}.\n\nWe welcome you all to participate in ${crop.toLowerCase()} trading through TMX Online Trading System in collaboration with ${formattedOrganizationsEnglish} in ${formattedLocations} Region${locations.length > 1 ? "s" : ""}.`;
-
-    const socialMessage = `${tradeBody}\n\n${FACEBOOK_TAGS.join("\n")}\n\n${HASHTAGS.join(" ")} ${cropHashtag}`;
-    const instagramMessage = `${tradeBody}\n\n${INSTAGRAM_TAGS.join("\n")}\n\n${HASHTAGS.join(" ")} ${cropHashtag}`;
-
-    const commodityPriceBody = `Taarifa za Bei za Bidhaa leo. Kwa taarifa zaidi tembelea tovuti kupitia kiunga kwenye bio.\n\nCommodity Price Information Today. For more information, visit our website through the links in bio.\n\n`;
-    const commodityPriceTitle = `${commodityPriceBody}${FACEBOOK_TAGS.join("\n")}\n\n${COMMODITY_PRICE_HASHTAGS.join(" ")}`;
-    const commodityPriceTitleInstagram = `${commodityPriceBody}${INSTAGRAM_TAGS.join("\n")}\n\n${COMMODITY_PRICE_HASHTAGS.join(" ")}`;
-
-    setGeneratedContent({
-      youtube: youtubeTitle,
-      facebook: socialMessage,
-      instagram: instagramMessage,
-      instagramResult: commodityPriceTitleInstagram,
-      facebookResult: commodityPriceTitle,
-    });
+    const content = generateTitleGeneratorContent(locations, crop, date);
+    if (content) setGeneratedContent(content);
   };
 
   const copyToClipboard = (text: string) => {
@@ -169,9 +121,7 @@ export default function SocialMediaTitleGenerator() {
         <Button onClick={generateContent} className="w-full">
           Generate Content
         </Button>
-        {(generatedContent.youtube ||
-          generatedContent.facebook ||
-          generatedContent.instagram) && (
+        {generatedContent && (
           <Tabs defaultValue="youtube" className="w-full mt-4">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="youtube">YouTube</TabsTrigger>
@@ -213,7 +163,9 @@ export default function SocialMediaTitleGenerator() {
               <ContentDisplay
                 label="Instagram Results Caption"
                 content={generatedContent.instagramResult}
-                onCopy={() => copyToClipboard(generatedContent.instagramResult)}
+                onCopy={() =>
+                  copyToClipboard(generatedContent.instagramResult)
+                }
               />
             </TabsContent>
           </Tabs>

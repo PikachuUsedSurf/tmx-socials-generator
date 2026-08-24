@@ -57,7 +57,7 @@ export function generatePosterContent(
     }
     dateCircleContent = {
       topText: { content: "Tarehe", position: { x: 100, y: 40 } },
-      mainText: { content: day, position: { x: 100, y: 100 } },
+      mainText: { content: day, position: { x: 100, y: 90 } },
       bottomText: {
         content: `${swahiliMonth}\n${year}`,
         position: { x: 100, y: 160 },

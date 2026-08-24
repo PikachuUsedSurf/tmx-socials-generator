@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { generateSocialContent } from "./social-content";
+import type { CropName } from "@/lib/types";
 
 describe("generateSocialContent", () => {
   it("returns null when inputs are incomplete", () => {
     expect(generateSocialContent([], "SESAME", "2025-07-23", "10:30")).toBeNull();
-    expect(generateSocialContent(["SINGIDA"], "", "", "")).toBeNull();
+    expect(generateSocialContent(["SINGIDA"], "" as CropName, "", "")).toBeNull();
   });
 
   it("builds a YouTube title with crop, region and date", () => {

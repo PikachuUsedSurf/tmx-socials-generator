@@ -135,8 +135,8 @@ describe("mergeContentIntoState", () => {
     const merged = mergeContentIntoState(baseState, {
       dateCircle: {
         position: { x: 500, y: 500 },
-        topText: { content: "Date", position: undefined as never },
-      } as PosterState["dateCircle"],
+        topText: { content: "Date", position: { x: 100, y: 40 } },
+      } as unknown as PosterState["dateCircle"],
     });
     expect(merged.dateCircle.position).toEqual({ x: 500, y: 500 });
     expect(merged.dateCircle.topText.content).toBe("Date");
