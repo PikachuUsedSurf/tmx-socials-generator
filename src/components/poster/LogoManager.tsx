@@ -21,7 +21,7 @@ export function LogoManager({
     maxLogos = 6,
 }: LogoManagerProps) {
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium">Footer Logos</Label>
                 <span className="text-sm text-muted-foreground">
@@ -29,7 +29,7 @@ export function LogoManager({
                 </span>
             </div>
 
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
                 {footerLogos.map((logo, index) => (
                     <div
                         key={index}

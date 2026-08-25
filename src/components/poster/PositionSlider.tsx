@@ -28,7 +28,7 @@ export const PositionSlider: React.FC<PositionSliderProps> = ({
   min = 0,
   max = POSTER_WIDTH,
 }) => (
-  <div className="space-y-2">
+  <div className="flex flex-col gap-2">
     <Label className="text-sm font-medium">
       {label}: {value}px
     </Label>

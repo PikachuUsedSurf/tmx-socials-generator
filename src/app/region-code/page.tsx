@@ -3,6 +3,9 @@ type Region = {
   code: string;
 };
 
+import { Card, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
 const REGION_CODES: Record<string, string> = {
   SINGIDA: "SING",
   MBEYA: "MBEY",
@@ -69,17 +72,20 @@ const Regions: Region[] = REGIONS.map((name) => ({ name, code: REGION_CODES[name
 
 export default function RegionC() {
   return (
-    <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-2">
-        {Regions.map((region, index) => (
-          <div className=" flex text-center justify-center items-center  border rounded-md shadow-lg p-4 w-40 h-40 space-y-4 ">
-            <div key={index}>
-              <h1>{region.name}</h1>
-              <h2>{region.code}</h2>
-            </div>
-          </div>
+    <div className="p-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {Regions.map((region) => (
+          <Card
+            key={region.code}
+            className="flex flex-col items-center justify-center text-center p-4 aspect-square"
+          >
+            <CardTitle className="text-base">{region.name}</CardTitle>
+            <Badge variant="secondary" className="mt-2 font-mono">
+              {region.code}
+            </Badge>
+          </Card>
         ))}
       </div>
-    </>
+    </div>
   );
 }

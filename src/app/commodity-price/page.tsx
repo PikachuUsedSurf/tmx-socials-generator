@@ -283,12 +283,12 @@ export default function CommodityPriceGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-yellow-50 p-4">
+    <div className="min-h-screen p-4">
       <div className="max-w-6xl mx-auto">
         <Card className="mb-6">
-          <CardHeader className="text-center bg-gradient-to-r from-green-600 to-green-700 text-white rounded-t-lg">
+          <CardHeader className="text-center bg-primary text-primary-foreground rounded-t-lg">
             <CardTitle className="text-2xl font-bold">Tanzania Commodity Price Generator</CardTitle>
-            <p className="text-green-100">Generate official commodity price tables</p>
+            <p className="text-primary-foreground/80">Generate official commodity price tables</p>
           </CardHeader>
         </Card>
 
@@ -297,7 +297,7 @@ export default function CommodityPriceGenerator() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="border-b-2 border-gray-300">
+                  <tr className="border-b-2 border-border">
                     <th className="text-left p-4 font-bold text-lg">Commodity</th>
                     <th className="text-left p-4 font-bold text-lg">High Price (TZS/kg)</th>
                     <th className="text-left p-4 font-bold text-lg">Low Price (TZS/kg)</th>
@@ -308,12 +308,12 @@ export default function CommodityPriceGenerator() {
                   {rows.map((row, index) => (
                     <tr
                       key={row.id}
-                      className={`border-b border-gray-200 hover:bg-gray-50 ${
-                        index === rows.length - 1 ? "border-b-2 border-gray-400" : ""
+                      className={`border-b border-border hover:bg-muted/50 ${
+                        index === rows.length - 1 ? "border-b-2 border-border" : ""
                       }`}
                     >
                       <td className="p-4">
-                        <div className="space-y-2">
+                        <div className="flex flex-col gap-2">
                           <Select
                             value={row.commodity}
                             onValueChange={(value) => updateRow(row.id, "commodity", value)}
@@ -358,7 +358,7 @@ export default function CommodityPriceGenerator() {
                           </Select>
 
                           {row.commodity && row.region && (
-                            <div className="text-sm text-gray-600 font-mono bg-gray-100 p-2 rounded">
+                            <div className="text-sm text-muted-foreground font-mono bg-muted p-2 rounded">
                               {generateCommodityCode(row.commodity, row.region, row.union)}
                             </div>
                           )}
@@ -402,7 +402,6 @@ export default function CommodityPriceGenerator() {
                 <Button
                   onClick={addRow}
                   variant="outline"
-                  className="border-green-600 text-green-600 hover:bg-green-50 bg-transparent"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Row ({rows.length}/4)
@@ -413,7 +412,7 @@ export default function CommodityPriceGenerator() {
             <div className="mt-6 flex justify-center">
               <Button
                 onClick={downloadAsImage}
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg"
+                className="px-8 py-3 text-lg"
                 size="lg"
               >
                 <Download className="mr-2 h-5 w-5" />

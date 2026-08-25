@@ -23,7 +23,7 @@ export function CropSelector({
     maxHeight = "h-32",
 }: CropSelectorProps) {
     return (
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
             <Label>{label}</Label>
             <ScrollArea className={`${maxHeight} border rounded-md p-2`}>
                 <div className="flex flex-wrap gap-2">

@@ -295,7 +295,7 @@ const App: React.FC = () => {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
           {/* Controls Panel */}
           <div className="xl:col-span-1">
-            <div className="space-y-6">
+            <div className="flex flex-col gap-6">
               <EditableContentGenerator
                 onApplyContent={handleContentUpdate}
                 {...{
@@ -342,12 +342,12 @@ const App: React.FC = () => {
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="content" className="space-y-4 pt-4">
+                <TabsContent value="content" className="flex flex-col gap-4 pt-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">Header & Footer</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="flex flex-col gap-4">
                       <div>
                         <Label htmlFor="topText">Top Center Text</Label>
                         <Textarea
@@ -387,7 +387,7 @@ const App: React.FC = () => {
                     <CardHeader>
                       <CardTitle className="text-lg">Main Content</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-6">
+                    <CardContent className="flex flex-col gap-6">
                       <div>
                         <Label htmlFor="heading">Main Heading</Label>
                         <Input
@@ -466,12 +466,12 @@ const App: React.FC = () => {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="design" className="space-y-4 pt-4">
+                <TabsContent value="design" className="flex flex-col gap-4 pt-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">Background</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="flex flex-col gap-4">
                       <ImageUpload
                         label="Upload Custom Background"
                         onUpload={(url) =>
@@ -545,12 +545,12 @@ const App: React.FC = () => {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="images" className="space-y-4 pt-4">
+                <TabsContent value="images" className="flex flex-col gap-4 pt-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">Logos</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="flex flex-col gap-4">
                       <ImageUpload
                         label="Top Left Logo"
                         onUpload={(url) =>
@@ -570,7 +570,7 @@ const App: React.FC = () => {
                         <Label className="text-sm font-medium mb-3 block">
                           Footer Logos
                         </Label>
-                        <div className="space-y-3">
+                        <div className="flex flex-col gap-3">
                           {posterState.footerLogos.map((logo, index) => (
                             <div
                               key={index}
@@ -607,12 +607,12 @@ const App: React.FC = () => {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="date" className="space-y-4 pt-4">
+                <TabsContent value="date" className="flex flex-col gap-4 pt-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">Date Circle</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-6">
+                    <CardContent className="flex flex-col gap-6">
                       <div>
                         <Label className="text-sm font-medium mb-3 block">
                           Circle Position
@@ -765,14 +765,14 @@ const App: React.FC = () => {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="copy-pasta" className="space-y-4 pt-4">
+                <TabsContent value="copy-pasta" className="flex flex-col gap-4 pt-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">
                         Social Media Content
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="flex flex-col gap-4">
                       {generatedSocialContent.youtube ? (
                         <Tabs defaultValue="youtube" className="w-full">
                           <TabsList className="grid w-full grid-cols-3">
@@ -814,7 +814,7 @@ const App: React.FC = () => {
                           </TabsContent>
                         </Tabs>
                       ) : (
-                        <div className="text-center py-8 text-gray-500">
+                        <div className="text-center py-8 text-muted-foreground">
                           <Copy className="h-12 w-12 mx-auto mb-2 opacity-50" />
                           <p>
                             Select locations, crop, date, and time to generate
@@ -832,7 +832,7 @@ const App: React.FC = () => {
                   <Button
                     onClick={handleDownload}
                     disabled={isDownloading}
-                    className="w-full bg-green-600 hover:bg-green-700"
+                    className="w-full"
                     size="lg"
                   >
                     <Download className="mr-2 h-5 w-5" />

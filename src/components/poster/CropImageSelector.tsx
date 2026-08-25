@@ -69,7 +69,7 @@ export function CropImageSelector({
 
     if (!selectedCrop) {
         return (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-muted-foreground">
                 <ImageIcon className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p>Select a crop to see relevant background images</p>
             </div>
@@ -114,13 +114,13 @@ export function CropImageSelector({
                     {isWeb && <Globe className="h-3 w-3 flex-shrink-0" />}
                     {title}
                 </div>
-                <div className="text-gray-300 text-xs truncate" title={description}>
+                <div className="text-muted-foreground text-xs truncate" title={description}>
                     {description}
                 </div>
             </div>
             {currentImage === url && (
                 <div className="absolute top-1 right-1">
-                    <Check className="h-4 w-4 text-blue-500 bg-white rounded-full p-0.5" />
+                    <Check className="h-4 w-4 text-primary bg-background rounded-full p-0.5" />
                 </div>
             )}
         </div>
@@ -136,7 +136,7 @@ export function CropImageSelector({
     )
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium">
@@ -151,7 +151,7 @@ export function CropImageSelector({
                 {/* Local Images Section */}
                 {localImages.length > 0 && (
                     <div className="mb-4">
-                        <div className="flex items-center gap-2 mb-2 text-sm font-medium text-gray-700">
+                        <div className="flex items-center gap-2 mb-2 text-sm font-medium">
                             <HardDrive className="h-4 w-4" />
                             <span>Local Images ({localImages.length})</span>
                         </div>
@@ -171,7 +171,7 @@ export function CropImageSelector({
 
                 {/* Web Images Section */}
                 <div>
-                    <div className="flex items-center gap-2 mb-2 text-sm font-medium text-gray-700">
+                    <div className="flex items-center gap-2 mb-2 text-sm font-medium">
                         <Globe className="h-4 w-4" />
                         <span>
                             Web Images {!isLoading && `(${webImages.length})`}
@@ -204,7 +204,7 @@ export function CropImageSelector({
                             )}
                         </div>
                     ) : (
-                        <div className="text-sm text-gray-500 p-2 bg-gray-50 rounded text-center">
+                        <div className="text-sm text-muted-foreground p-2 bg-muted rounded text-center">
                             No web images found
                         </div>
                     )}
@@ -212,7 +212,7 @@ export function CropImageSelector({
             </ScrollArea>
 
             {/* Footer tip */}
-            <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
+            <div className="text-xs text-muted-foreground bg-muted p-2 rounded">
                 <p>
                     💡 <strong>Tip:</strong> Local images are curated for{" "}
                     {CROP_NAMES_EN[selectedCrop]} auctions. Web images are fetched from

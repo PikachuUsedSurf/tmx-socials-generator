@@ -71,8 +71,8 @@ export default function SocialMediaTitleGenerator() {
   };
 
   return (
-    <div className="w-auto mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <div className="space-y-4">
+    <div className="w-auto mx-auto mt-10 p-6 bg-card rounded-lg border shadow-sm">
+      <div className="flex flex-col gap-4">
         <div>
           <Label htmlFor="location">Locations</Label>
           <motion.div
@@ -138,7 +138,7 @@ export default function SocialMediaTitleGenerator() {
             </TabsContent>
             <TabsContent
               value="facebook"
-              className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0"
+              className="flex flex-col gap-8 md:flex-row"
             >
               <ContentDisplay
                 label="Facebook Message"
@@ -153,7 +153,7 @@ export default function SocialMediaTitleGenerator() {
             </TabsContent>
             <TabsContent
               value="instagram"
-              className="flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0"
+              className="flex flex-col gap-8 md:flex-row"
             >
               <ContentDisplay
                 label="Instagram Message"
@@ -190,21 +190,23 @@ function SelectablePill({
       layout
       initial={false}
       animate={{
-        backgroundColor: isSelected ? "black" : "white",
-        color: isSelected ? "white" : "black",
+        backgroundColor: isSelected
+          ? "var(--primary)"
+          : "var(--background)",
+        color: isSelected ? "var(--primary-foreground)" : "var(--foreground)",
       }}
       whileHover={{
         backgroundColor: isSelected
-          ? "rgba(0, 0, 0, 0.8)"
-          : "rgba(0, 0, 0, 0.1)",
+          ? "color-mix(in srgb, var(--primary) 80%, transparent)"
+          : "var(--accent)",
       }}
       whileTap={{
         backgroundColor: isSelected
-          ? "rgba(0, 0, 0, 0.9)"
-          : "rgba(0, 0, 0, 0.2)",
+          ? "color-mix(in srgb, var(--primary) 65%, transparent)"
+          : "var(--accent)",
       }}
       transition={{ ...transitionProps, backgroundColor: { duration: 0.1 } }}
-      className="px-3 py-1 rounded-full text-sm font-medium border border-black"
+      className="px-3 py-1 rounded-full text-sm font-medium border"
     >
       <motion.div
         className="relative flex items-center"

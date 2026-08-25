@@ -49,7 +49,7 @@ export function DateCircleEditor({
             <CardHeader className="pb-3">
                 <CardTitle className="text-sm">Date Circle</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="flex flex-col gap-4">
                 {/* Position Controls */}
                 <div className="grid grid-cols-2 gap-4">
                     <PositionSlider
@@ -67,8 +67,8 @@ export function DateCircleEditor({
                 </div>
 
                 {/* Content Controls */}
-                <div className="space-y-3">
-                    <div className="space-y-2">
+                <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2">
                         <Label className="text-xs">Top Text (e.g., "Tarehe")</Label>
                         <Input
                             value={dateCircle.topText.content}
@@ -77,7 +77,7 @@ export function DateCircleEditor({
                         />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="flex flex-col gap-2">
                         <Label className="text-xs">Main Text (Day Number)</Label>
                         <Input
                             value={dateCircle.mainText.content}
@@ -87,7 +87,7 @@ export function DateCircleEditor({
                         />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="flex flex-col gap-2">
                         <Label className="text-xs">Bottom Text (Month & Year)</Label>
                         <Input
                             value={dateCircle.bottomText.content}

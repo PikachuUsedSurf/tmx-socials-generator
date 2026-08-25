@@ -1,3 +1,9 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { AlertCircle, ExternalLink } from "lucide-react";
+
 const GITHUB_REPO = "PikachuUsedSurf/tmx-socials-generator"
 const COMMITS_URL = `https://api.github.com/repos/${GITHUB_REPO}/commits?per_page=20`
 const COMMITS_PAGE_URL = `https://github.com/${GITHUB_REPO}/commits`
@@ -32,14 +38,11 @@ export default async function Home() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-24 py-10">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-center">
         Welcome to TMX Content Generator
       </h1>
-      <p className="text-center text-base sm:text-lg mb-8 text-muted-foreground line-through">
-        copy pasta&apos;s function are in the social poster generator page.
-      </p>
-      <p className="text-center text-base sm:text-lg mb-8 text-muted-foreground line-through">
-        copy pasta&apos;s got power crept once again lol.
+      <p className="text-center text-base sm:text-lg mb-8 text-muted-foreground">
+        Posters, copy pasta and price tables for TMX auctions.
       </p>
 
       <div className="max-w-4xl mx-auto">
@@ -49,22 +52,32 @@ export default async function Home() {
             href={COMMITS_PAGE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-blue-600 hover:underline"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
           >
-            View all on GitHub →
+            View all on GitHub
+            <ExternalLink className="size-4" />
           </a>
         </div>
 
         {commits.length === 0 ? (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-800">
-            Could not load commits from GitHub. Check your connection or{" "}
-            <a href={COMMITS_PAGE_URL} target="_blank" rel="noopener noreferrer" className="underline">
-              view them directly on GitHub
-            </a>
-            .
-          </div>
+          <Alert>
+            <AlertCircle className="size-4" />
+            <AlertTitle>Could not load commits from GitHub</AlertTitle>
+            <AlertDescription>
+              Check your connection or{" "}
+              <a
+                href={COMMITS_PAGE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                view them directly on GitHub
+              </a>
+              .
+            </AlertDescription>
+          </Alert>
         ) : (
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             {commits.map((commit, i) => {
               const shortSha = commit.sha.slice(0, 7)
               const date = new Date(commit.commit.author.date).toLocaleString("en-GB", {
@@ -79,27 +92,35 @@ export default async function Home() {
               const body = bodyLines.join("\n").trim()
 
               return (
-                <div key={commit.sha} className="bg-white rounded-lg shadow-sm border p-4 sm:p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-base font-semibold text-blue-600 leading-snug">
-                      {i + 1}. {title}
-                    </h3>
-                    <a
-                      href={commit.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="shrink-0 font-mono text-xs text-gray-400 hover:text-blue-500 hover:underline mt-0.5"
-                    >
-                      {shortSha}
-                    </a>
-                  </div>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {commit.commit.author.name} · {date}
-                  </p>
-                  {body && (
-                    <pre className="mt-2 text-sm text-gray-600 whitespace-pre-wrap font-sans">{body}</pre>
-                  )}
-                </div>
+                <Card key={commit.sha}>
+                  <CardContent className="p-4 sm:p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="text-base font-semibold leading-snug">
+                        <Badge variant="secondary" className="mr-2 font-mono">
+                          #{i + 1}
+                        </Badge>
+                        {title}
+                      </h3>
+                      <a
+                        href={commit.html_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="shrink-0 font-mono text-xs text-muted-foreground hover:text-foreground hover:underline mt-0.5"
+                      >
+                        {shortSha}
+                      </a>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {commit.commit.author.name} · {date}
+                    </p>
+                    {body && (
+                      <>
+                        <Separator className="my-2" />
+                        <pre className="text-sm text-muted-foreground whitespace-pre-wrap font-sans">{body}</pre>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
               )
             })}
           </div>

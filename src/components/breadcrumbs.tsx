@@ -1,42 +1,42 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import {
+  Breadcrumb as BreadcrumbUi,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
-interface BreadcrumbItem {
+interface Crumb {
   label: string;
   href: string;
 }
 
 interface BreadcrumbProps {
-  items: BreadcrumbItem[];
+  items: Crumb[];
 }
 
 export function Breadcrumb({ items }: BreadcrumbProps) {
   return (
-    <nav className="flex" aria-label="Breadcrumb">
-      <ol className="inline-flex items-center space-x-1 md:space-x-3">
-        {items.map((item, index) => (
-          <li key={item.href} className="inline-flex items-center">
-            {index > 0 && (
-              <ChevronRight className="mx-2 h-4 w-4 text-gray-400" />
-            )}
-            {index === items.length - 1 ? (
-              <span
-                className="text-sm font-medium text-gray-500"
-                aria-current="page"
-              >
-                {item.label}
-              </span>
-            ) : (
-              <Link
-                href={item.href}
-                className="text-sm font-medium text-primary hover:text-primary-dark"
-              >
-                {item.label}
-              </Link>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
+    <BreadcrumbUi>
+      <BreadcrumbList>
+        {items.map((item, index) => {
+          const isLast = index === items.length - 1;
+          return (
+            <BreadcrumbItem key={item.href}>
+              {isLast ? (
+                <BreadcrumbPage>{item.label}</BreadcrumbPage>
+              ) : (
+                <BreadcrumbLink asChild>
+                  <Link href={item.href}>{item.label}</Link>
+                </BreadcrumbLink>
+              )}
+              {!isLast && <BreadcrumbSeparator />}
+            </BreadcrumbItem>
+          );
+        })}
+      </BreadcrumbList>
+    </BreadcrumbUi>
   );
 }

@@ -21,7 +21,7 @@ export function LocationSelector({
     maxHeight = "h-48",
 }: LocationSelectorProps) {
     return (
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
                 <Label>{label}</Label>
                 <span className="text-sm text-muted-foreground">

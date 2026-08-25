@@ -23,7 +23,7 @@ export function DateTimePicker({
 }: DateTimePickerProps) {
     return (
         <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
                 <Label htmlFor="date" className="flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
                     {dateLabel}
@@ -35,7 +35,7 @@ export function DateTimePicker({
                     onChange={(e) => onDateChange(e.target.value)}
                 />
             </div>
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
                 <Label htmlFor="time" className="flex items-center gap-2">
                     <Clock className="h-4 w-4" />
                     {timeLabel}

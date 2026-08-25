@@ -41,7 +41,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   const triggerFileSelect = () => inputRef.current?.click();
 
   return (
-    <div className={`space-y-2 ${isCompact ? "flex items-center gap-2" : ""}`}>
+    <div className={`flex flex-col gap-2 ${isCompact ? "flex items-center gap-2" : ""}`}>
       {!isCompact && <Label className="text-sm font-medium">{label}</Label>}
       <div className={`flex items-center gap-2 ${isCompact ? "flex-1" : ""}`}>
         <input

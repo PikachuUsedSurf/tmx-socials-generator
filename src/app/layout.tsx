@@ -1,33 +1,10 @@
-"use client";
-
 import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Breadcrumb } from "@/components/breadcrumbs";
-import { usePathname } from "next/navigation";
-import { Metadata } from "@/app/metadata";
-
-function BreadcrumbWrapper() {
-  const pathname = usePathname();
-
-  const breadcrumbItems = [{ label: "Home", href: "/" }];
-
-  if (pathname === "/social-media-generator") {
-    breadcrumbItems.push({
-      label: "Copy Pasta ",
-      href: "/social-media-generator",
-    });
-  }
-
-  if (pathname === "/region-code") {
-    breadcrumbItems.push({
-      label: "Region code",
-      href: "/region-code",
-    });
-  }
-
-  return <Breadcrumb items={breadcrumbItems} />;
-}
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
 
 export default function RootLayout({
   children,
@@ -35,20 +12,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body suppressHydrationWarning>
-        <SidebarProvider>
-          <div className="flex w-screen h-screen">
-            <AppSidebar />
-            <div className="flex flex-col flex-1 overflow-hidden">
-              <header className="flex items-center space-x-2 p-4 border-b">
-                <SidebarTrigger />
-                <BreadcrumbWrapper />
-              </header>
-              <main className="flex-1 overflow-auto p-6">{children}</main>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider>
+          <SidebarProvider>
+            <div className="flex w-screen h-screen">
+              <AppSidebar />
+              <div className="flex flex-col flex-1 overflow-hidden">
+                <header className="flex items-center gap-2 p-4 border-b">
+                  <SidebarTrigger />
+                  <HeaderBreadcrumb />
+                  <div className="ml-auto">
+                    <ThemeToggle />
+                  </div>
+                </header>
+                <main className="flex-1 overflow-auto p-6">{children}</main>
+              </div>
             </div>
-          </div>
-        </SidebarProvider>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
