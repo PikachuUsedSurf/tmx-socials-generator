@@ -71,7 +71,7 @@ export default function SocialMediaTitleGenerator() {
   };
 
   return (
-    <div className="w-auto mx-auto mt-10 p-6 bg-card rounded-lg border shadow-sm">
+    <div className="w-auto mx-auto mt-10 p-6 bg-card rounded-lg border">
       <div className="flex flex-col gap-4">
         <div>
           <Label htmlFor="location">Locations</Label>
