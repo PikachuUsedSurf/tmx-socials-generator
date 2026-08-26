@@ -62,6 +62,7 @@ export type CropName =
     | "GEMSTONE"
     | "GROUNDNUT"
     | "GREEN GRAM"
+    | "MAIZE"
     | "PIGEON PEA"
     | "SESAME"
     | "SOYA"

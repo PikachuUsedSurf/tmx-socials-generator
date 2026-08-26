@@ -11,6 +11,7 @@ export const CROP_SEARCH_TERMS: Record<CropName, string> = {
   GEMSTONE: "gemstone mining tanzanite",
   GROUNDNUT: "peanut groundnut farming",
   "GREEN GRAM": "mung bean green gram",
+  MAIZE: "maize field harvest",
   "PIGEON PEA": "pigeon pea field",
   SESAME: "sesame seeds field",
   SOYA: "soybean field harvest",

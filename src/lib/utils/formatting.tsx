@@ -24,10 +24,10 @@ export const formatList = (items: string[], lang: "sw" | "en"): string => {
  * Format organizations with proper conjunction
  */
 export const formatOrganizations = (
-    orgs: string[],
+    orgs: string[] | undefined,
     language: "swahili" | "english"
 ): string => {
-    if (orgs.length === 0) return ""
+    if (!orgs || orgs.length === 0) return ""
     if (orgs.length === 1) return orgs[0]
     if (orgs.length === 2) {
         return language === "swahili"

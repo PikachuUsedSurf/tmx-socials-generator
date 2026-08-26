@@ -11,6 +11,7 @@ export const ORGANIZATION_MAP: Record<CropName, string[]> = {
   GEMSTONE: ["MC"],
   GROUNDNUT: ["COPRA", "TCDC", "WRRB"],
   "GREEN GRAM": ["COPRA", "TCDC", "WRRB"],
+  MAIZE: ["COPRA", "TCDC", "WRRB"],
   "PIGEON PEA": ["COPRA", "TCDC", "WRRB"],
   "COW PEA": ["COPRA", "TCDC", "WRRB"],
   SESAME: ["COPRA", "TCDC", "WRRB"],
