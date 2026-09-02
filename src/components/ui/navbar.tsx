@@ -23,7 +23,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0 flex items-center">
+            <Link href="/" className="shrink-0 flex items-center">
               <svg
                 className="h-8 w-8 text-primary"
                 fill="none"
@@ -57,7 +57,7 @@ export default function Navbar() {
           <div className="-mr-2 flex items-center sm:hidden">
             <Button
               variant="ghost"
-              className="inline-flex items-center justify-center p-2 rounded-md text-primary-foreground hover:text-primary hover:bg-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+              className="inline-flex items-center justify-center p-2 rounded-md text-primary-foreground hover:text-primary hover:bg-accent focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-primary"
               onClick={toggleMenu}
               aria-expanded={isMenuOpen}
             >

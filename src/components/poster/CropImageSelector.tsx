@@ -111,7 +111,7 @@ export function CropImageSelector({
             </div>
             <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs p-1">
                 <div className="truncate font-medium flex items-center gap-1" title={title}>
-                    {isWeb && <Globe className="h-3 w-3 flex-shrink-0" />}
+                    {isWeb && <Globe className="h-3 w-3 shrink-0" />}
                     {title}
                 </div>
                 <div className="text-muted-foreground text-xs truncate" title={description}>
