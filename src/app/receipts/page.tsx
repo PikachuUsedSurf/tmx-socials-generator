@@ -65,6 +65,10 @@ const formatPlain = (value: number): string => value.toFixed(2);
 const RECEIPT_WIDTH = 794;
 const RECEIPT_HEIGHT = 1123;
 
+// Additional Funds is a small handling fee carved out of the entered total,
+// with Travel Fund taking the rest — the two always sum back to the total.
+const ADDITIONAL_FUNDS_PERCENT = 0.025;
+
 interface ReceiptProps {
   id: string;
   name: string;
@@ -92,7 +96,11 @@ const Receipt: React.FC<ReceiptProps> = ({
   total,
   invoiceNo,
   driverTag,
-}) => (
+}) => {
+  const additionalFunds = total * ADDITIONAL_FUNDS_PERCENT;
+  const travelFund = total - additionalFunds;
+
+  return (
   <div
     id={id}
     className="bg-white text-black"
@@ -150,15 +158,15 @@ const Receipt: React.FC<ReceiptProps> = ({
       </div>
       <div className="flex">
         <div className="flex-1 border-r border-b border-black p-1.5 text-left">Travel Fund</div>
-        <div className="w-[130px] border-r border-b border-black p-1.5 text-right">{formatWithCommas(total)}</div>
+        <div className="w-[130px] border-r border-b border-black p-1.5 text-right">{formatWithCommas(travelFund)}</div>
         <div className="w-[110px] border-r border-b border-black p-1.5 text-right">0.00</div>
-        <div className="w-[150px] border-r border-b border-black p-1.5 text-right">{formatWithCommas(total)}</div>
+        <div className="w-[150px] border-r border-b border-black p-1.5 text-right">{formatWithCommas(travelFund)}</div>
       </div>
       <div className="flex">
         <div className="flex-1 border-r border-b border-black p-1.5 text-left">Additional Funds</div>
-        <div className="w-[130px] border-r border-b border-black p-1.5 text-right">0.00</div>
+        <div className="w-[130px] border-r border-b border-black p-1.5 text-right">{formatWithCommas(additionalFunds)}</div>
         <div className="w-[110px] border-r border-b border-black p-1.5 text-right">0.00</div>
-        <div className="w-[150px] border-r border-b border-black p-1.5 text-right">0.00</div>
+        <div className="w-[150px] border-r border-b border-black p-1.5 text-right">{formatWithCommas(additionalFunds)}</div>
       </div>
     </div>
 
@@ -186,7 +194,8 @@ const Receipt: React.FC<ReceiptProps> = ({
       </div>
     </div>
   </div>
-);
+  );
+};
 
 const App: React.FC = () => {
   const [name, setName] = useState("");
