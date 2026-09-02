@@ -251,6 +251,11 @@ const App: React.FC = () => {
         swDataUrl,
         `poster_${CROP_TRANSLATIONS_SW[crop].toLowerCase().replace(" ", "_")}_sw.png`,
       );
+
+      toast({
+        title: "Posters downloaded",
+        description: "The English and Swahili posters have been saved to your downloads.",
+      });
     } catch (err) {
       console.error("Failed to download poster:", err);
       toast({
@@ -787,7 +792,10 @@ const App: React.FC = () => {
                               label="YouTube Title"
                               content={generatedSocialContent.youtube}
                               onCopy={() =>
-                                copyToClipboard(generatedSocialContent.youtube)
+                                copyToClipboard(
+                                  generatedSocialContent.youtube,
+                                  toast,
+                                )
                               }
                               showCharCount
                             />
@@ -797,7 +805,10 @@ const App: React.FC = () => {
                               label="Facebook Post"
                               content={generatedSocialContent.facebook}
                               onCopy={() =>
-                                copyToClipboard(generatedSocialContent.facebook)
+                                copyToClipboard(
+                                  generatedSocialContent.facebook,
+                                  toast,
+                                )
                               }
                             />
                           </TabsContent>
@@ -808,6 +819,7 @@ const App: React.FC = () => {
                               onCopy={() =>
                                 copyToClipboard(
                                   generatedSocialContent.instagram,
+                                  toast,
                                 )
                               }
                             />
