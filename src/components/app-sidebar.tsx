@@ -29,6 +29,10 @@ const data = {
           title: "Social Poster Creator",
           url: "/social-media-poster",
         },
+        {
+          title: "Receipt Generator",
+          url: "/receipts",
+        },
       ],
     },
         {
