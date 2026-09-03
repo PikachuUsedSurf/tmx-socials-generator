@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, Banknote, RefreshCw } from "lucide-react";
+import { Download, Printer, Banknote, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 // Common Tanzanian names used as a placeholder for the "OFFICE DRIVER" tag
@@ -200,6 +200,7 @@ const App: React.FC = () => {
   const [invoiceNo, setInvoiceNo] = useState("");
   const [driverTag, setDriverTag] = useState("");
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const [previewScale, setPreviewScale] = useState(1);
@@ -229,8 +230,29 @@ const App: React.FC = () => {
 
   const total = parseFloat(totalAmount) || 0;
 
+  const hasAllFields = Boolean(name && location && date && startLocation && totalAmount);
+
+  const captureReceiptPng = async (): Promise<string> => {
+    const receiptElement = document.getElementById("receipt-canvas");
+    if (!receiptElement) throw new Error("Receipt element not found.");
+
+    return toPng(receiptElement, {
+      width: RECEIPT_WIDTH,
+      height: RECEIPT_HEIGHT,
+      canvasWidth: RECEIPT_WIDTH,
+      canvasHeight: RECEIPT_HEIGHT,
+      pixelRatio: 2,
+      skipAutoScale: true,
+      cacheBust: true,
+      style: {
+        width: `${RECEIPT_WIDTH}px`,
+        height: `${RECEIPT_HEIGHT}px`,
+      },
+    });
+  };
+
   const handleDownload = async () => {
-    if (!name || !location || !date || !startLocation || !totalAmount) {
+    if (!hasAllFields) {
       toast({
         title: "Missing information",
         description: "Please fill in name, location, date, start location, and total amount before downloading.",
@@ -241,22 +263,7 @@ const App: React.FC = () => {
 
     setIsDownloading(true);
     try {
-      const receiptElement = document.getElementById("receipt-canvas");
-      if (!receiptElement) throw new Error("Receipt element not found.");
-
-      const dataUrl = await toPng(receiptElement, {
-        width: RECEIPT_WIDTH,
-        height: RECEIPT_HEIGHT,
-        canvasWidth: RECEIPT_WIDTH,
-        canvasHeight: RECEIPT_HEIGHT,
-        pixelRatio: 2,
-        skipAutoScale: true,
-        cacheBust: true,
-        style: {
-          width: `${RECEIPT_WIDTH}px`,
-          height: `${RECEIPT_HEIGHT}px`,
-        },
-      });
+      const dataUrl = await captureReceiptPng();
 
       const link = document.createElement("a");
       link.download = `receipt_${name.toLowerCase().replace(/\s+/g, "_")}_${date}.png`;
@@ -278,6 +285,79 @@ const App: React.FC = () => {
       });
     } finally {
       setIsDownloading(false);
+    }
+  };
+
+  const handlePrint = async () => {
+    if (!hasAllFields) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in name, location, date, start location, and total amount before printing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsPrinting(true);
+    try {
+      const dataUrl = await captureReceiptPng();
+
+      // Print just the receipt image, sized to fill one A4 page, via a
+      // hidden iframe — this avoids opening a new tab (which popup
+      // blockers can block) and leaves the rest of the page untouched.
+      // The browser's print dialog itself offers "Save as PDF" as a
+      // destination, so this covers both printing and saving as a PDF.
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "fixed";
+      iframe.style.width = "0";
+      iframe.style.height = "0";
+      iframe.style.border = "0";
+      document.body.appendChild(iframe);
+
+      const cleanup = () => {
+        if (iframe.parentNode) document.body.removeChild(iframe);
+      };
+
+      const iframeDoc = iframe.contentWindow?.document;
+      if (!iframeDoc) throw new Error("Could not prepare print view.");
+
+      iframeDoc.open();
+      iframeDoc.write(`
+        <html>
+          <head>
+            <title>Receipt - ${name}</title>
+            <style>
+              @page { size: A4; margin: 0; }
+              html, body { margin: 0; padding: 0; }
+              img { width: 100%; display: block; }
+            </style>
+          </head>
+          <body>
+            <img src="${dataUrl}" />
+          </body>
+        </html>
+      `);
+      iframeDoc.close();
+
+      const img = iframeDoc.querySelector("img");
+      if (img) {
+        img.onload = () => {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+        };
+      }
+      iframe.contentWindow?.addEventListener("afterprint", cleanup);
+      // Fallback cleanup in case afterprint never fires (e.g. dialog dismissed unusually).
+      setTimeout(cleanup, 60_000);
+    } catch (err) {
+      console.error("Failed to open print view:", err);
+      toast({
+        title: "Print failed",
+        description: "An error occurred while preparing the receipt for printing.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPrinting(false);
     }
   };
 
@@ -398,15 +478,25 @@ const App: React.FC = () => {
               </Card>
 
               <Card>
-                <CardContent className="pt-6">
+                <CardContent className="pt-6 flex flex-col gap-3">
                   <Button
                     onClick={handleDownload}
-                    disabled={isDownloading}
+                    disabled={isDownloading || isPrinting}
                     className="w-full"
                     size="lg"
                   >
                     <Download className="mr-2 h-5 w-5" />
                     {isDownloading ? "Downloading..." : "Download Receipt"}
+                  </Button>
+                  <Button
+                    onClick={handlePrint}
+                    disabled={isDownloading || isPrinting}
+                    variant="outline"
+                    className="w-full"
+                    size="lg"
+                  >
+                    <Printer className="mr-2 h-5 w-5" />
+                    {isPrinting ? "Preparing..." : "Print / Save as PDF"}
                   </Button>
                 </CardContent>
               </Card>
