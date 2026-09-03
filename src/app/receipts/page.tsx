@@ -116,7 +116,7 @@ const Receipt: React.FC<ReceiptProps> = ({
     {/* Header: logo + invoice meta */}
     <div className="flex justify-between items-start">
       <img
-        src="/images/logos/tmx-logo.png"
+        src="/images/logos/receipt-logo.png"
         alt="TMX PLC"
         width={190}
         height={68}
@@ -157,13 +157,13 @@ const Receipt: React.FC<ReceiptProps> = ({
         <div className="w-[150px] border-r border-b border-black p-1.5 text-left font-bold">Total sum (TZS)</div>
       </div>
       <div className="flex">
-        <div className="flex-1 border-r border-b border-black p-1.5 text-left">Travel Fund</div>
+        <div className="flex-1 border-r border-b border-black p-1.5 text-left">Trip Fee</div>
         <div className="w-[130px] border-r border-b border-black p-1.5 text-right">{formatWithCommas(travelFund)}</div>
         <div className="w-[110px] border-r border-b border-black p-1.5 text-right">0.00</div>
         <div className="w-[150px] border-r border-b border-black p-1.5 text-right">{formatWithCommas(travelFund)}</div>
       </div>
       <div className="flex">
-        <div className="flex-1 border-r border-b border-black p-1.5 text-left">Additional Funds</div>
+        <div className="flex-1 border-r border-b border-black p-1.5 text-left">Booking Fee</div>
         <div className="w-[130px] border-r border-b border-black p-1.5 text-right">{formatWithCommas(additionalFunds)}</div>
         <div className="w-[110px] border-r border-b border-black p-1.5 text-right">0.00</div>
         <div className="w-[150px] border-r border-b border-black p-1.5 text-right">{formatWithCommas(additionalFunds)}</div>
