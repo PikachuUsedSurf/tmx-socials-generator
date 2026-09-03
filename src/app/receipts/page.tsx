@@ -330,18 +330,13 @@ const App: React.FC = () => {
 
                   <div>
                     <Label htmlFor="location">Location</Label>
-                    <Select value={location} onValueChange={setLocation}>
-                      <SelectTrigger id="location" className="mt-1">
-                        <SelectValue placeholder="Select location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {AVAILABLE_LOCATIONS.map((loc) => (
-                          <SelectItem key={loc} value={loc}>
-                            {loc}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <input
+                      id="location"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder="e.g. Kariakoo"
+                      className="mt-1"
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
