@@ -311,10 +311,6 @@ const App: React.FC = () => {
       posterState.footerLogos.filter((_, i) => i !== index),
     );
 
-  const posterTitle =
-    crop && locations.length > 0
-      ? `${CROP_NAMES_EN[crop]} — ${locations.join(" & ")}`
-      : "New poster";
 
   return (
     <div className="min-h-screen">
@@ -326,46 +322,6 @@ const App: React.FC = () => {
       </div>
 
       <div className="max-w-screen mx-auto flex flex-col gap-4 sm:gap-6">
-        {/* Top bar */}
-        <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-card px-4 sm:px-6 py-4">
-          <div className="min-w-0">
-            <div className="text-sm font-semibold truncate">{posterTitle}</div>
-            <div className="text-xs text-muted-foreground">
-              {date ? `${date} · ${time}` : "Auction poster"}
-            </div>
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            <div className="flex rounded-lg overflow-hidden border">
-              <button
-                type="button"
-                onClick={() => setLanguage("sw")}
-                className={`px-3 py-2 text-xs font-semibold transition-colors ${
-                  language === "sw"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                SW
-              </button>
-              <button
-                type="button"
-                onClick={() => setLanguage("en")}
-                className={`px-3 py-2 text-xs font-semibold transition-colors ${
-                  language === "en"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                EN
-              </button>
-            </div>
-            <Button onClick={handleDownload} disabled={isDownloading}>
-              <Download className="mr-2 h-4 w-4" />
-              {isDownloading ? "Downloading..." : "Download EN & SW"}
-            </Button>
-          </div>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr_320px] gap-4 sm:gap-6 items-start">
           {/* Details panel: locations & crop, always shown — every option visible, nothing to scroll */}
           <Card>
@@ -498,9 +454,42 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Properties panel: bound to whatever is selected */}
-          <Card>
-            <CardContent className="pt-6">
+          {/* Language + download, sized to sit above the properties panel */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-end gap-2">
+              <div className="flex rounded-lg overflow-hidden border">
+                <button
+                  type="button"
+                  onClick={() => setLanguage("sw")}
+                  className={`px-3 py-2 text-xs font-semibold transition-colors ${
+                    language === "sw"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  SW
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLanguage("en")}
+                  className={`px-3 py-2 text-xs font-semibold transition-colors ${
+                    language === "en"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
+              <Button onClick={handleDownload} disabled={isDownloading} size="sm">
+                <Download className="mr-2 h-4 w-4" />
+                {isDownloading ? "Downloading..." : "Download EN & SW"}
+              </Button>
+            </div>
+
+            {/* Properties panel: bound to whatever is selected */}
+            <Card>
+              <CardContent className="pt-6">
               {selectedZone === null && (
                 <div className="text-sm text-muted-foreground leading-relaxed">
                   Nothing selected yet. Click any element on the poster, or
@@ -770,7 +759,8 @@ const App: React.FC = () => {
                 </div>
               )}
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
