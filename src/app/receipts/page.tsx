@@ -6,16 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Download, Banknote, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { AVAILABLE_LOCATIONS } from "@/lib/constants/locations";
 
 // Common Tanzanian names used as a placeholder for the "OFFICE DRIVER" tag
 // until a real driver-name field is confirmed.
@@ -330,7 +322,7 @@ const App: React.FC = () => {
 
                   <div>
                     <Label htmlFor="location">Location</Label>
-                    <input
+                    <Input
                       id="location"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
