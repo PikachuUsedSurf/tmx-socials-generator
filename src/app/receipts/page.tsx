@@ -136,7 +136,7 @@ const Receipt: React.FC<ReceiptProps> = ({
       </div>
     </div>
 
-    <div className="mt-5">
+    <div className="mt-16">
       Start: {startLocation || "____"} ({date || "____-__-__"} {time || "__:__"})
     </div>
 
