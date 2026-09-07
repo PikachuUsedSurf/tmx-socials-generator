@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 import {
   Select,
   SelectContent,
@@ -15,33 +16,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import {
-  Download,
-  Trash2,
-  Plus,
-  Palette,
-  Type,
-  ImageIcon,
-  Calendar,
-  Copy,
-} from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Download, Check, Copy } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import {
   CropImageSelector,
-  EditableContentGenerator,
+  DateCircleEditor,
   ImageUpload,
+  LogoManager,
   PositionSlider,
   PosterCanvas,
 } from "@/components/poster";
+import type { PosterZone } from "@/components/poster/PosterCanvas";
 import { ContentDisplay } from "@/components/social-media/ContentDisplay";
-import type {
-  BackgroundStyle,
-  PosterState,
-  CropName,
-} from "@/lib/types";
+import type { BackgroundStyle, PosterState, CropName } from "@/lib/types";
 import { POSTER_WIDTH, POSTER_HEIGHT } from "@/lib/types";
-import { CROP_NAMES_EN, CROP_TRANSLATIONS_SW, CROP_BACKGROUND_IMAGES } from "@/lib/constants/crops";
+import {
+  CROP_NAMES_EN,
+  CROP_TRANSLATIONS_SW,
+  CROP_BACKGROUND_IMAGES,
+  CROPS,
+} from "@/lib/constants/crops";
+import { AVAILABLE_LOCATIONS } from "@/lib/constants/locations";
 import {
   generatePosterContent,
   mergeContentIntoState,
@@ -49,12 +45,28 @@ import {
 } from "@/lib/generators";
 import { copyToClipboard } from "@/lib/utils/formatting";
 
+type PanelZone = PosterZone | "captions";
+
+const TOOLBAR_ZONES: { zone: PanelZone; label: string }[] = [
+  { zone: "header", label: "Header" },
+  { zone: "heading", label: "Heading" },
+  { zone: "paragraph", label: "Paragraph" },
+  { zone: "dateCircle", label: "Date badge" },
+  { zone: "photo", label: "Photo" },
+  { zone: "footer", label: "Logos" },
+  { zone: "captions", label: "Captions" },
+];
+
 const App: React.FC = () => {
   // State for generator inputs
   const [locations, setLocations] = useState<string[]>(["SINGIDA", "DODOMA"]);
   const [crop, setCrop] = useState<CropName | "">("CHICK PEA");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("10:30");
+  const [language, setLanguage] = useState<"sw" | "en">("sw");
+
+  // Which part of the poster the right-hand panel is currently editing
+  const [selectedZone, setSelectedZone] = useState<PanelZone | null>(null);
 
   // State for poster visual elements
   const [posterState, setPosterState] = useState<PosterState>({
@@ -97,6 +109,13 @@ const App: React.FC = () => {
     facebook: "",
     instagram: "",
   });
+
+  // Auto-generate and apply poster wording whenever locations/crop/date/time/language change
+  useEffect(() => {
+    if (locations.length === 0 || !crop || !date || !time) return;
+    const content = generatePosterContent(locations, crop, date, time, language);
+    setPosterState((prev) => mergeContentIntoState(prev, content));
+  }, [locations, crop, date, time, language]);
 
   // Auto-generate social content when inputs change
   useEffect(() => {
@@ -165,10 +184,6 @@ const App: React.FC = () => {
     [],
   );
 
-  const handleContentUpdate = useCallback((content: Partial<PosterState>) => {
-    setPosterState((prevState) => mergeContentIntoState(prevState, content));
-  }, []);
-
   const handleBackgroundStyleChange = useCallback(
     (key: keyof BackgroundStyle, value: string) => {
       handleStateChange("backgroundStyle", {
@@ -178,6 +193,15 @@ const App: React.FC = () => {
     },
     [posterState.backgroundStyle, handleStateChange],
   );
+
+  const toggleLocation = (location: string) =>
+    setLocations((prev) =>
+      prev.includes(location)
+        ? prev.filter((loc) => loc !== location)
+        : [...prev, location],
+    );
+  const toggleCrop = (selectedCrop: CropName) =>
+    setCrop((prev) => (prev === selectedCrop ? "" : selectedCrop));
 
   const captureCanvas = async (elementId: string): Promise<string> => {
     const posterElement = document.getElementById(elementId);
@@ -287,6 +311,7 @@ const App: React.FC = () => {
       posterState.footerLogos.filter((_, i) => i !== index),
     );
 
+
   return (
     <div className="min-h-screen">
       {/* Hidden canvas for high-resolution downloads */}
@@ -296,591 +321,444 @@ const App: React.FC = () => {
         )}
       </div>
 
-      <div className="max-w-screen mx-auto">
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-          {/* Controls Panel */}
-          <div className="xl:col-span-1">
-            <div className="flex flex-col gap-6">
-              <EditableContentGenerator
-                onApplyContent={handleContentUpdate}
-                {...{
-                  locations,
-                  setLocations,
-                  crop,
-                  setCrop,
-                  date,
-                  setDate,
-                  time,
-                  setTime,
-                }}
-              />
+      <div className="max-w-screen mx-auto flex flex-col gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr_320px] gap-4 sm:gap-6 items-start">
+          {/* Details panel: locations & crop, always shown — every option visible, nothing to scroll */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Audience &amp; crop</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-5">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <Label className="text-sm font-medium">Locations</Label>
+                  <span className="text-sm text-muted-foreground">
+                    {locations.length} selected
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 rounded-md border p-2.5">
+                  {AVAILABLE_LOCATIONS.map((location) => {
+                    const isSelected = locations.includes(location);
+                    return (
+                      <Badge
+                        key={location}
+                        variant={isSelected ? "default" : "outline"}
+                        className="cursor-pointer select-none transition-colors"
+                        onClick={() => toggleLocation(location)}
+                      >
+                        {isSelected && <Check className="mr-1 h-3 w-3" />}
+                        {location}
+                      </Badge>
+                    );
+                  })}
+                </div>
+              </div>
 
-              <Tabs defaultValue="content" className="w-full ">
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1">
-                  <TabsTrigger value="content" className="text-xs sm:text-sm">
-                    <Type className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                    <span className="hidden sm:inline">Content</span>
-                    <span className="sm:hidden">Cont</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="design" className="text-xs sm:text-sm">
-                    <Palette className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                    <span className="hidden sm:inline">Design</span>
-                    <span className="sm:hidden">Des</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="images" className="text-xs sm:text-sm">
-                    <ImageIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                    <span className="hidden sm:inline">Images</span>
-                    <span className="sm:hidden">Img</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="date" className="text-xs sm:text-sm">
-                    <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                    <span className="hidden sm:inline">Date</span>
-                    <span className="sm:hidden">Date</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="copy-pasta"
-                    className="text-xs sm:text-sm"
-                  >
-                    <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                    <span className="hidden sm:inline">Copy Pasta</span>
-                    <span className="sm:hidden">Copy</span>
-                  </TabsTrigger>
-                </TabsList>
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Crop</Label>
+                <div className="flex flex-wrap gap-1.5 rounded-md border p-2.5">
+                  {CROPS.map((cropName) => {
+                    const isSelected = crop === cropName;
+                    return (
+                      <Badge
+                        key={cropName}
+                        variant={isSelected ? "default" : "outline"}
+                        className="cursor-pointer select-none transition-colors"
+                        onClick={() => toggleCrop(cropName)}
+                      >
+                        {isSelected && <Check className="mr-1 h-3 w-3" />}
+                        {CROP_NAMES_EN[cropName]}
+                      </Badge>
+                    );
+                  })}
+                </div>
+              </div>
 
-                <TabsContent value="content" className="flex flex-col gap-4 pt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Header & Footer</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-4">
-                      <div>
-                        <Label htmlFor="topText">Top Center Text</Label>
-                        <Textarea
-                          id="topText"
-                          value={posterState.topText}
-                          onChange={(e) =>
-                            handleStateChange("topText", e.target.value)
-                          }
-                          rows={3}
-                          className="mt-1"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="headerColor">
-                          Header/Footer Background
-                        </Label>
-                        <Input
-                          id="headerColor"
-                          type="color"
-                          value={posterState.headerFooterBackgroundColor.slice(
-                            0,
-                            7,
-                          )}
-                          onChange={(e) =>
-                            handleStateChange(
-                              "headerFooterBackgroundColor",
-                              e.target.value,
-                            )
-                          }
-                          className="mt-1 h-10"
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
+              <div>
+                <Label className="text-sm font-medium mb-2 block">
+                  Auction date &amp; time
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                  <Input
+                    type="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Main Content</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-6">
-                      <div>
-                        <Label htmlFor="heading">Main Heading</Label>
-                        <Input
-                          id="heading"
-                          value={posterState.heading.content}
-                          onChange={(e) =>
-                            handleNestedChange(
-                              ["heading", "content"],
-                              e.target.value,
-                            )
-                          }
-                          className="mt-1"
-                        />
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
-                          <PositionSlider
-                            label="X Position"
-                            value={posterState.heading.position.x}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["heading", "position", "x"],
-                                v,
-                              )
-                            }
-                          />
-                          <PositionSlider
-                            label="Y Position"
-                            value={posterState.heading.position.y}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["heading", "position", "y"],
-                                v,
-                              )
-                            }
-                          />
-                        </div>
-                      </div>
-                      <Separator />
-                      <div>
-                        <Label htmlFor="paragraph">Main Paragraph</Label>
-                        <Textarea
-                          id="paragraph"
-                          value={posterState.paragraph.content}
-                          onChange={(e) =>
-                            handleNestedChange(
-                              ["paragraph", "content"],
-                              e.target.value,
-                            )
-                          }
-                          rows={8}
-                          className="mt-1"
-                        />
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
-                          <PositionSlider
-                            label="X Position"
-                            value={posterState.paragraph.position.x}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["paragraph", "position", "x"],
-                                v,
-                              )
-                            }
-                          />
-                          <PositionSlider
-                            label="Y Position"
-                            value={posterState.paragraph.position.y}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["paragraph", "position", "y"],
-                                v,
-                              )
-                            }
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
+          {/* Canvas stage: halftone ground, floating toolbar, click-to-edit poster */}
+          <div className="relative overflow-auto rounded-lg flex flex-col items-center py-8 px-4 min-h-[560px]">
+            <div
+              className="absolute inset-0 rounded-lg pointer-events-none"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle, rgba(255,255,255,0.06) 1.4px, transparent 1.6px)",
+                backgroundSize: "13px 13px",
+                backgroundColor: "#1c1c1a",
+              }}
+            />
 
-                <TabsContent value="design" className="flex flex-col gap-4 pt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Background</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-4">
-                      <ImageUpload
-                        label="Upload Custom Background"
-                        onUpload={(url) =>
-                          handleStateChange("backgroundImage", url)
-                        }
-                        currentImage={posterState.backgroundImage}
-                      />
+            <div className="relative z-10 flex flex-wrap justify-center gap-1 rounded-xl bg-[#232323] p-1.5 mb-6 shadow-lg">
+              {TOOLBAR_ZONES.map(({ zone, label }) => (
+                <button
+                  key={zone}
+                  type="button"
+                  onClick={() => setSelectedZone(zone)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    selectedZone === zone
+                      ? "bg-white text-[#171716]"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
 
-                      <Separator />
+            <div
+              ref={previewContainerRef}
+              className="relative z-10 w-full max-w-[560px] mx-auto"
+              style={{ aspectRatio: "1 / 1" }}
+            >
+              <div className="w-full h-full flex justify-center items-center overflow-hidden">
+                <div
+                  style={{
+                    transform: `scale(${previewScale})`,
+                    transformOrigin: "center center",
+                  }}
+                  className="shadow-2xl"
+                >
+                  <PosterCanvas
+                    {...posterState}
+                    id="visible-poster"
+                    selectedZone={
+                      selectedZone === "captions" ? null : selectedZone
+                    }
+                    onSelectZone={(zone) => setSelectedZone(zone)}
+                  />
+                </div>
+              </div>
+            </div>
 
-                      <div>
-                        <Label className="text-sm font-medium mb-3 block">
-                          Crop-Specific Backgrounds
-                        </Label>
-                        <CropImageSelector
-                          selectedCrop={crop}
-                          onImageSelect={(imageUrl) =>
-                            handleStateChange("backgroundImage", imageUrl)
-                          }
-                          currentImage={posterState.backgroundImage}
-                        />
-                      </div>
-
-                      <Separator />
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <Label>Image Fit</Label>
-                          <Select
-                            value={posterState.backgroundStyle.objectFit}
-                            onValueChange={(v) =>
-                              handleBackgroundStyleChange("objectFit", v)
-                            }
-                          >
-                            <SelectTrigger className="mt-1">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="cover">Cover</SelectItem>
-                              <SelectItem value="contain">Contain</SelectItem>
-                              <SelectItem value="fill">Fill</SelectItem>
-                              <SelectItem value="none">None</SelectItem>
-                              <SelectItem value="scale-down">
-                                Scale Down
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label>Image Position</Label>
-                          <Select
-                            value={posterState.backgroundStyle.objectPosition}
-                            onValueChange={(v) =>
-                              handleBackgroundStyleChange("objectPosition", v)
-                            }
-                          >
-                            <SelectTrigger className="mt-1">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="center">Center</SelectItem>
-                              <SelectItem value="top">Top</SelectItem>
-                              <SelectItem value="bottom">Bottom</SelectItem>
-                              <SelectItem value="left">Left</SelectItem>
-                              <SelectItem value="right">Right</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="images" className="flex flex-col gap-4 pt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Logos</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-4">
-                      <ImageUpload
-                        label="Top Left Logo"
-                        onUpload={(url) =>
-                          handleStateChange("topLeftLogo", url)
-                        }
-                        currentImage={posterState.topLeftLogo}
-                      />
-                      <ImageUpload
-                        label="Top Right Logo"
-                        onUpload={(url) =>
-                          handleStateChange("topRightLogo", url)
-                        }
-                        currentImage={posterState.topRightLogo}
-                      />
-                      <Separator />
-                      <div>
-                        <Label className="text-sm font-medium mb-3 block">
-                          Footer Logos
-                        </Label>
-                        <div className="flex flex-col gap-3">
-                          {posterState.footerLogos.map((logo, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center gap-2"
-                            >
-                              <ImageUpload
-                                label={`Footer Logo ${index + 1}`}
-                                onUpload={(url) =>
-                                  handleFooterLogoChange(index, url)
-                                }
-                                currentImage={logo}
-                                isCompact={true}
-                              />
-                              <Button
-                                onClick={() => removeFooterLogo(index)}
-                                variant="destructive"
-                                size="sm"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          ))}
-                          <Button
-                            onClick={addFooterLogo}
-                            variant="outline"
-                            className="w-full bg-transparent"
-                          >
-                            <Plus className="mr-2 h-4 w-4" />
-                            Add Footer Logo
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="date" className="flex flex-col gap-4 pt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Date Circle</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-6">
-                      <div>
-                        <Label className="text-sm font-medium mb-3 block">
-                          Circle Position
-                        </Label>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <PositionSlider
-                            label="X"
-                            value={posterState.dateCircle.position.x}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["dateCircle", "position", "x"],
-                                v,
-                              )
-                            }
-                          />
-                          <PositionSlider
-                            label="Y"
-                            value={posterState.dateCircle.position.y}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["dateCircle", "position", "y"],
-                                v,
-                              )
-                            }
-                          />
-                        </div>
-                      </div>
-                      <Separator />
-                      <div>
-                        <Label className="text-sm font-medium mb-3 block">
-                          Top Text
-                        </Label>
-                        <Input
-                          value={posterState.dateCircle.topText.content}
-                          onChange={(e) =>
-                            handleNestedChange(
-                              ["dateCircle", "topText", "content"],
-                              e.target.value,
-                            )
-                          }
-                          className="mb-3"
-                        />
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <PositionSlider
-                            label="X"
-                            value={posterState.dateCircle.topText.position.x}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["dateCircle", "topText", "position", "x"],
-                                v,
-                              )
-                            }
-                            max={200}
-                          />
-                          <PositionSlider
-                            label="Y"
-                            value={posterState.dateCircle.topText.position.y}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["dateCircle", "topText", "position", "y"],
-                                v,
-                              )
-                            }
-                            max={200}
-                          />
-                        </div>
-                      </div>
-                      <Separator />
-                      <div>
-                        <Label className="text-sm font-medium mb-3 block">
-                          Main Text
-                        </Label>
-                        <Input
-                          value={posterState.dateCircle.mainText.content}
-                          onChange={(e) =>
-                            handleNestedChange(
-                              ["dateCircle", "mainText", "content"],
-                              e.target.value,
-                            )
-                          }
-                          className="mb-3"
-                        />
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <PositionSlider
-                            label="X"
-                            value={posterState.dateCircle.mainText.position.x}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["dateCircle", "mainText", "position", "x"],
-                                v,
-                              )
-                            }
-                            max={200}
-                          />
-                          <PositionSlider
-                            label="Y"
-                            value={posterState.dateCircle.mainText.position.y}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["dateCircle", "mainText", "position", "y"],
-                                v,
-                              )
-                            }
-                            max={200}
-                          />
-                        </div>
-                      </div>
-                      <Separator />
-                      <div>
-                        <Label className="text-sm font-medium mb-3 block">
-                          Bottom Text
-                        </Label>
-                        <Textarea
-                          value={posterState.dateCircle.bottomText.content}
-                          onChange={(e) =>
-                            handleNestedChange(
-                              ["dateCircle", "bottomText", "content"],
-                              e.target.value,
-                            )
-                          }
-                          rows={2}
-                          className="mb-3"
-                        />
-                        <div className="grid grid-cols-2 gap-4">
-                          <PositionSlider
-                            label="X"
-                            value={posterState.dateCircle.bottomText.position.x}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["dateCircle", "bottomText", "position", "x"],
-                                v,
-                              )
-                            }
-                            max={200}
-                          />
-                          <PositionSlider
-                            label="Y"
-                            value={posterState.dateCircle.bottomText.position.y}
-                            onChange={(v) =>
-                              handleNestedChange(
-                                ["dateCircle", "bottomText", "position", "y"],
-                                v,
-                              )
-                            }
-                            max={200}
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="copy-pasta" className="flex flex-col gap-4 pt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">
-                        Social Media Content
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-4">
-                      {generatedSocialContent.youtube ? (
-                        <Tabs defaultValue="youtube" className="w-full">
-                          <TabsList className="grid w-full grid-cols-3">
-                            <TabsTrigger value="youtube">YouTube</TabsTrigger>
-                            <TabsTrigger value="facebook">Facebook</TabsTrigger>
-                            <TabsTrigger value="instagram">
-                              Instagram
-                            </TabsTrigger>
-                          </TabsList>
-                          <TabsContent value="youtube">
-                            <ContentDisplay
-                              label="YouTube Title"
-                              content={generatedSocialContent.youtube}
-                              onCopy={() =>
-                                copyToClipboard(
-                                  generatedSocialContent.youtube,
-                                  toast,
-                                )
-                              }
-                              showCharCount
-                            />
-                          </TabsContent>
-                          <TabsContent value="facebook">
-                            <ContentDisplay
-                              label="Facebook Post"
-                              content={generatedSocialContent.facebook}
-                              onCopy={() =>
-                                copyToClipboard(
-                                  generatedSocialContent.facebook,
-                                  toast,
-                                )
-                              }
-                            />
-                          </TabsContent>
-                          <TabsContent value="instagram">
-                            <ContentDisplay
-                              label="Instagram Caption"
-                              content={generatedSocialContent.instagram}
-                              onCopy={() =>
-                                copyToClipboard(
-                                  generatedSocialContent.instagram,
-                                  toast,
-                                )
-                              }
-                            />
-                          </TabsContent>
-                        </Tabs>
-                      ) : (
-                        <div className="text-center py-8 text-muted-foreground">
-                          <Copy className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                          <p>
-                            Select locations, crop, date, and time to generate
-                            social media content
-                          </p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <Button
-                    onClick={handleDownload}
-                    disabled={isDownloading}
-                    className="w-full"
-                    size="lg"
-                  >
-                    <Download className="mr-2 h-5 w-5" />
-                    {isDownloading
-                      ? "Downloading..."
-                      : "Download Posters (EN & SW)"}
-                  </Button>
-                </CardContent>
-              </Card>
+            <div className="relative z-10 text-xs text-white/40 mt-6 text-center max-w-md">
+              Click any part of the poster to edit it right there, or use the
+              toolbar above.
             </div>
           </div>
 
-          {/* Poster Preview */}
-          <div className="xl:col-span-2 xl:sticky xl:top-6 xl:self-start">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Poster Preview</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div
-                  ref={previewContainerRef}
-                  className="w-full mx-auto"
-                  style={{ aspectRatio: "1 / 1" }}
+          {/* Language + download, sized to sit above the properties panel */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-end gap-2">
+              <div className="flex rounded-lg overflow-hidden border">
+                <button
+                  type="button"
+                  onClick={() => setLanguage("sw")}
+                  className={`px-3 py-2 text-xs font-semibold transition-colors ${
+                    language === "sw"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
-                  <div className="w-full h-full flex justify-center items-center overflow-hidden">
-                    <div
-                      style={{
-                        transform: `scale(${previewScale})`,
-                        transformOrigin: "center center",
-                      }}
-                    >
-                      <PosterCanvas {...posterState} id="visible-poster" />
+                  SW
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLanguage("en")}
+                  className={`px-3 py-2 text-xs font-semibold transition-colors ${
+                    language === "en"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
+              <Button onClick={handleDownload} disabled={isDownloading} size="sm">
+                <Download className="mr-2 h-4 w-4" />
+                {isDownloading ? "Downloading..." : "Download EN & SW"}
+              </Button>
+            </div>
+
+            {/* Properties panel: bound to whatever is selected */}
+            <Card>
+              <CardContent className="pt-6">
+              {selectedZone === null && (
+                <div className="text-sm text-muted-foreground leading-relaxed">
+                  Nothing selected yet. Click any element on the poster, or
+                  pick a section from the toolbar above the canvas, to edit
+                  it here.
+                </div>
+              )}
+
+              {selectedZone === "header" && (
+                <div className="flex flex-col gap-5">
+                  <div>
+                    <Label htmlFor="topText">Top Center Text</Label>
+                    <Textarea
+                      id="topText"
+                      value={posterState.topText}
+                      onChange={(e) =>
+                        handleStateChange("topText", e.target.value)
+                      }
+                      rows={3}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="headerColor">
+                      Header/Footer Background
+                    </Label>
+                    <Input
+                      id="headerColor"
+                      type="color"
+                      value={posterState.headerFooterBackgroundColor.slice(
+                        0,
+                        7,
+                      )}
+                      onChange={(e) =>
+                        handleStateChange(
+                          "headerFooterBackgroundColor",
+                          e.target.value,
+                        )
+                      }
+                      className="mt-1 h-10"
+                    />
+                  </div>
+                  <Separator />
+                  <ImageUpload
+                    label="Top Left Logo"
+                    onUpload={(url) => handleStateChange("topLeftLogo", url)}
+                    currentImage={posterState.topLeftLogo}
+                  />
+                  <ImageUpload
+                    label="Top Right Logo"
+                    onUpload={(url) => handleStateChange("topRightLogo", url)}
+                    currentImage={posterState.topRightLogo}
+                  />
+                </div>
+              )}
+
+              {selectedZone === "heading" && (
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <Label htmlFor="heading">Content</Label>
+                    <Input
+                      id="heading"
+                      value={posterState.heading.content}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          ["heading", "content"],
+                          e.target.value,
+                        )
+                      }
+                      className="mt-1"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <PositionSlider
+                      label="X"
+                      value={posterState.heading.position.x}
+                      onChange={(v) =>
+                        handleNestedChange(["heading", "position", "x"], v)
+                      }
+                    />
+                    <PositionSlider
+                      label="Y"
+                      value={posterState.heading.position.y}
+                      onChange={(v) =>
+                        handleNestedChange(["heading", "position", "y"], v)
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+
+              {selectedZone === "paragraph" && (
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <Label htmlFor="paragraph">Content</Label>
+                    <Textarea
+                      id="paragraph"
+                      value={posterState.paragraph.content}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          ["paragraph", "content"],
+                          e.target.value,
+                        )
+                      }
+                      rows={8}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <PositionSlider
+                      label="X"
+                      value={posterState.paragraph.position.x}
+                      onChange={(v) =>
+                        handleNestedChange(["paragraph", "position", "x"], v)
+                      }
+                    />
+                    <PositionSlider
+                      label="Y"
+                      value={posterState.paragraph.position.y}
+                      onChange={(v) =>
+                        handleNestedChange(["paragraph", "position", "y"], v)
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+
+              {selectedZone === "dateCircle" && (
+                <DateCircleEditor
+                  dateCircle={posterState.dateCircle}
+                  onChange={(v) => handleStateChange("dateCircle", v)}
+                />
+              )}
+
+              {selectedZone === "photo" && (
+                <div className="flex flex-col gap-4">
+                  <ImageUpload
+                    label="Upload Custom Background"
+                    onUpload={(url) =>
+                      handleStateChange("backgroundImage", url)
+                    }
+                    currentImage={posterState.backgroundImage}
+                  />
+                  <Separator />
+                  <CropImageSelector
+                    selectedCrop={crop}
+                    onImageSelect={(imageUrl) =>
+                      handleStateChange("backgroundImage", imageUrl)
+                    }
+                    currentImage={posterState.backgroundImage}
+                  />
+                  <Separator />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label>Fit</Label>
+                      <Select
+                        value={posterState.backgroundStyle.objectFit}
+                        onValueChange={(v) =>
+                          handleBackgroundStyleChange("objectFit", v)
+                        }
+                      >
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="cover">Cover</SelectItem>
+                          <SelectItem value="contain">Contain</SelectItem>
+                          <SelectItem value="fill">Fill</SelectItem>
+                          <SelectItem value="none">None</SelectItem>
+                          <SelectItem value="scale-down">
+                            Scale Down
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Position</Label>
+                      <Select
+                        value={posterState.backgroundStyle.objectPosition}
+                        onValueChange={(v) =>
+                          handleBackgroundStyleChange("objectPosition", v)
+                        }
+                      >
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="center">Center</SelectItem>
+                          <SelectItem value="top">Top</SelectItem>
+                          <SelectItem value="bottom">Bottom</SelectItem>
+                          <SelectItem value="left">Left</SelectItem>
+                          <SelectItem value="right">Right</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
-              </CardContent>
+              )}
+
+              {selectedZone === "footer" && (
+                <LogoManager
+                  footerLogos={posterState.footerLogos}
+                  onLogoChange={handleFooterLogoChange}
+                  onAddLogo={addFooterLogo}
+                  onRemoveLogo={removeFooterLogo}
+                />
+              )}
+
+              {selectedZone === "captions" && (
+                <div className="flex flex-col gap-4">
+                  {generatedSocialContent.youtube ? (
+                    <Tabs defaultValue="youtube" className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="youtube">YouTube</TabsTrigger>
+                        <TabsTrigger value="facebook">Facebook</TabsTrigger>
+                        <TabsTrigger value="instagram">
+                          Instagram
+                        </TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="youtube">
+                        <ContentDisplay
+                          label="YouTube Title"
+                          content={generatedSocialContent.youtube}
+                          onCopy={() =>
+                            copyToClipboard(
+                              generatedSocialContent.youtube,
+                              toast,
+                            )
+                          }
+                          showCharCount
+                        />
+                      </TabsContent>
+                      <TabsContent value="facebook">
+                        <ContentDisplay
+                          label="Facebook Post"
+                          content={generatedSocialContent.facebook}
+                          onCopy={() =>
+                            copyToClipboard(
+                              generatedSocialContent.facebook,
+                              toast,
+                            )
+                          }
+                        />
+                      </TabsContent>
+                      <TabsContent value="instagram">
+                        <ContentDisplay
+                          label="Instagram Caption"
+                          content={generatedSocialContent.instagram}
+                          onCopy={() =>
+                            copyToClipboard(
+                              generatedSocialContent.instagram,
+                              toast,
+                            )
+                          }
+                        />
+                      </TabsContent>
+                    </Tabs>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Copy className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                      <p>
+                        Select locations, crop, date, and time to generate
+                        social media content
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
             </Card>
           </div>
         </div>
@@ -890,4 +768,3 @@ const App: React.FC = () => {
 }
 
 export default App;
-
