@@ -128,7 +128,7 @@ const Receipt: React.FC<ReceiptProps> = ({
       <div>Recipient:</div>
       <div className="flex justify-between mt-1">
         <span className="font-bold">{name || " "}</span>
-        <span>{driverTag}</span>
+        <span className="font-bold">{driverTag}</span>
       </div>
       <div className="flex justify-between">
         <span>&nbsp;</span>
