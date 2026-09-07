@@ -8,31 +8,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download, Printer, Banknote, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import driverNames from "@/lib/constants/driver-names.json";
 
-// Common Tanzanian names used as a placeholder for the "OFFICE DRIVER" tag
+// Tanzanian male names used as a placeholder for the "OFFICE DRIVER" tag
 // until a real driver-name field is confirmed.
-const PLACEHOLDER_DRIVER_NAMES = [
-  "Juma Mwakalindile",
-  "Amina Hassan",
-  "Baraka Mushi",
-  "Fatuma Kessy",
-  "Hamisi Ndosi",
-  "Zainab Chuma",
-  "Rashidi Mbwana",
-  "Mariam Kileo",
-  "Salum Kagoma",
-  "Neema Shirima",
-  "Idrisa Mnyamani",
-  "Halima Mtui",
-  "Peter Machumu",
-  "Grace Nyerere",
-  "Emmanuel Sanga",
-  "Elizabeth Mrema",
-  "Yohana Kimaro",
-  "Anna Massawe",
-  "Daudi Chacha",
-  "Rehema Lyimo",
-];
+const PLACEHOLDER_DRIVER_NAMES: string[] = driverNames;
 
 const randomDriverName = (exclude?: string): string => {
   const options = PLACEHOLDER_DRIVER_NAMES.filter((n) => n !== exclude);
