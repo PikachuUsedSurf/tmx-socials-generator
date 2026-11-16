@@ -63,6 +63,8 @@ export const HASHTAGS = [
   "#farmer",
 ];
 
+export const YOUTUBE_TITLE_MAX_LENGTH = 100;
+
 export interface SocialContent {
   youtube: string;
   facebook: string;
@@ -100,8 +102,13 @@ export function generateSocialContent(
 
   const formattedLocations = locations.map(toCamelCase).join(", ");
 
-  const youtubeTitle =
+  const fullYoutubeTitle =
     `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (MNADA WA ${CROP_TRANSLATIONS_SW[crop]} ${formattedLocations} MBASHARA-TMX OTS | ${formattedDate})`.toUpperCase();
+  // YouTube caps titles at 100 characters: drop the Swahili "MNADA WA ..." part when over.
+  const youtubeTitle =
+    fullYoutubeTitle.length > YOUTUBE_TITLE_MAX_LENGTH
+      ? `[LIVE] ${crop} TRADE SESSION ${formattedLocations} (TMX OTS | ${formattedDate})`.toUpperCase()
+      : fullYoutubeTitle;
 
   const socialMessage = `
 Karibuni kushiriki kwenye mauzo ya zao la ${CROP_TRANSLATIONS_SW[

@@ -17,8 +17,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, Check, Copy } from "lucide-react";
+import { Download, Check, Copy, ExternalLink, Send } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useSidebar } from "@/components/ui/sidebar";
 import {
   CropImageSelector,
   DateCircleEditor,
@@ -57,16 +58,28 @@ const TOOLBAR_ZONES: { zone: PanelZone; label: string }[] = [
   { zone: "captions", label: "Captions" },
 ];
 
+// Meta Business Suite composer: posts to Facebook and Instagram from one screen
+const META_COMPOSER_URL = "https://business.facebook.com/latest/composer";
+
 const App: React.FC = () => {
   // State for generator inputs
-  const [locations, setLocations] = useState<string[]>(["SINGIDA", "DODOMA"]);
-  const [crop, setCrop] = useState<CropName | "">("CHICK PEA");
+  const [locations, setLocations] = useState<string[]>([]);
+  const [crop, setCrop] = useState<CropName | "">("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("10:30");
   const [language, setLanguage] = useState<"sw" | "en">("sw");
 
   // Which part of the poster the right-hand panel is currently editing
-  const [selectedZone, setSelectedZone] = useState<PanelZone | null>(null);
+  const [selectedZone, setSelectedZone] = useState<PanelZone | null>(
+    "captions",
+  );
+
+  // Collapse the app sidebar on entry so the editor gets the full width
+  const { setOpen: setSidebarOpen } = useSidebar();
+  useEffect(() => {
+    setSidebarOpen(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // State for poster visual elements
   const [posterState, setPosterState] = useState<PosterState>({
@@ -232,6 +245,71 @@ const App: React.FC = () => {
     document.body.removeChild(link);
   };
 
+  // Renders the poster in the given language into the hidden download canvas and captures it.
+  // Excludes auto-generated footerLogos so the user's manual edits are preserved.
+  const capturePoster = async (
+    posterCrop: CropName,
+    lang: "sw" | "en",
+  ): Promise<string> => {
+    const { footerLogos: _logos, ...content } = generatePosterContent(
+      locations,
+      posterCrop,
+      date,
+      time,
+      lang,
+    );
+    setDownloadPosterState(mergeContentIntoState(posterState, content));
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for DOM update
+    return captureCanvas("download-poster");
+  };
+
+  const posterFilename = (posterCrop: CropName, lang: "sw" | "en") => {
+    const name =
+      lang === "sw" ? CROP_TRANSLATIONS_SW[posterCrop] : CROP_NAMES_EN[posterCrop];
+    return `poster_${name.toLowerCase().replace(" ", "_")}_${lang}.png`;
+  };
+
+  // Semi-automatic posting: copy the caption, download both posters numbered in
+  // posting order (Swahili first), then open the Meta Business Suite composer.
+  const handlePreparePost = async (
+    platform: "Facebook" | "Instagram",
+    caption: string,
+  ) => {
+    if (!crop) return;
+    setIsDownloading(true);
+    try {
+      // Copy first, while the click's user activation is still fresh.
+      await navigator.clipboard.writeText(caption);
+
+      triggerDownload(
+        await capturePoster(crop, "sw"),
+        `1_${posterFilename(crop, "sw")}`,
+      );
+      triggerDownload(
+        await capturePoster(crop, "en"),
+        `2_${posterFilename(crop, "en")}`,
+      );
+
+      const composer = window.open(META_COMPOSER_URL, "_blank");
+      toast({
+        title: `${platform} post ready`,
+        description: composer
+          ? "Caption copied and posters downloaded. Add 1_ (Swahili) then 2_ (English) in the composer and paste the caption."
+          : "Caption copied and posters downloaded, but the composer tab was blocked. Allow pop-ups for this site, or open Meta Business Suite yourself.",
+      });
+    } catch (err) {
+      console.error("Failed to prepare post:", err);
+      toast({
+        title: "Could not prepare post",
+        description: "An error occurred while copying the caption or downloading the posters.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDownloading(false);
+      setDownloadPosterState(null);
+    }
+  };
+
   const handleDownload = async () => {
     if (!crop) {
       toast({
@@ -243,38 +321,8 @@ const App: React.FC = () => {
     }
     setIsDownloading(true);
     try {
-      // Generate and capture English version
-      // Exclude auto-generated footerLogos so user's manual edits are preserved
-      const { footerLogos: _en, ...enContent } = generatePosterContent(
-        locations,
-        crop,
-        date,
-        time,
-        "en",
-      );
-      setDownloadPosterState(mergeContentIntoState(posterState, enContent));
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for DOM update
-      const enDataUrl = await captureCanvas("download-poster");
-      triggerDownload(
-        enDataUrl,
-        `poster_${CROP_NAMES_EN[crop].toLowerCase().replace(" ", "_")}_en.png`,
-      );
-
-      // Generate and capture Swahili version
-      const { footerLogos: _sw, ...swContent } = generatePosterContent(
-        locations,
-        crop,
-        date,
-        time,
-        "sw",
-      );
-      setDownloadPosterState(mergeContentIntoState(posterState, swContent));
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for DOM update
-      const swDataUrl = await captureCanvas("download-poster");
-      triggerDownload(
-        swDataUrl,
-        `poster_${CROP_TRANSLATIONS_SW[crop].toLowerCase().replace(" ", "_")}_sw.png`,
-      );
+      triggerDownload(await capturePoster(crop, "en"), posterFilename(crop, "en"));
+      triggerDownload(await capturePoster(crop, "sw"), posterFilename(crop, "sw"));
 
       toast({
         title: "Posters downloaded",
@@ -721,6 +769,20 @@ const App: React.FC = () => {
                           }
                           showCharCount
                         />
+                        <Button
+                          variant="outline"
+                          className="mt-3 w-full"
+                          onClick={() =>
+                            window.open(
+                              "https://www.youtube.com/livestreaming",
+                              "_blank",
+                              "noopener,noreferrer",
+                            )
+                          }
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          Open YouTube Studio Live
+                        </Button>
                       </TabsContent>
                       <TabsContent value="facebook">
                         <ContentDisplay
@@ -733,6 +795,22 @@ const App: React.FC = () => {
                             )
                           }
                         />
+                        <Button
+                          variant="outline"
+                          className="mt-3 w-full"
+                          disabled={isDownloading}
+                          onClick={() =>
+                            handlePreparePost(
+                              "Facebook",
+                              generatedSocialContent.facebook,
+                            )
+                          }
+                        >
+                          <Send className="h-4 w-4" />
+                          {isDownloading
+                            ? "Preparing..."
+                            : "Prepare Facebook post"}
+                        </Button>
                       </TabsContent>
                       <TabsContent value="instagram">
                         <ContentDisplay
@@ -745,6 +823,22 @@ const App: React.FC = () => {
                             )
                           }
                         />
+                        <Button
+                          variant="outline"
+                          className="mt-3 w-full"
+                          disabled={isDownloading}
+                          onClick={() =>
+                            handlePreparePost(
+                              "Instagram",
+                              generatedSocialContent.instagram,
+                            )
+                          }
+                        >
+                          <Send className="h-4 w-4" />
+                          {isDownloading
+                            ? "Preparing..."
+                            : "Prepare Instagram post"}
+                        </Button>
                       </TabsContent>
                     </Tabs>
                   ) : (

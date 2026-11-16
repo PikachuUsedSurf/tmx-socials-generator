@@ -16,6 +16,24 @@ describe("generateSocialContent", () => {
     expect(c.youtube).toContain("23/07/2025");
   });
 
+  it("drops the MNADA WA part when the YouTube title exceeds 100 characters", () => {
+    const c = generateSocialContent(
+      ["SINGIDA", "DODOMA", "MANYARA"],
+      "SESAME",
+      "2025-07-23",
+      "10:30",
+    )!;
+    expect(c.youtube).toBe(
+      "[LIVE] SESAME TRADE SESSION SINGIDA, DODOMA, MANYARA (TMX OTS | 23/07/2025)",
+    );
+  });
+
+  it("keeps the full YouTube title at 100 characters or fewer", () => {
+    const c = generateSocialContent(["SINGIDA"], "SESAME", "2025-07-23", "10:30")!;
+    expect(c.youtube).toContain("MNADA WA UFUTA SINGIDA MBASHARA-TMX OTS");
+    expect(c.youtube.length).toBeLessThanOrEqual(100);
+  });
+
   it("includes Facebook tags in facebook post and Instagram tags in instagram post", () => {
     const c = generateSocialContent(["SINGIDA"], "SESAME", "2025-07-23", "10:30")!;
     expect(c.facebook).toContain("@Samia Suluhu Hassan");
